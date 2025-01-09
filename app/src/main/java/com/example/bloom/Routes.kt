@@ -16,7 +16,6 @@ object Auth {
 
 @Serializable
 object Home {
-
     @Serializable
     data object Explore
 
@@ -24,7 +23,7 @@ object Home {
     data object Profile
 
     @Serializable
-    data object Chat
+    data object Connection
 
     @Serializable
     data object LikedYou

@@ -5,6 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Color
+
+@Immutable
+data class ExtendedColorScheme(
+    val chat: ColorFamily,
+)
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -82,6 +89,32 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
+val extendedLight = ExtendedColorScheme(
+    chat = ColorFamily(
+        chatLight,
+        onChatLight,
+        chatContainerLight,
+        onChatContainerLight,
+    ),
+)
+
+val extendedDark = ExtendedColorScheme(
+    chat = ColorFamily(
+        chatDark,
+        onChatDark,
+        chatContainerDark,
+        onChatContainerDark,
+    ),
+)
+
+@Immutable
+data class ColorFamily(
+    val color: Color,
+    val onColor: Color,
+    val colorContainer: Color,
+    val onColorContainer: Color
+)
+
 @Composable
 fun BloomTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -94,7 +127,8 @@ fun BloomTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+        typography = AppTypography,
+        content = content,
+
+        )
 }

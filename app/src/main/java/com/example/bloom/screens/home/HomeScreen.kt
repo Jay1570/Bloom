@@ -27,7 +27,7 @@ fun HomeScreen() {
     val topLevelRoutes = listOf(
         NavBar("Explore", Home.Explore, Icons.Default.Home),
         NavBar("Liked You", Home.LikedYou, Icons.Default.Favorite),
-        NavBar("Chat", Home.Chat, Icons.Default.ChatBubble),
+        NavBar("Connections", Home.Connection, Icons.Default.ChatBubble),
         NavBar("Profile", Home.Profile, Icons.Default.Person2)
     )
     var selectedRoute by rememberSaveable { mutableStateOf("Explore") }
@@ -77,8 +77,8 @@ fun HomeScreen() {
             composable<Home.LikedYou> {
                 LikedYouScreen()
             }
-            composable<Home.Chat> {
-                ChatScreen()
+            composable<Home.Connection> {
+                ConnectionsScreen()
             }
             composable<Home.Profile> {
                 ProfileScreen()
