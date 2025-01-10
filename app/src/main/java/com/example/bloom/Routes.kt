@@ -2,29 +2,38 @@ package com.example.bloom
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-object Auth {
+sealed interface Routes {
     @Serializable
-    data object Intro
+    data object Auth : Routes
 
     @Serializable
-    data object Login
+    data object Intro : Routes
 
     @Serializable
-    data object Registration
-}
-
-@Serializable
-object Home {
-    @Serializable
-    data object Explore
+    data object Login : Routes
 
     @Serializable
-    data object Profile
+    data object Registration : Routes
+
 
     @Serializable
-    data object Connection
+    object Home : Routes
 
     @Serializable
-    data object LikedYou
+    data object Explore : Routes
+
+    @Serializable
+    data object Profile : Routes
+
+    @Serializable
+    data object Connection : Routes
+
+    @Serializable
+    data class Chat(
+        val connectionId: Int,
+        val name: String
+    ) : Routes
+
+    @Serializable
+    data object LikedYou : Routes
 }

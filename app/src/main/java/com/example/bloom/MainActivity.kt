@@ -14,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.example.bloom.screens.home.ChatScreen
 import com.example.bloom.screens.home.HomeScreen
 import com.example.bloom.screens.intro.IntroScreen
 import com.example.bloom.screens.login.LoginScreen
@@ -50,47 +52,60 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Auth,
+                        startDestination = Routes.Auth,
                     ) {
-                        navigation<Auth>(startDestination = Auth.Intro) {
-                            composable<Auth.Intro> {
+                        navigation<Routes.Auth>(startDestination = Routes.Intro) {
+                            composable<Routes.Intro> {
                                 IntroScreen(
                                     navigateToLogin = {
-                                        navController.navigate(Auth.Login)
+                                        navController.navigate(Routes.Login)
                                     }
                                 )
                             }
 
-                            composable<Auth.Login> {
+                            composable<Routes.Login> {
                                 LoginScreen(
                                     navigateToHome = {
-                                        navController.navigate(Home) {
+                                        navController.navigate(Routes.Home) {
                                             launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
                                     },
                                     navigateToRegister = {
-                                        navController.navigate(Auth.Registration)
+                                        navController.navigate(Routes.Registration)
                                     }
                                 )
                             }
 
-                            composable<Auth.Registration> {
+                            composable<Routes.Registration> {
                                 RegistrationScreen(
                                     navigateBack = {
                                         navController.popBackStack()
                                     },
                                     navigateToHome = {
-                                        navController.navigate(Home) {
-                                            launchSingleTop = true
+                                        navController.navigate(Routes.Home) {
+                                            this.launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
                                     }
                                 )
                             }
                         }
-                        composable<Home> {
-                            HomeScreen()
+                        composable<Routes.Home> {
+                            HomeScreen(
+                                navControllerMain = navController,
+                                navControllerBottomBar = rememberNavController()
+                            )
+                        }
+
+                        composable<Routes.Chat> {
+                            val args = it.toRoute<Routes.Chat>()
+
+                            ChatScreen(
+                                name = args.name,
+                                id = args.connectionId,
+                                navigateBack = { navController.popBackStack() }
+                            )
                         }
                     }
                 }

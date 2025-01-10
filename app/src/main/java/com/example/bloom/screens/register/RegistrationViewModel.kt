@@ -34,7 +34,7 @@ class RegistrationViewModel : ViewModel() {
     }
 
     fun onVisibilityChange() {
-        uiState.value = uiState.value.copy(isPasswordVisible = !isPasswordVisible)
+        uiState.value = uiState.value.copy(isPasswordVisible = ! isPasswordVisible)
     }
 
     fun onRegisterClick(navigateTo: () -> Unit) {
