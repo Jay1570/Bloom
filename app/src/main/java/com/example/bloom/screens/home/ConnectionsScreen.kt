@@ -40,7 +40,7 @@ fun ConnectionsScreen(
                 title = {
                     Text(
                         text = "MESSAGES",
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         fontStyle = FontStyle.Italic
                     )
@@ -73,7 +73,7 @@ fun ConnectionsScreen(
                 }
             )
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Column(
             modifier = Modifier.padding(top = it.calculateTopPadding())
@@ -124,7 +124,6 @@ fun ConnectionsScreen(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun ConnectionsPreview() {
@@ -134,3 +133,4 @@ fun ConnectionsPreview() {
         )
     }
 }
+

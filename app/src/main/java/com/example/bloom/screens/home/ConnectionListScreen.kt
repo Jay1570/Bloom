@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.bloom.R
 import com.example.bloom.ui.theme.BloomTheme
+import com.example.bloom.ui.theme.orange
 
 @Composable
 fun ConnectionListScreen(
@@ -83,7 +84,7 @@ fun UserItem(
                 Spacer(Modifier.weight(1f))
                 Text(
                     text = lastMessageTime,
-                    color = if (unreadCount > 0) Color(0xFFDB571E) else MaterialTheme.colorScheme.onBackground,
+                    color = if (unreadCount > 0) orange else MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -96,7 +97,7 @@ fun UserItem(
                         color = Color.White,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
-                            .background(color = Color(0xFFDB571E), shape = CircleShape)
+                            .background(color = orange, shape = CircleShape)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }

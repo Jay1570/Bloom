@@ -1,6 +1,5 @@
 package com.example.bloom.screens.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
@@ -16,25 +15,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.bloom.Routes
+import com.example.bloom.*
+import com.example.bloom.Chat
+import com.example.bloom.Connection
 import com.example.bloom.ui.theme.BloomTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     navControllerMain: NavHostController = rememberNavController(),
     navControllerBottomBar: NavHostController = rememberNavController()
 ) {
     val topLevelRoutes = listOf(
-        NavBar("Explore", Routes.Explore, Icons.Default.Home),
-        NavBar("Liked You", Routes.LikedYou, Icons.Default.Favorite),
-        NavBar("Connections", Routes.Connection, Icons.Default.ChatBubble),
-        NavBar("Profile", Routes.Profile, Icons.Default.Person2)
+        NavBar("Explore", Explore, Icons.Default.Home),
+        NavBar("Liked You", LikedYou, Icons.Default.Favorite),
+        NavBar("Connections", Connection, Icons.Default.ChatBubble),
+        NavBar("Profile", Profile, Icons.Default.Person2)
     )
     var selectedRoute by rememberSaveable { mutableStateOf("Explore") }
     Scaffold(
@@ -42,6 +45,8 @@ fun HomeScreen(
             NavigationBar(
                 containerColor = MaterialTheme.colorScheme.background
             ) {
+                val navBackStackEntry by navControllerBottomBar.currentBackStackEntryAsState()
+                val current = navBackStackEntry?.destination
                 topLevelRoutes.forEach { route ->
                     NavigationBarItem(
                         icon = {
@@ -50,7 +55,7 @@ fun HomeScreen(
                                 contentDescription = route.name,
                             )
                         },
-                        selected = selectedRoute == route.name,
+                        selected = current?.hierarchy?.any { it.hasRoute(route.route::class) } == true,
                         onClick = {
                             selectedRoute = route.name
                             navControllerBottomBar.navigate(route.route) {
@@ -73,25 +78,25 @@ fun HomeScreen(
     ) {
         NavHost(
             navController = navControllerBottomBar,
-            startDestination = Routes.Explore,
+            startDestination = Explore,
             modifier = Modifier.padding(bottom = it.calculateBottomPadding())
         ) {
-            composable<Routes.Explore> {
+            composable<Explore> {
                 ExploreScreen()
             }
-            composable<Routes.LikedYou> {
+            composable<LikedYou> {
                 LikedYouScreen()
             }
-            composable<Routes.Connection> {
+            composable<Connection> {
                 ConnectionsScreen(
                     onConnectionClick = { id, name ->
-                        navControllerMain.navigate(Routes.Chat(id, name)) {
+                        navControllerMain.navigate(Chat(id, name)) {
                             restoreState = true
                         }
                     }
                 )
             }
-            composable<Routes.Profile> {
+            composable<Profile> {
                 ProfileScreen()
             }
         }
@@ -106,8 +111,8 @@ fun HomePreview() {
     }
 }
 
-data class NavBar<T : Any>(
+data class NavBar(
     val name: String,
-    val route: T,
+    val route: Routes,
     val icon: ImageVector
 )

@@ -42,7 +42,7 @@ fun ProfileCard() {
         Row {
             Text("Name, Age", style = MaterialTheme.typography.bodyLarge)
             Spacer(Modifier.weight(1f))
-            Image(imageVector = Icons.Default.Games , contentDescription = "",)
+            Image(imageVector = Icons.Default.Games, contentDescription = "")
         }
     }
 }

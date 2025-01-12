@@ -50,8 +50,9 @@ fun RegistrationScreen(
             onVisibilityChange = viewModel::onVisibilityChange,
             navigateBack = navigateBack,
             modifier = Modifier
-                .fillMaxSize()
                 .padding(it)
+                .fillMaxSize()
+                .imePadding()
         )
     }
 }
@@ -68,7 +69,7 @@ fun RegistrationScreenContent(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val enabled = !uiState.inProcess
+    val enabled = ! uiState.inProcess
     Box(modifier = modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,10 +99,10 @@ fun RegistrationScreenContent(
                     fontWeight = FontWeight.Bold,
                 )
             }
+            Spacer(Modifier.padding(top = 100.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.padding(top = 100.dp)
             ) {
                 OutlinedTextField(
                     value = uiState.username,
@@ -120,7 +121,9 @@ fun RegistrationScreenContent(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
                     enabled = enabled
                 )
 
@@ -142,7 +145,9 @@ fun RegistrationScreenContent(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
                     enabled = enabled
                 )
 
@@ -155,7 +160,9 @@ fun RegistrationScreenContent(
                         keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Next
                     ),
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp),
                     enabled = enabled
                 )
 
@@ -177,7 +184,9 @@ fun RegistrationScreenContent(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 30.dp, top = 10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 30.dp, top = 10.dp),
                     enabled = enabled
                 )
 
@@ -211,7 +220,7 @@ fun RegistrationScreenContent(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { if(enabled) navigateBack() }
+                        modifier = Modifier.clickable { if (enabled) navigateBack() }
                     )
                 }
             }

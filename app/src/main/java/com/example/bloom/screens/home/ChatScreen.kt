@@ -1,6 +1,5 @@
 package com.example.bloom.screens.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,11 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.bloom.ui.theme.BloomTheme
+import com.example.bloom.ui.theme.orange
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
@@ -34,7 +34,8 @@ fun ChatScreen(
 
     val chats = listOf(
         Chat("Hey, wanna go on a hike sometime?", true),
-        Chat("I love hiking but I have an injury. Cant hike for 2 more weeks", false)
+        Chat("I love hiking but I have an injury. Cant hike for 2 more weeks", false),
+        Chat("Hi", true)
     )
     Scaffold(
         topBar = {
@@ -195,15 +196,16 @@ fun ChatMessageItem(chat: Chat, isFromMe: Boolean) {
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth(0.7f),
+                .widthIn(max = (0.7f * LocalConfiguration.current.screenWidthDp.dp.value).dp, min = 40.dp)
+                .align(if (isFromMe) Alignment.End else Alignment.Start),
             shape = RoundedCornerShape(
-                topStart = 48f,
-                topEnd = 48f,
-                bottomStart = if (isFromMe) 48f else 0f,
-                bottomEnd = if (isFromMe) 0f else 48f
+                topStart = 30f,
+                topEnd = 30f,
+                bottomStart = if (isFromMe) 30f else 0f,
+                bottomEnd = if (isFromMe) 0f else 30f
             ),
             colors = CardDefaults.cardColors(
-                containerColor = if (isFromMe) Color(0xFFDB571E) else MaterialTheme.colorScheme.surfaceContainer,
+                containerColor = if (isFromMe) orange else MaterialTheme.colorScheme.surfaceContainer,
                 contentColor = if (isFromMe) Color.White else MaterialTheme.colorScheme.onSurface,
             ),
         ) {

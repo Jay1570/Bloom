@@ -52,38 +52,38 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = Routes.Auth,
+                        startDestination = Auth,
                     ) {
-                        navigation<Routes.Auth>(startDestination = Routes.Intro) {
-                            composable<Routes.Intro> {
+                        navigation<Auth>(startDestination = Intro) {
+                            composable<Intro> {
                                 IntroScreen(
                                     navigateToLogin = {
-                                        navController.navigate(Routes.Login)
+                                        navController.navigate(Login)
                                     }
                                 )
                             }
 
-                            composable<Routes.Login> {
+                            composable<Login> {
                                 LoginScreen(
                                     navigateToHome = {
-                                        navController.navigate(Routes.Home) {
+                                        navController.navigate(Home) {
                                             launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
                                     },
                                     navigateToRegister = {
-                                        navController.navigate(Routes.Registration)
+                                        navController.navigate(Registration)
                                     }
                                 )
                             }
 
-                            composable<Routes.Registration> {
+                            composable<Registration> {
                                 RegistrationScreen(
                                     navigateBack = {
                                         navController.popBackStack()
                                     },
                                     navigateToHome = {
-                                        navController.navigate(Routes.Home) {
+                                        navController.navigate(Home) {
                                             this.launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
@@ -91,16 +91,15 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-                        composable<Routes.Home> {
+                        composable<Home> {
                             HomeScreen(
                                 navControllerMain = navController,
                                 navControllerBottomBar = rememberNavController()
                             )
                         }
 
-                        composable<Routes.Chat> {
-                            val args = it.toRoute<Routes.Chat>()
-
+                        composable<Chat> {
+                            val args = it.toRoute<Chat>()
                             ChatScreen(
                                 name = args.name,
                                 id = args.connectionId,
