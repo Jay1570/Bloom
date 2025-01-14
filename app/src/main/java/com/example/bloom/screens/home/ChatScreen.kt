@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Videocam
@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
@@ -154,8 +155,9 @@ fun AppBar(
                     .clickable(onClick = onNavigateBack)
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = ""
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                    contentDescription = "",
+                    modifier = Modifier.rotate(180f)
                 )
             }
         },
@@ -196,7 +198,10 @@ fun ChatMessageItem(chat: Chat, isFromMe: Boolean) {
     ) {
         Card(
             modifier = Modifier
-                .widthIn(max = (0.7f * LocalConfiguration.current.screenWidthDp.dp.value).dp, min = 40.dp)
+                .widthIn(
+                    max = (0.7f * LocalConfiguration.current.screenWidthDp.dp.value).dp,
+                    min = 40.dp
+                )
                 .align(if (isFromMe) Alignment.End else Alignment.Start),
             shape = RoundedCornerShape(
                 topStart = 30f,

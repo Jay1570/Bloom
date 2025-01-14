@@ -5,8 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -17,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.bloom.screens.home.ChatScreen
 import com.example.bloom.screens.home.HomeScreen
+import com.example.bloom.screens.home.SettingsScreen
 import com.example.bloom.screens.intro.IntroScreen
 import com.example.bloom.screens.login.LoginScreen
 import com.example.bloom.screens.register.RegistrationScreen
@@ -29,7 +33,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BloomTheme {
+            val theme by BloomApplication.themePreference.theme.collectAsState()
+            val darkTheme: Boolean = when (theme) {
+                Theme.LIGHT -> false
+                Theme.DARK -> true
+                Theme.SYSTEM -> isSystemInDarkTheme()
+            }
+            BloomTheme(darkTheme = darkTheme) {
                 val snackbarHostState = remember { SnackbarHostState() }
                 val scope = rememberCoroutineScope()
                 ObserveAsEvents(flow = SnackbarManager.events, snackbarHostState) { event ->
@@ -59,6 +69,12 @@ class MainActivity : ComponentActivity() {
                                 IntroScreen(
                                     navigateToLogin = {
                                         navController.navigate(Login)
+                                    },
+                                    navigateToHome = {
+                                        navController.navigate(Home) {
+                                            launchSingleTop = true
+                                            popUpTo(0) { inclusive = true }
+                                        }
                                     }
                                 )
                             }
@@ -84,7 +100,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     navigateToHome = {
                                         navController.navigate(Home) {
-                                            this.launchSingleTop = true
+                                            launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
                                     }
@@ -104,6 +120,20 @@ class MainActivity : ComponentActivity() {
                                 name = args.name,
                                 id = args.connectionId,
                                 navigateBack = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable<Settings> {
+                            SettingsScreen(
+                                navigateToIntro = {
+                                    navController.navigate(Intro) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                },
+                                navigateBack = {
+                                    navController.popBackStack()
+                                }
                             )
                         }
                     }

@@ -97,7 +97,11 @@ fun HomeScreen(
                 )
             }
             composable<Profile> {
-                ProfileScreen()
+                ProfileScreen(
+                    navigateToSettings = {
+                        navControllerMain.navigate(Settings)
+                    }
+                )
             }
         }
     }

@@ -37,3 +37,6 @@ data class Chat(
 
 @Serializable
 data object LikedYou : Routes
+
+@Serializable
+data object Settings : Routes

@@ -31,7 +31,9 @@ import com.example.bloom.ui.theme.orange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    navigateToSettings: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,7 +52,7 @@ fun ProfileScreen() {
                             .background(MaterialTheme.colorScheme.surfaceContainer)
                     ) {
                         IconButton(
-                            onClick = { /*TODO*/ },
+                            onClick = { navigateToSettings() },
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Settings,
@@ -124,7 +126,11 @@ fun ProfileScreen() {
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 FeatureCard(icon = Icons.Default.Star, label = "03", subLabel = "SUPERLIKES")
-                FeatureCard(icon = Icons.AutoMirrored.Filled.Chat, label = "04", subLabel = "REACHOUTS")
+                FeatureCard(
+                    icon = Icons.AutoMirrored.Filled.Chat,
+                    label = "04",
+                    subLabel = "REACHOUTS"
+                )
                 FeatureCard(icon = Icons.Default.Bolt, label = "12", subLabel = "AI PROMPTS")
             }
 
@@ -167,7 +173,7 @@ fun FeatureCard(icon: ImageVector, label: String, subLabel: String) {
             .size(width = 100.dp, height = 150.dp)
             .padding(8.dp),
 
-    ) {
+        ) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -202,6 +208,6 @@ fun FeatureCard(icon: ImageVector, label: String, subLabel: String) {
 @Composable
 fun ProfilePreview() {
     BloomTheme {
-        ProfileScreen()
+        ProfileScreen(navigateToSettings = {})
     }
 }

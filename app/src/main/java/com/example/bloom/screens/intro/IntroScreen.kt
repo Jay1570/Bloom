@@ -18,7 +18,10 @@ import com.example.bloom.ui.theme.BloomTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun IntroScreen(navigateToLogin: () -> Unit) {
+fun IntroScreen(
+    navigateToHome: () -> Unit,
+    navigateToLogin: () -> Unit
+) {
     Scaffold(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.padding(it)) {
             Column(
@@ -60,7 +63,7 @@ fun IntroScreen(navigateToLogin: () -> Unit) {
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Button(
-                        onClick = { /* TODO: Add Action */ },
+                        onClick = navigateToHome,
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.onBackground,
@@ -142,7 +145,10 @@ fun IntroScreen(navigateToLogin: () -> Unit) {
 @Composable
 fun IntroScreenPreview() {
     BloomTheme {
-        IntroScreen(navigateToLogin = {})
+        IntroScreen(
+            navigateToHome = {},
+            navigateToLogin = {}
+        )
     }
 }
 
@@ -150,6 +156,9 @@ fun IntroScreenPreview() {
 @Composable
 fun IntroScreenDarkPreview() {
     BloomTheme(darkTheme = true) {
-        IntroScreen(navigateToLogin = {})
+        IntroScreen(
+            navigateToHome = {},
+            navigateToLogin = {}
+        )
     }
 }
