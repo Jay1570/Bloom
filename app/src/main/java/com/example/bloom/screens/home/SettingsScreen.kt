@@ -8,18 +8,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Contrast
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +35,34 @@ fun SettingsScreen(
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState
+    val items = listOf(
+        SettingsItem(
+            Icons.Default.Email,
+            "Change Your Email",
+            null,
+            onClick = {}
+        ),
+        SettingsItem(
+            Icons.Default.Security,
+            "Change Your Password",
+            null,
+            onClick = {}
+        ),
+        SettingsItem(
+            Icons.Default.Share,
+            "Invite Your Friends",
+            "Share this app with your Friends",
+            onClick = { shareInvite(context) }
+        ),
+        SettingsItem(
+            Icons.Default.Contrast,
+            "Theme",
+            "Change Theme",
+            onClick = viewModel::onThemeClick
+        )
+    )
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,8 +94,8 @@ fun SettingsScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize(),
+            itemsList = items,
             onSignOutClick = navigateToIntro,
-            onThemeClick = viewModel::onThemeClick
         )
         if (uiState.isThemeDialogVisible) {
             ThemeSelectionDialog(
@@ -84,14 +110,18 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenContent(
     modifier: Modifier = Modifier,
+    itemsList: List<SettingsItem>,
     onSignOutClick: () -> Unit,
-    onThemeClick: () -> Unit,
 ) {
     Column(modifier = modifier) {
-        InviteAFriend()
-        Spacer(modifier = Modifier.width(10.dp))
-        ThemeSelectionCard(onClick = onThemeClick)
-        Spacer(modifier = Modifier.width(10.dp))
+        itemsList.forEach { item ->
+            SettingsItemCard(
+                icon = item.icon,
+                title = item.title,
+                subTitle = item.subTitle,
+                onClick = item.onClick
+            )
+        }
         Button(
             onClick = onSignOutClick,
             modifier = Modifier
@@ -103,37 +133,43 @@ fun SettingsScreenContent(
     }
 }
 
-
 @Composable
-fun InviteAFriend() {
-    val context = LocalContext.current
+fun SettingsItemCard(
+    icon: ImageVector,
+    title: String,
+    subTitle: String?,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
-                onClick = { shareInvite(context) }
+                onClick = onClick
             )
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Filled.Share,
-            contentDescription = null,
+            imageVector = icon,
+            contentDescription = title,
             modifier = Modifier.size(30.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
-                text = stringResource(id = R.string.invite_friends),
+                text = title,
                 style = MaterialTheme.typography.bodyLarge
             )
-            Text(
-                text = stringResource(id = R.string.share_app),
-                style = MaterialTheme.typography.bodyMedium
-            )
+            if (subTitle != null) {
+                Text(
+                    text = subTitle,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
+
 
 private fun shareInvite(context: Context) {
     val downloadLink = ""
@@ -144,34 +180,6 @@ private fun shareInvite(context: Context) {
         type = "text/plain"
     }
     context.startActivity(Intent.createChooser(intent, context.getString(R.string.invite_friends)))
-}
-
-@Composable
-fun ThemeSelectionCard(onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Contrast,
-            contentDescription = null,
-            modifier = Modifier.size(30.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column {
-            Text(
-                text = "Theme",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "Change Theme",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
 }
 
 @Composable
@@ -224,13 +232,46 @@ fun ThemeSelectionDialog(
     )
 }
 
+@Immutable
+data class SettingsItem(
+    val icon: ImageVector,
+    val title: String,
+    val subTitle: String? = null,
+    val onClick: () -> Unit
+)
+
 @Preview(showBackground = true)
 @Composable
 fun SettingsPreview() {
     BloomTheme {
         SettingsScreenContent(
-            onThemeClick = {},
-            onSignOutClick = {}
+            onSignOutClick = {},
+            itemsList = listOf(
+                SettingsItem(
+                    Icons.Default.Email,
+                    "Change Your Email",
+                    null,
+                    onClick = {}
+                ),
+                SettingsItem(
+                    Icons.Default.Security,
+                    "Change Your Password",
+                    null,
+                    onClick = {}
+                ),
+                SettingsItem(
+                    Icons.Default.Share,
+                    "Invite Your Friends",
+                    "Share this app with your Friends",
+                    onClick = {}
+                ),
+                SettingsItem(
+                    Icons.Default.Contrast,
+                    "Theme",
+                    "Change Theme",
+                    onClick = {}
+                )
+            )
         )
     }
 }
