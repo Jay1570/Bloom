@@ -1,4 +1,4 @@
-package com.example.bloom.screens.login
+package com.example.bloom.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

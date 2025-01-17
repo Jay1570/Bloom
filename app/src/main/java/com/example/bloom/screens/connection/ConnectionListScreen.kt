@@ -1,4 +1,4 @@
-package com.example.bloom.screens.home
+package com.example.bloom.screens.connection
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

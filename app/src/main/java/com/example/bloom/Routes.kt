@@ -16,6 +16,17 @@ data object Login : Routes
 @Serializable
 data object Registration : Routes
 
+@Serializable
+data object EmailVerification : Routes
+
+@Serializable
+data object BasicInformation : Routes
+
+@Serializable
+data object Intermediate : Routes
+
+@Serializable
+data object Information : Routes
 
 @Serializable
 data object Home : Routes

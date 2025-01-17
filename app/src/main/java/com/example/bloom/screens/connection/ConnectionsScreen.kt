@@ -1,4 +1,4 @@
-package com.example.bloom.screens.home
+package com.example.bloom.screens.connection
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

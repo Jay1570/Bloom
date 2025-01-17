@@ -18,12 +18,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.bloom.screens.home.ChatScreen
+import com.example.bloom.screens.auth.EmailVerificationScreen
+import com.example.bloom.screens.auth.IntroScreen
+import com.example.bloom.screens.auth.LoginScreen
+import com.example.bloom.screens.auth.RegistrationScreen
+import com.example.bloom.screens.basic_information.BasicInformationScreen
+import com.example.bloom.screens.connection.ChatScreen
 import com.example.bloom.screens.home.HomeScreen
-import com.example.bloom.screens.home.SettingsScreen
-import com.example.bloom.screens.intro.IntroScreen
-import com.example.bloom.screens.login.LoginScreen
-import com.example.bloom.screens.register.RegistrationScreen
+import com.example.bloom.screens.information.InformationScreen
+import com.example.bloom.screens.information.IntermediateScreen
+import com.example.bloom.screens.settings.SettingsScreen
 import com.example.bloom.ui.theme.BloomTheme
 import kotlinx.coroutines.launch
 
@@ -98,15 +102,48 @@ class MainActivity : ComponentActivity() {
                                     navigateBack = {
                                         navController.popBackStack()
                                     },
-                                    navigateToHome = {
-                                        navController.navigate(Home) {
-                                            launchSingleTop = true
-                                            popUpTo(0) { inclusive = true }
-                                        }
+                                    navigateToVerification = {
+                                        navController.navigate(EmailVerification)
                                     }
                                 )
                             }
                         }
+
+                        composable<EmailVerification> {
+                            EmailVerificationScreen(
+                                navigateBack = {
+                                    navController.popBackStack()
+                                },
+                                navigateToBasicInformation = {
+                                    navController.navigate(BasicInformation)
+                                }
+                            )
+                        }
+
+                        composable<BasicInformation> {
+                            BasicInformationScreen(
+                                navigateToNextScreen = {
+                                    navController.navigate(Intermediate)
+                                }
+                            )
+                        }
+
+                        composable<Intermediate> {
+                            IntermediateScreen(
+                                navigateToNextScreen = {
+                                    navController.navigate(Information)
+                                }
+                            )
+                        }
+
+                        composable<Information> {
+                            InformationScreen(
+                                navigateToNextScreen = {
+                                    navController.navigate(Home)
+                                }
+                            )
+                        }
+
                         composable<Home> {
                             HomeScreen(
                                 navControllerMain = navController,

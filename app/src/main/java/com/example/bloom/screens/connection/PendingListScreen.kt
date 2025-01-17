@@ -1,4 +1,4 @@
-package com.example.bloom.screens.home
+package com.example.bloom.screens.connection
 
 import androidx.compose.runtime.Composable
 

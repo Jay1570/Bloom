@@ -21,8 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.bloom.*
-import com.example.bloom.Chat
-import com.example.bloom.Connection
+import com.example.bloom.screens.connection.ConnectionsScreen
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable

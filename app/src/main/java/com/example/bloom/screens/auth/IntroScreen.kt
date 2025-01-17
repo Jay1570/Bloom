@@ -1,4 +1,4 @@
-package com.example.bloom.screens.intro
+package com.example.bloom.screens.auth
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

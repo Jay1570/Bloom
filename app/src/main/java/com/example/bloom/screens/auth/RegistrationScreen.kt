@@ -1,4 +1,4 @@
-package com.example.bloom.screens.register
+package com.example.bloom.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +33,7 @@ import com.example.bloom.ui.theme.BloomTheme
 @Composable
 fun RegistrationScreen(
     navigateBack: () -> Unit,
-    navigateToHome: () -> Unit,
+    navigateToVerification: () -> Unit,
     viewModel: RegistrationViewModel = viewModel()
 ) {
 
@@ -46,7 +46,7 @@ fun RegistrationScreen(
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
-            onRegisterClick = { viewModel.onRegisterClick(navigateTo = navigateToHome) },
+            onRegisterClick = { viewModel.onRegisterClick(navigateTo = navigateToVerification) },
             onVisibilityChange = viewModel::onVisibilityChange,
             navigateBack = navigateBack,
             modifier = Modifier
@@ -262,7 +262,7 @@ fun RegisterPreview() {
 fun RegisterDarkPreview() {
     BloomTheme(darkTheme = true) {
         RegistrationScreen(
-            navigateToHome = {},
+            navigateToVerification = {},
             navigateBack = {}
         )
     }

@@ -1,4 +1,4 @@
-package com.example.bloom.screens.home
+package com.example.bloom.screens.settings
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

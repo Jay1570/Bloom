@@ -1,4 +1,4 @@
-package com.example.bloom.screens.home
+package com.example.bloom.screens.settings
 
 import android.content.Context
 import android.content.Intent

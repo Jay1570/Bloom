@@ -1,4 +1,4 @@
-package com.example.bloom.screens.login
+package com.example.bloom.screens.auth
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
