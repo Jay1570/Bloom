@@ -1,6 +1,5 @@
 package com.example.bloom.screens.home
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,13 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.bloom.screens.TopBar
 import com.example.bloom.ui.theme.BloomTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectionsScreen(
@@ -36,15 +34,9 @@ fun ConnectionsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "MESSAGES",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Italic
-                    )
-                },
+            TopBar(
+                title = "MESSAGES",
+                canNavigateBack = false,
                 actions = {
                     Card(modifier = Modifier.clip(RoundedCornerShape(100))) {
                         Row(
@@ -65,10 +57,9 @@ fun ConnectionsScreen(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.width(16.dp))
-
+                    Spacer(Modifier.padding(4.dp))
                     Icon(Icons.Default.FilterAlt, contentDescription = "Filter")
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(Modifier.padding(4.dp))
                     Icon(Icons.Default.MoreVert, contentDescription = "More")
                 }
             )

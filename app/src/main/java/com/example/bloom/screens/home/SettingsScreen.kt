@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Contrast
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Security
@@ -15,17 +13,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.R
 import com.example.bloom.Theme
+import com.example.bloom.screens.TopBar
 import com.example.bloom.ui.theme.BloomTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,28 +60,10 @@ fun SettingsScreen(
     )
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "SETTINGS",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Italic
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                            contentDescription = "",
-                            modifier = Modifier.rotate(180f)
-                        )
-                    }
-                }
+            TopBar(
+                title = "SETTINGS",
+                canNavigateBack = true,
+                navigateUp = navigateBack
             )
         }
     ) {
