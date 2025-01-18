@@ -26,6 +26,8 @@ import com.example.bloom.ui.theme.BloomTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    navigateToChangeEmail: () -> Unit,
+    navigateToChangePassword: () -> Unit,
     navigateToIntro: () -> Unit,
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel = viewModel()
@@ -37,13 +39,13 @@ fun SettingsScreen(
             Icons.Default.Email,
             "Change Your Email",
             null,
-            onClick = {}
+            onClick = navigateToChangeEmail
         ),
         SettingsItem(
             Icons.Default.Security,
             "Change Your Password",
             null,
-            onClick = {}
+            onClick = navigateToChangePassword
         ),
         SettingsItem(
             Icons.Default.Share,

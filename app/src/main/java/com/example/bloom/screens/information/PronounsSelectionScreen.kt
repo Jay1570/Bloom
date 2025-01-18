@@ -1,10 +1,12 @@
 package com.example.bloom.screens.information
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PronounsSelectionScreen() {
     val pronouns = listOf(
@@ -37,7 +40,7 @@ fun PronounsSelectionScreen() {
         "Not listed"
     )
     val selectedPronouns = remember { mutableStateListOf<String>() }
-    var isVisibleOnProfile by remember { mutableStateOf(true) }
+    var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -62,7 +65,7 @@ fun PronounsSelectionScreen() {
                 items(selectedPronouns) { pronoun ->
                     Chip(
                         text = pronoun,
-                        onClose = { selectedPronouns.remove(pronoun) }
+                        onClose = { selectedPronouns.minus(pronoun) }
                     )
                 }
             }
@@ -74,53 +77,71 @@ fun PronounsSelectionScreen() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
         // LazyColumn for pronoun options
-        LazyColumn(
+        ContextualFlowRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(pronouns) { pronoun ->
+                .safeDrawingPadding()
+                .fillMaxWidth(1f)
+                .padding(vertical = 16.dp)
+                .wrapContentHeight(align = Alignment.Top)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            itemCount = pronouns.size
+        ) { index ->
+            Card(
+                modifier = Modifier.clickable(
+                    onClick = {
+                        if (selectedPronouns.contains(pronouns[index])) {
+                            selectedPronouns.remove(pronouns[index])
+                        } else if (selectedPronouns.size < 4) {
+                            selectedPronouns.add(pronouns[index])
+                        }
+                    }
+                )
+            ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.wrapContentWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = pronoun,
+                        text = pronouns[index],
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     Checkbox(
-                        checked = pronoun in selectedPronouns,
+                        checked = selectedPronouns.contains(pronouns[index]),
                         onCheckedChange = { isChecked ->
                             if (isChecked && selectedPronouns.size < 4) {
-                                selectedPronouns.add(pronoun)
+                                selectedPronouns.remove(pronouns[index])
                             } else if (! isChecked) {
-                                selectedPronouns.remove(pronoun)
+                                selectedPronouns.add(pronouns[index])
                             }
                         }
                     )
                 }
             }
         }
-
-        // Visible on profile checkbox
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            modifier = Modifier.clickable(
+                onClick = {
+                    isVisibleOnProfile = ! isVisibleOnProfile
+                }
+            )
         ) {
-            Checkbox(
-                checked = isVisibleOnProfile,
-                onCheckedChange = { isVisibleOnProfile = it }
-            )
-            Text(
-                text = "Visible on profile",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(start = 8.dp)
-            )
+            Row(
+                modifier = Modifier.wrapContentWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = isVisibleOnProfile,
+                    onCheckedChange = { isVisibleOnProfile = it }
+                )
+                Text(
+                    text = "Visible on profile",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            }
         }
     }
 }
@@ -129,7 +150,7 @@ fun PronounsSelectionScreen() {
 fun Chip(text: String, onClose: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = Color.LightGray,
+        color = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier.padding(4.dp)
     ) {
         Row(
@@ -138,7 +159,8 @@ fun Chip(text: String, onClose: () -> Unit) {
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.titleLarge.copy(color = Color.Black),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.padding(end = 4.dp)
             )
             IconButton(onClick = onClose) {
@@ -149,6 +171,17 @@ fun Chip(text: String, onClose: () -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ChipPreview() {
+    BloomTheme {
+        Chip(
+            text = "he",
+            onClose = {}
+        )
     }
 }
 

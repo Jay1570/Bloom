@@ -31,7 +31,7 @@ import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
 fun LoginScreen(
-    navigateToHome: () -> Unit,
+    navigateToVerification: () -> Unit,
     navigateToRegister: () -> Unit,
     viewModel: LoginViewModel = viewModel()
 ) {
@@ -43,7 +43,7 @@ fun LoginScreen(
             onUsernameChange = viewModel::onUsernameChange,
             onPasswordChange = viewModel::onPasswordChange,
             onVisibilityChange = viewModel::onVisibilityChange,
-            onLoginClick = { viewModel.onLoginClick(navigateToHome) },
+            onLoginClick = { viewModel.onLoginClick(navigateToVerification) },
             onRegisterClick = navigateToRegister,
             modifier = Modifier
                 .padding(it)
@@ -211,7 +211,7 @@ fun LoginPreview() {
 fun LoginDarkPreview() {
     BloomTheme(darkTheme = true) {
         LoginScreen(
-            navigateToHome = {},
+            navigateToVerification = {},
             navigateToRegister = {}
         )
     }

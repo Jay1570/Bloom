@@ -23,7 +23,7 @@ import com.example.bloom.ui.theme.BloomTheme
 @Composable
 fun EmailVerificationScreen(
     navigateBack: () -> Unit,
-    navigateToBasicInformation: () -> Unit,
+    navigateToNextScreen: () -> Unit,
     viewModel: VerificationViewModel = viewModel()
 ) {
 
@@ -94,7 +94,7 @@ fun EmailVerificationScreen(
                     )
                 }
                 Button(
-                    onClick = { viewModel.verifyEmail(navigateTo = navigateToBasicInformation) },
+                    onClick = { viewModel.verifyEmail(navigateTo = navigateToNextScreen) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 40.dp)
@@ -112,6 +112,6 @@ fun EmailVerificationScreen(
 @Composable
 fun EmailVerificationPreview() {
     BloomTheme {
-        EmailVerificationScreen(navigateBack = {}, navigateToBasicInformation = {})
+        EmailVerificationScreen(navigateBack = {}, navigateToNextScreen = {})
     }
 }

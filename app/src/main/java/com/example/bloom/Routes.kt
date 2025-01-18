@@ -17,7 +17,9 @@ data object Login : Routes
 data object Registration : Routes
 
 @Serializable
-data object EmailVerification : Routes
+data class EmailVerification(
+    val origin: String
+) : Routes
 
 @Serializable
 data object BasicInformation : Routes
@@ -51,3 +53,9 @@ data object LikedYou : Routes
 
 @Serializable
 data object Settings : Routes
+
+@Serializable
+data object ChangeEmail : Routes
+
+@Serializable
+data object ChangePassword : Routes

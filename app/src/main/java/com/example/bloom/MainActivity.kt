@@ -27,6 +27,8 @@ import com.example.bloom.screens.connection.ChatScreen
 import com.example.bloom.screens.home.HomeScreen
 import com.example.bloom.screens.information.InformationScreen
 import com.example.bloom.screens.information.IntermediateScreen
+import com.example.bloom.screens.settings.ChangeEmailScreen
+import com.example.bloom.screens.settings.ChangePasswordScreen
 import com.example.bloom.screens.settings.SettingsScreen
 import com.example.bloom.ui.theme.BloomTheme
 import kotlinx.coroutines.launch
@@ -85,11 +87,8 @@ class MainActivity : ComponentActivity() {
 
                             composable<Login> {
                                 LoginScreen(
-                                    navigateToHome = {
-                                        navController.navigate(Home) {
-                                            launchSingleTop = true
-                                            popUpTo(0) { inclusive = true }
-                                        }
+                                    navigateToVerification = {
+                                        navController.navigate(EmailVerification("login"))
                                     },
                                     navigateToRegister = {
                                         navController.navigate(Registration)
@@ -103,20 +102,41 @@ class MainActivity : ComponentActivity() {
                                         navController.popBackStack()
                                     },
                                     navigateToVerification = {
-                                        navController.navigate(EmailVerification)
+                                        navController.navigate(EmailVerification("register"))
                                     }
                                 )
                             }
                         }
 
                         composable<EmailVerification> {
+                            val origin = it.toRoute<EmailVerification>().origin
+
+                            val navigateToNext: () -> Unit = {
+                                when (origin) {
+                                    "login" -> {
+                                        navController.navigate(Home) {
+                                            launchSingleTop = true
+                                            popUpTo(0) { inclusive = true }
+                                        }
+                                    }
+
+                                    "change" -> {
+                                        navController.popBackStack(
+                                            route = Settings,
+                                            inclusive = false
+                                        )
+                                    }
+
+                                    else -> {
+                                        navController.navigate(BasicInformation)
+                                    }
+                                }
+                            }
                             EmailVerificationScreen(
                                 navigateBack = {
                                     navController.popBackStack()
                                 },
-                                navigateToBasicInformation = {
-                                    navController.navigate(BasicInformation)
-                                }
+                                navigateToNextScreen = navigateToNext
                             )
                         }
 
@@ -139,7 +159,10 @@ class MainActivity : ComponentActivity() {
                         composable<Information> {
                             InformationScreen(
                                 navigateToNextScreen = {
-                                    navController.navigate(Home)
+                                    navController.navigate(Home) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 }
                             )
                         }
@@ -162,6 +185,12 @@ class MainActivity : ComponentActivity() {
 
                         composable<Settings> {
                             SettingsScreen(
+                                navigateToChangeEmail = {
+                                    navController.navigate(ChangeEmail)
+                                },
+                                navigateToChangePassword = {
+                                    navController.navigate(ChangePassword)
+                                },
                                 navigateToIntro = {
                                     navController.navigate(Intro) {
                                         launchSingleTop = true
@@ -170,6 +199,24 @@ class MainActivity : ComponentActivity() {
                                 },
                                 navigateBack = {
                                     navController.popBackStack()
+                                }
+                            )
+                        }
+
+                        composable<ChangeEmail> {
+                            ChangeEmailScreen(
+                                navigateBack = { navController.popBackStack() },
+                                navigateToVerification = {
+                                    navController.navigate(EmailVerification("change"))
+                                }
+                            )
+                        }
+
+                        composable<ChangePassword> {
+                            ChangePasswordScreen(
+                                navigateBack = { navController.popBackStack() },
+                                navigateToVerification = {
+                                    navController.navigate(EmailVerification("change"))
                                 }
                             )
                         }
