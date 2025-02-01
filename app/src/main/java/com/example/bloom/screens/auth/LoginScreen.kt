@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.R
 import com.example.bloom.ui.theme.BloomTheme
@@ -36,7 +37,8 @@ fun LoginScreen(
     viewModel: LoginViewModel = viewModel()
 ) {
 
-    val uiState by viewModel.uiState
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(modifier = Modifier.fillMaxSize()) {
         LoginScreenContent(
             uiState = uiState,
@@ -62,7 +64,7 @@ fun LoginScreenContent(
     onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val enabled = ! uiState.inProcess
+    val enabled = !uiState.inProcess
     Box(modifier = modifier) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

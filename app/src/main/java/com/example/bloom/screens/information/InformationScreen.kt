@@ -1,6 +1,7 @@
 package com.example.bloom.screens.information
 
 import android.Manifest
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -43,7 +44,7 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
         floatingActionButton = {
             Row {
                 IconButton(
-                    onClick = { if (selectedTab > 0) selectedTab -- },
+                    onClick = { if (selectedTab > 0) selectedTab-- },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -56,7 +57,7 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
-                    onClick = { if (selectedTab < tabTitles.size - 1) selectedTab ++ else navigateToNextScreen() },
+                    onClick = { if (selectedTab < tabTitles.size - 1) selectedTab++ else navigateToNextScreen() },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -97,9 +98,23 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                         )
                     }
                 }
-                when (selectedTab) {
-                    1 -> PronounsSelectionScreen()
+                AnimatedContent(
+                    targetState = selectedTab,
+                    label = "animated content",
+                    transitionSpec = {
+                        if (targetState > initialState) {
+                            slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> -width } + fadeOut()
+                        } else {
+                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> width } + fadeOut()
+                        }.using(SizeTransform(clip = false))
+                    }
+                ) { targetTab ->
+                    when (targetTab) {
+                        1 -> PronounsSelectionScreen()
 //                2-> NotificationSettingsUI()
+                    }
                 }
             }
         }
@@ -112,7 +127,7 @@ fun RequestLocationPermissionDialog() {
     val permissionState =
         rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
 
-    if (! permissionState.status.isGranted) {
+    if (!permissionState.status.isGranted) {
         if (permissionState.status.shouldShowRationale) RationaleDialog(onRequestPermission = { permissionState.launchPermissionRequest() })
         else PermissionDialog(onRequestPermission = { permissionState.launchPermissionRequest() })
     }

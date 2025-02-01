@@ -1,15 +1,16 @@
 package com.example.bloom.screens.auth
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RegistrationViewModel : ViewModel() {
 
-    var uiState = mutableStateOf(RegistrationUiState())
-        private set
+    private val _uiState = MutableStateFlow(RegistrationUiState())
+    val uiState = _uiState.asStateFlow()
 
     private val email get() = uiState.value.email
     private val username get() = uiState.value.username
@@ -18,31 +19,31 @@ class RegistrationViewModel : ViewModel() {
     private val isPasswordVisible get() = uiState.value.isPasswordVisible
 
     fun onEmailChange(newValue: String) {
-        uiState.value = uiState.value.copy(email = newValue)
+        _uiState.value = _uiState.value.copy(email = newValue)
     }
 
     fun onUsernameChange(newValue: String) {
-        uiState.value = uiState.value.copy(username = newValue)
+        _uiState.value = _uiState.value.copy(username = newValue)
     }
 
     fun onPasswordChange(newValue: String) {
-        uiState.value = uiState.value.copy(password = newValue)
+        _uiState.value = _uiState.value.copy(password = newValue)
     }
 
     fun onConfirmPasswordChange(newValue: String) {
-        uiState.value = uiState.value.copy(confirmPassword = newValue)
+        _uiState.value = _uiState.value.copy(confirmPassword = newValue)
     }
 
     fun onVisibilityChange() {
-        uiState.value = uiState.value.copy(isPasswordVisible = ! isPasswordVisible)
+        _uiState.value = _uiState.value.copy(isPasswordVisible = !isPasswordVisible)
     }
 
     fun onRegisterClick(navigateTo: () -> Unit) {
-        uiState.value = uiState.value.copy(inProcess = true)
+        _uiState.value = _uiState.value.copy(inProcess = true)
         viewModelScope.launch {
             delay(2000)
         }.invokeOnCompletion {
-            uiState.value = uiState.value.copy(inProcess = false)
+            _uiState.value = _uiState.value.copy(inProcess = false)
             navigateTo()
         }
     }

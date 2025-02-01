@@ -6,7 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,9 +19,11 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun NameScreen() {
-    var userName by remember { mutableStateOf("") }
-    var lastname by remember { mutableStateOf("") }
+fun NameScreen(
+    uiState: BasicInformationUiState,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,8 +51,8 @@ fun NameScreen() {
 //            modifier = Modifier.fillMaxWidth()
 //        )
         OutlinedTextField(
-            value = userName,
-            onValueChange = { userName = it },
+            value = uiState.firstName,
+            onValueChange = { onFirstNameChange(it) },
             label = { Text("First  name (required)") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -64,8 +66,8 @@ fun NameScreen() {
 
         // Last Name EditText
         OutlinedTextField(
-            value = lastname,
-            onValueChange = { lastname = it },
+            value = uiState.lastName,
+            onValueChange = { onLastNameChange(it) },
             label = { Text("Last Name ") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -127,6 +129,10 @@ fun NameScreen() {
 @Composable
 fun NameFragmentPreview() {
     BloomTheme {
-        NameScreen()
+        NameScreen(
+            uiState = BasicInformationUiState(),
+            onFirstNameChange = {},
+            onLastNameChange = {}
+        )
     }
 }

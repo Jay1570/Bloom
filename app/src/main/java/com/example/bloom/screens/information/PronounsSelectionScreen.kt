@@ -89,15 +89,18 @@ fun PronounsSelectionScreen() {
             itemCount = pronouns.size
         ) { index ->
             Card(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        if (selectedPronouns.contains(pronouns[index])) {
-                            selectedPronouns.remove(pronouns[index])
-                        } else if (selectedPronouns.size < 4) {
-                            selectedPronouns.add(pronouns[index])
+                modifier = Modifier
+                    .clickable(
+                        onClick = {
+                            if (selectedPronouns.contains(pronouns[index])) {
+                                selectedPronouns.remove(pronouns[index])
+                            } else if (selectedPronouns.size < 4) {
+                                selectedPronouns.add(pronouns[index])
+                            }
                         }
-                    }
-                )
+                    )
+                    .wrapContentHeight()
+                    .wrapContentWidth()
             ) {
                 Row(
                     modifier = Modifier.wrapContentWidth(),
@@ -105,7 +108,7 @@ fun PronounsSelectionScreen() {
                 ) {
                     Text(
                         text = pronouns[index],
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     Checkbox(
@@ -124,7 +127,7 @@ fun PronounsSelectionScreen() {
         Card(
             modifier = Modifier.clickable(
                 onClick = {
-                    isVisibleOnProfile = ! isVisibleOnProfile
+                    isVisibleOnProfile = !isVisibleOnProfile
                 }
             )
         ) {

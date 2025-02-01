@@ -1,5 +1,6 @@
 package com.example.bloom.screens.basic_information
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,11 +22,18 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.R
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun BasicInformationScreen(navigateToNextScreen: () -> Unit) {
+fun BasicInformationScreen(
+    navigateToNextScreen: () -> Unit,
+    viewModel: BasicInformationViewModel = viewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
         R.drawable.outline_person_24,
@@ -36,7 +44,7 @@ fun BasicInformationScreen(navigateToNextScreen: () -> Unit) {
         floatingActionButton = {
             Row {
                 IconButton(
-                    onClick = { if (selectedTab > 0) selectedTab -- },
+                    onClick = { if (selectedTab > 0) selectedTab-- },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -49,7 +57,7 @@ fun BasicInformationScreen(navigateToNextScreen: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
-                    onClick = { if (selectedTab < tabTitles.size - 1) selectedTab ++ else navigateToNextScreen() },
+                    onClick = { if (selectedTab < tabTitles.size - 1) selectedTab++ else navigateToNextScreen() },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -67,6 +75,7 @@ fun BasicInformationScreen(navigateToNextScreen: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
+                .imePadding()
         ) {
             Column(
                 modifier = Modifier.padding(top = 16.dp)
@@ -91,10 +100,36 @@ fun BasicInformationScreen(navigateToNextScreen: () -> Unit) {
                         )
                     }
                 }
-                when (selectedTab) {
-                    0 -> NameScreen()
-                    1 -> DateOfBirthScreen()
-                    2 -> NotificationScreen()
+                AnimatedContent(
+                    targetState = selectedTab,
+                    label = "animated content",
+                    transitionSpec = {
+                        if (targetState > initialState) {
+                            slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> -width } + fadeOut()
+                        } else {
+                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> width } + fadeOut()
+                        }.using(SizeTransform(clip = false))
+                    }
+                ) { targetTab ->
+                    when (targetTab) {
+                        0 -> NameScreen(
+                            uiState = uiState,
+                            onFirstNameChange = viewModel::onFirstNameChange,
+                            onLastNameChange = viewModel::onLastNameChange
+                        )
+
+                        1 -> DateOfBirthScreen(
+                            uiState = uiState,
+                            onDateChange = viewModel::onDateChange,
+                            onConfirmClick = viewModel::onConfirmClick,
+                            onDialogVisibilityChange = viewModel::onDialogVisibilityChange,
+                            navigateToNextScreen = navigateToNextScreen
+                        )
+
+                        2 -> NotificationScreen()
+                    }
                 }
             }
         }
