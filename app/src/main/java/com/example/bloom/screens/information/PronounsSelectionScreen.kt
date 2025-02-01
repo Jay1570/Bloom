@@ -65,7 +65,7 @@ fun PronounsSelectionScreen() {
                 items(selectedPronouns) { pronoun ->
                     Chip(
                         text = pronoun,
-                        onClose = { selectedPronouns.minus(pronoun) }
+                        onClose = { selectedPronouns.remove(pronoun) }
                     )
                 }
             }
@@ -76,7 +76,7 @@ fun PronounsSelectionScreen() {
             color = Color.Gray,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        // LazyColumn for pronoun options
+        // ContextualFlowRow for pronoun options
         ContextualFlowRow(
             modifier = Modifier
                 .safeDrawingPadding()
@@ -110,10 +110,10 @@ fun PronounsSelectionScreen() {
                     )
                     Checkbox(
                         checked = selectedPronouns.contains(pronouns[index]),
-                        onCheckedChange = { isChecked ->
-                            if (isChecked && selectedPronouns.size < 4) {
+                        onCheckedChange = {
+                            if (selectedPronouns.contains(pronouns[index])) {
                                 selectedPronouns.remove(pronouns[index])
-                            } else if (! isChecked) {
+                            } else if (selectedPronouns.size < 4) {
                                 selectedPronouns.add(pronouns[index])
                             }
                         }
@@ -167,7 +167,7 @@ fun Chip(text: String, onClose: () -> Unit) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Remove",
-                    tint = Color.Black
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
