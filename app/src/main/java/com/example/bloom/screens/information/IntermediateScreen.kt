@@ -2,6 +2,8 @@ package com.example.bloom.screens.information
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +27,8 @@ fun IntermediateScreen(navigateToNextScreen: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
@@ -39,7 +42,6 @@ fun IntermediateScreen(navigateToNextScreen: () -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                // Circle with eyes (mock image representation)
                 Box(
                     modifier = Modifier
                         .size(150.dp)

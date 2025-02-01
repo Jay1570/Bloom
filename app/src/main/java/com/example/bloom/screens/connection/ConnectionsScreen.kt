@@ -65,9 +65,10 @@ fun ConnectionsScreen(
             )
         },
         modifier = Modifier.fillMaxSize(),
-    ) {
+    ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(top = it.calculateTopPadding())
+            modifier = Modifier
+                .padding(top = innerPadding.calculateTopPadding())
         ) {
             ScrollableTabRow(
                 selectedTabIndex = selectedTab,

@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,16 +19,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun DateOfBirthScreen() {
-    var date by remember { mutableStateOf("") }
-    var month by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-
+fun DateOfBirthScreen(
+    uiState: BasicInformationUiState,
+    onDateChange: (String, String, String) -> Unit,
+    onConfirmClick: () -> Unit,
+    onDialogVisibilityChange: () -> Unit,
+    navigateToNextScreen: () -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(vertical = 16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -39,18 +43,23 @@ fun DateOfBirthScreen() {
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Row for Day, Month, Year
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Day Input
             OutlinedTextField(
-                value = date,
-                onValueChange = { date = it },
+                value = uiState.day,
+                onValueChange = {
+                    if (it.length <= 2) onDateChange(
+                        it,
+                        uiState.month,
+                        uiState.year
+                    )
+                },
                 label = { Text(text = "DD") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number // Correct keyboard type
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
                 ),
                 modifier = Modifier
                     .weight(1f)
@@ -59,13 +68,19 @@ fun DateOfBirthScreen() {
                 singleLine = true
             )
 
-            // Month Input
             OutlinedTextField(
-                value = month,
-                onValueChange = { month = it },
+                value = uiState.month,
+                onValueChange = {
+                    if (it.length <= 2) onDateChange(
+                        uiState.day,
+                        it,
+                        uiState.year
+                    )
+                },
                 label = { Text(text = "MM") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number // Correct keyboard type
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
                 ),
                 modifier = Modifier
                     .weight(1f)
@@ -76,11 +91,18 @@ fun DateOfBirthScreen() {
 
             // Year Input
             OutlinedTextField(
-                value = year,
-                onValueChange = { year = it },
+                value = uiState.year,
+                onValueChange = {
+                    if (it.length <= 4) onDateChange(
+                        uiState.day,
+                        uiState.month,
+                        it
+                    )
+                },
                 label = { Text(text = "YYYY") },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number // Correct keyboard type
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
                 ),
                 modifier = Modifier
                     .weight(2f)
@@ -92,24 +114,35 @@ fun DateOfBirthScreen() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Button to Trigger the Dialog
         Button(
-            onClick = { showDialog = true },
+            onClick = {
+                keyboardController?.hide()
+                onConfirmClick()
+            },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(text = "Confirm Age")
         }
 
-        // Show Dialog when triggered
-        if (showDialog) {
-            AgeVerificationDialog(onDismiss = { showDialog = false })
+        if (uiState.isDialogVisible) {
+            AgeVerificationDialog(
+                uiState = uiState,
+                onConfirm = navigateToNextScreen,
+                onDismiss = onDialogVisibilityChange
+            )
         }
     }
 }
 
 @Composable
-fun AgeVerificationDialog(onDismiss: () -> Unit) {
-    Dialog(onDismissRequest = { onDismiss() }) {
+fun AgeVerificationDialog(
+    uiState: BasicInformationUiState,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { onDismiss() }
+    ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             tonalElevation = 8.dp,
@@ -122,7 +155,7 @@ fun AgeVerificationDialog(onDismiss: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "You're 19",
+                    text = "You're ${uiState.age} years old.",
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -130,7 +163,7 @@ fun AgeVerificationDialog(onDismiss: () -> Unit) {
                 )
 
                 Text(
-                    text = "Born 13 February 2005",
+                    text = "Born ${uiState.day}/${uiState.month}/${uiState.year}",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -150,7 +183,11 @@ fun AgeVerificationDialog(onDismiss: () -> Unit) {
                         Text(text = "Edit")
                     }
 
-                    Button(onClick = { /* Confirm Logic */ onDismiss() }) {
+                    Button(onClick = {
+                        onDismiss()
+                        onConfirm()
+                    }
+                    ) {
                         Text(text = "Confirm")
                     }
                 }
@@ -162,5 +199,11 @@ fun AgeVerificationDialog(onDismiss: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewDateOfBirthScreen() {
-    DateOfBirthScreen()
+    DateOfBirthScreen(
+        uiState = BasicInformationUiState(),
+        onDateChange = { _, _, _ -> },
+        onConfirmClick = {},
+        navigateToNextScreen = {},
+        onDialogVisibilityChange = {}
+    )
 }

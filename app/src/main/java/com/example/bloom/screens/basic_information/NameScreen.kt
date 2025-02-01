@@ -6,26 +6,28 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun NameScreen() {
-    var userName by remember { mutableStateOf("") }
-    var lastname by remember { mutableStateOf("") }
+fun NameScreen(
+    uiState: BasicInformationUiState,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 40.dp)
+            .padding(vertical = 16.dp)
     ) {
         // Question Text
         Text(
@@ -49,12 +51,12 @@ fun NameScreen() {
 //            modifier = Modifier.fillMaxWidth()
 //        )
         OutlinedTextField(
-            value = userName,
-            onValueChange = { userName = it },
-            label = { Text("First  name (required)") },
+            value = uiState.firstName,
+            onValueChange = { onFirstNameChange(it) },
+            label = { Text("First Name(required)") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number // Correct keyboard type
+                imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -64,12 +66,12 @@ fun NameScreen() {
 
         // Last Name EditText
         OutlinedTextField(
-            value = lastname,
-            onValueChange = { lastname = it },
-            label = { Text("Last Name ") },
+            value = uiState.lastName,
+            onValueChange = { onLastNameChange(it) },
+            label = { Text("Last Name") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number // Correct keyboard type
+                imeAction = ImeAction.Done
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -127,6 +129,10 @@ fun NameScreen() {
 @Composable
 fun NameFragmentPreview() {
     BloomTheme {
-        NameScreen()
+        NameScreen(
+            uiState = BasicInformationUiState(),
+            onFirstNameChange = {},
+            onLastNameChange = {}
+        )
     }
 }

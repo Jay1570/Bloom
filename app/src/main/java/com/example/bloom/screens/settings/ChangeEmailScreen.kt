@@ -2,7 +2,9 @@ package com.example.bloom.screens.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
@@ -39,18 +41,21 @@ fun ChangeEmailScreen(
                 navigateUp = navigateBack
             )
         }
-    ) {
-        val enabled = ! uiState.inProcess
+    ) { innerPadding ->
+        val enabled = !uiState.inProcess
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(innerPadding)
+                .imePadding(),
             contentAlignment = Alignment.Center
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 OutlinedTextField(
                     value = uiState.email,

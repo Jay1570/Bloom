@@ -4,9 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -45,7 +43,7 @@ fun PronounsSelectionScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
     ) {
         Text(
             text = "What are your pronouns?",
@@ -65,7 +63,7 @@ fun PronounsSelectionScreen() {
                 items(selectedPronouns) { pronoun ->
                     Chip(
                         text = pronoun,
-                        onClose = { selectedPronouns.minus(pronoun) }
+                        onClose = { selectedPronouns.remove(pronoun) }
                     )
                 }
             }
@@ -76,28 +74,29 @@ fun PronounsSelectionScreen() {
             color = Color.Gray,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-        // LazyColumn for pronoun options
+        // ContextualFlowRow for pronoun options
         ContextualFlowRow(
             modifier = Modifier
-                .safeDrawingPadding()
                 .fillMaxWidth(1f)
                 .padding(vertical = 16.dp)
-                .wrapContentHeight(align = Alignment.Top)
-                .verticalScroll(rememberScrollState()),
+                .wrapContentHeight(align = Alignment.Top),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             itemCount = pronouns.size
         ) { index ->
             Card(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        if (selectedPronouns.contains(pronouns[index])) {
-                            selectedPronouns.remove(pronouns[index])
-                        } else if (selectedPronouns.size < 4) {
-                            selectedPronouns.add(pronouns[index])
+                modifier = Modifier
+                    .clickable(
+                        onClick = {
+                            if (selectedPronouns.contains(pronouns[index])) {
+                                selectedPronouns.remove(pronouns[index])
+                            } else if (selectedPronouns.size < 4) {
+                                selectedPronouns.add(pronouns[index])
+                            }
                         }
-                    }
-                )
+                    )
+                    .wrapContentHeight()
+                    .wrapContentWidth()
             ) {
                 Row(
                     modifier = Modifier.wrapContentWidth(),
@@ -105,15 +104,15 @@ fun PronounsSelectionScreen() {
                 ) {
                     Text(
                         text = pronouns[index],
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     Checkbox(
                         checked = selectedPronouns.contains(pronouns[index]),
-                        onCheckedChange = { isChecked ->
-                            if (isChecked && selectedPronouns.size < 4) {
+                        onCheckedChange = {
+                            if (selectedPronouns.contains(pronouns[index])) {
                                 selectedPronouns.remove(pronouns[index])
-                            } else if (! isChecked) {
+                            } else if (selectedPronouns.size < 4) {
                                 selectedPronouns.add(pronouns[index])
                             }
                         }
@@ -124,7 +123,7 @@ fun PronounsSelectionScreen() {
         Card(
             modifier = Modifier.clickable(
                 onClick = {
-                    isVisibleOnProfile = ! isVisibleOnProfile
+                    isVisibleOnProfile = !isVisibleOnProfile
                 }
             )
         ) {
@@ -167,7 +166,7 @@ fun Chip(text: String, onClose: () -> Unit) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Remove",
-                    tint = Color.Black
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

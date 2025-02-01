@@ -46,11 +46,11 @@ fun ChatScreen(
                 }
             )
         }
-    ) {
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(innerPadding)
         ) {
             Column(
                 modifier = Modifier

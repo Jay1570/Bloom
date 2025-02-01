@@ -71,11 +71,11 @@ fun HomeScreen(
                 }
             }
         }
-    ) {
+    ) { innerPadding ->
         NavHost(
             navController = navControllerBottomBar,
             startDestination = Explore,
-            modifier = Modifier.padding(bottom = it.calculateBottomPadding())
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             composable<Explore> {
                 ExploreScreen()

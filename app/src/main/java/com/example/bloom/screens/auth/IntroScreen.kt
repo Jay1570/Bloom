@@ -1,9 +1,10 @@
 package com.example.bloom.screens.auth
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,27 +17,26 @@ import androidx.compose.ui.unit.dp
 import com.example.bloom.R
 import com.example.bloom.ui.theme.BloomTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun IntroScreen(
     navigateToHome: () -> Unit,
     navigateToLogin: () -> Unit
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.padding(it)) {
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(Modifier.weight(1f))
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1F)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.heart_check_24px),
@@ -60,7 +60,7 @@ fun IntroScreen(
                         textAlign = TextAlign.Center
                     )
                 }
-
+                Spacer(Modifier.weight(1f))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Button(
                         onClick = navigateToHome,
@@ -155,6 +155,17 @@ fun IntroScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun IntroScreenDarkPreview() {
+    BloomTheme(darkTheme = true) {
+        IntroScreen(
+            navigateToHome = {},
+            navigateToLogin = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "spec:parent=pixel_5,orientation=landscape")
+@Composable
+fun IntroScreenLandscapeDarkPreview() {
     BloomTheme(darkTheme = true) {
         IntroScreen(
             navigateToHome = {},

@@ -10,6 +10,6 @@ class BloomApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        themePreference = ThemePreference(applicationContext)
+        themePreference = ThemePreference(this)
     }
 }
