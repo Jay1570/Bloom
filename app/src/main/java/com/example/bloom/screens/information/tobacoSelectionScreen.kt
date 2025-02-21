@@ -17,13 +17,17 @@ import com.example.bloom.ui.theme.BloomTheme
 
 
 @Composable
-fun TobaccoSelectionScreen(){
-    val tb = listOf("Yes","Sometimes","No","Prefer not to say")
+fun TobaccoSelectionScreen() {
+    val tb = listOf("Yes", "Sometimes", "No", "Prefer not to say")
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
-    Column (modifier = Modifier.fillMaxSize().padding(16.dp, bottom = 60.dp, top = 20.dp)){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp, bottom = 60.dp, top = 20.dp)
+    ) {
         Text(
             text = "Do you smoke tobacco?",
             fontSize = 28.sp,
@@ -31,13 +35,17 @@ fun TobaccoSelectionScreen(){
             modifier = Modifier.padding(bottom = 16.dp, top = 10.dp)
         )
 
-        LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
-            items(tb){tb->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
-                    selectedOption = tb
-                },
+        LazyColumn(modifier = Modifier.padding(bottom = 20.dp)) {
+            items(tb) { tb ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .clickable {
+                            selectedOption = tb
+                        },
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
                         text = tb,
                         fontSize = 18.sp,
@@ -85,7 +93,7 @@ fun TobaccoSelectionScreen(){
 
 @Preview(showBackground = true)
 @Composable
-fun TobaccoSelectionScreenPreview(){
+fun TobaccoSelectionScreenPreview() {
     BloomTheme {
         TobaccoSelectionScreen()
     }

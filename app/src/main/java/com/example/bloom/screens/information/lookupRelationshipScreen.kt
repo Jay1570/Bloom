@@ -16,13 +16,17 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun RelationshipTypeScreen(){
+fun RelationshipTypeScreen() {
     var Monogamy by remember { mutableStateOf(false) }
     var Nonmonogamy by remember { mutableStateOf(false) }
     var Figuringout by remember { mutableStateOf(false) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
-    val relation = listOf("Monogamy" to Monogamy,"Non-Monogamy" to Nonmonogamy,"Figuring out my relationship type" to Figuringout)
+    val relation = listOf(
+        "Monogamy" to Monogamy,
+        "Non-Monogamy" to Nonmonogamy,
+        "Figuring out my relationship type" to Figuringout
+    )
 
     val onCheckedChange: (String, Boolean) -> Unit = { label, isChecked ->
         when (label) {
@@ -32,7 +36,11 @@ fun RelationshipTypeScreen(){
         }
     }
 
-    Column (modifier = Modifier.fillMaxSize().padding(24.dp)){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp)
+    ) {
         Text(
             text = "What's tupe of relationship are you looking for?",
             fontWeight = FontWeight.ExtraBold,
@@ -41,8 +49,8 @@ fun RelationshipTypeScreen(){
             style = MaterialTheme.typography.titleLarge
         )
         LazyColumn {
-            items(relation){(label,isChecked) ->
-                relationItem(label,isChecked){ onCheckedChange(label,it) }
+            items(relation) { (label, isChecked) ->
+                relationItem(label, isChecked) { onCheckedChange(label, it) }
                 HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
@@ -77,29 +85,35 @@ fun RelationshipTypeScreen(){
         }
     }
 }
+
 @Composable
 fun relationItem(label: String, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-Row (modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onCheckedChange(!isChecked) },
-    verticalAlignment = Alignment.CenterVertically){
-    Text(
-        text = label,
-        fontSize = 18.sp,
-        modifier = Modifier.weight(1f)
-    )
-    Checkbox(
-        checked = isChecked,
-        onCheckedChange = onCheckedChange,
-        colors = CheckboxDefaults.colors(
-            checkedColor = Color(0xFF7B3F8F),
-            uncheckedColor = Color.LightGray
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onCheckedChange(!isChecked) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            fontSize = 18.sp,
+            modifier = Modifier.weight(1f)
         )
-    )
-  }
+        Checkbox(
+            checked = isChecked,
+            onCheckedChange = onCheckedChange,
+            colors = CheckboxDefaults.colors(
+                checkedColor = Color(0xFF7B3F8F),
+                uncheckedColor = Color.LightGray
+            )
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun RelationshipTypeScreenPreview(){
+fun RelationshipTypeScreenPreview() {
     BloomTheme {
         RelationshipTypeScreen()
     }

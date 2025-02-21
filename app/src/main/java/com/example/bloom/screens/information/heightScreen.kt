@@ -30,7 +30,7 @@ fun HeightSelector() {
 
     val heightList = if (isFtSelected) {
         (4 .. 7).flatMap { feet ->
-            (0 .. 11).map { inches -> "$feet' $inches"}
+            (0 .. 11).map { inches -> "$feet' $inches" }
         }
     } else {
         (121 .. 241).map { "$it cm" }

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun EthnicityScreenSelection(){
+fun EthnicityScreenSelection() {
 
     var blackafricanChecked by remember { mutableStateOf(false) }
     var EastAsianChecked by remember { mutableStateOf(false) }
@@ -64,16 +64,21 @@ fun EthnicityScreenSelection(){
     }
 
 
-    Column (modifier = Modifier.fillMaxSize().padding(16.dp, bottom = 80.dp, top = 20.dp)){
-        Text(text = "What's Your ethnicity?",
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp, bottom = 80.dp, top = 20.dp)
+    ) {
+        Text(
+            text = "What's Your ethnicity?",
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         LazyColumn {
-            items(region){(label, isChecked) ->
-                Regionitem(label, isChecked) { onCheckedChange(label,it) }
+            items(region) { (label, isChecked) ->
+                Regionitem(label, isChecked) { onCheckedChange(label, it) }
                 HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
@@ -105,10 +110,10 @@ fun Regionitem(label: String, isChecked: Boolean, onCheckedChange: (Boolean) -> 
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun RegionScreenPreview()
-{
+fun RegionScreenPreview() {
     BloomTheme {
         EthnicityScreenSelection()
     }

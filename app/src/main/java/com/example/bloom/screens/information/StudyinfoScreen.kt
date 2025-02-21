@@ -18,12 +18,16 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun StudySelectionScreen(){
-    val StudyAt = listOf("Secondary school","Undergrad","Postgrad","Prefer not to say")
+fun StudySelectionScreen() {
+    val StudyAt = listOf("Secondary school", "Undergrad", "Postgrad", "Prefer not to say")
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
 
-    Column (modifier = Modifier.fillMaxSize().padding(16.dp, bottom = 60.dp, top = 20.dp)){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp, bottom = 60.dp, top = 20.dp)
+    ) {
         Text(
             text = "What's the highest level of you attained?",
             fontSize = 28.sp,
@@ -31,13 +35,17 @@ fun StudySelectionScreen(){
             modifier = Modifier.padding(bottom = 16.dp, top = 10.dp)
         )
 
-        LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
-            items(StudyAt){StudyAt->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
-                    selectedOption = StudyAt
-                },
+        LazyColumn(modifier = Modifier.padding(bottom = 20.dp)) {
+            items(StudyAt) { StudyAt ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .clickable {
+                            selectedOption = StudyAt
+                        },
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
                         text = StudyAt,
                         fontSize = 18.sp,
@@ -58,13 +66,15 @@ fun StudySelectionScreen(){
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Card{
+        Card {
             Row(
                 modifier = Modifier.wrapContentWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Default.VisibilityOff, contentDescription = "", modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+                    imageVector = Icons.Default.VisibilityOff,
+                    contentDescription = "",
+                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
                 )
                 Text(
                     text = "Hidden on profile",
@@ -78,7 +88,7 @@ fun StudySelectionScreen(){
 
 @Preview(showBackground = true)
 @Composable
-fun StudySelectionScreenPreview(){
+fun StudySelectionScreenPreview() {
     BloomTheme {
         StudySelectionScreen()
     }

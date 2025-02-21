@@ -17,13 +17,17 @@ import com.example.bloom.ui.theme.BloomTheme
 
 
 @Composable
-fun WeedSelectionScreen(){
-    val weed = listOf("Yes","Sometimes","No","Prefer not to say")
+fun WeedSelectionScreen() {
+    val weed = listOf("Yes", "Sometimes", "No", "Prefer not to say")
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
-    Column (modifier = Modifier.fillMaxSize().padding(16.dp, bottom = 60.dp, top = 20.dp)){
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp, bottom = 60.dp, top = 20.dp)
+    ) {
         Text(
             text = "Do you smoke Weed?",
             fontSize = 28.sp,
@@ -31,13 +35,17 @@ fun WeedSelectionScreen(){
             modifier = Modifier.padding(bottom = 16.dp, top = 10.dp)
         )
 
-        LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
-            items(weed){weed->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
-                    selectedOption = weed
-                },
+        LazyColumn(modifier = Modifier.padding(bottom = 20.dp)) {
+            items(weed) { weed ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .clickable {
+                            selectedOption = weed
+                        },
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
                         text = weed,
                         fontSize = 18.sp,
@@ -85,7 +93,7 @@ fun WeedSelectionScreen(){
 
 @Preview(showBackground = true)
 @Composable
-fun WeedSelectionScreenPreview(){
+fun WeedSelectionScreenPreview() {
     BloomTheme {
         WeedSelectionScreen()
     }

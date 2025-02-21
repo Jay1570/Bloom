@@ -16,13 +16,23 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun FamilyPlanScreen(){
-    val childOptions = listOf("Don't want children","Want children","Open to children","Not sure yet","Prefer not to say")
+fun FamilyPlanScreen() {
+    val childOptions = listOf(
+        "Don't want children",
+        "Want children",
+        "Open to children",
+        "Not sure yet",
+        "Prefer not to say"
+    )
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
-    Column (modifier = Modifier.fillMaxSize().padding(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
     {
         Text(
             text = "What are your family plans?",
@@ -33,9 +43,11 @@ fun FamilyPlanScreen(){
 
         LazyColumn(modifier = Modifier.padding(10.dp)) {
             items(childOptions) { options ->
-                Row(modifier = Modifier.fillMaxWidth()
-                    .clickable { selectedOption = options }
-                    .padding(vertical = 12.dp),
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = options }
+                        .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -82,9 +94,10 @@ fun FamilyPlanScreen(){
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun FamilyPlanScreenPreview(){
+fun FamilyPlanScreenPreview() {
     BloomTheme {
         FamilyPlanScreen()
     }
