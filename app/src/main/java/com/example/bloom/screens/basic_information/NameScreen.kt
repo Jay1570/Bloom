@@ -1,5 +1,6 @@
 package com.example.bloom.screens.basic_information
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,12 +25,12 @@ fun NameScreen(
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit
 ) {
+    var isVisibleOnProfile by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 16.dp)
     ) {
-        // Question Text
         Text(
             text = "What's your name?",
             fontSize = 25.sp,
@@ -40,16 +41,6 @@ fun NameScreen(
                 .fillMaxWidth()
                 .padding(bottom = 30.dp)
         )
-
-        // First Name EditText
-//        OutlinedTextField(
-//            value = "",
-//            onValueChange = {},
-//            label = { Text("First name (required)") },
-//            singleLine = true,
-//            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-//            modifier = Modifier.fillMaxWidth()
-//        )
         OutlinedTextField(
             value = uiState.firstName,
             onValueChange = { onFirstNameChange(it) },
@@ -79,7 +70,6 @@ fun NameScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Description Text
         Text(
             text = "Last name is optional, and only shared with",
             fontSize = 16.sp,
@@ -98,30 +88,40 @@ fun NameScreen(
                 text = "Why?",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF68275F) // Custom purple color
+                color = Color(0xFF68275F)
             )
         }
 
         Spacer(modifier = Modifier.weight(1f))
-
-        // Footer Section
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(top = 40.dp)
-//        ) {
-//            Icon(
-//                painter = painterResource(id = R.drawable.outline_remove_red_eye_24),
-//                contentDescription = "Eye Icon",
-//                modifier = Modifier.padding(5.dp)
-//            )
-//            Spacer(modifier = Modifier.width(10.dp))
-//            Text(
-//                text = "Always visible on profile",
-//                fontSize = 16.sp
-//            )
-//        }
+        Column(
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Card(
+                modifier = Modifier.clickable(
+                    onClick = {
+                        isVisibleOnProfile = !isVisibleOnProfile
+                    }
+                )
+            ) {
+                Row(
+                    modifier = Modifier.wrapContentWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = isVisibleOnProfile,
+                        onCheckedChange = { isVisibleOnProfile = it }
+                    )
+                    Text(
+                        text = "Visible on profile",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                }
+            }
+        }
     }
 }
 

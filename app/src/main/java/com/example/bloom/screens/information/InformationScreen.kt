@@ -38,9 +38,27 @@ fun InformationScreen(
 fun InformationContent(navigateToNextScreen: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
-        R.drawable.baseline_location_pin_24,
-        R.drawable.baseline_location_pin_24,
-        R.drawable.baseline_location_pin_24
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_pronoun_person,
+        R.drawable.ac_2_pronoun_person,
+        R.drawable.ac_2_sexuality,
+        R.drawable.ac_2_likedate,
+        R.drawable.datingintaion_24,
+        R.drawable.ac_2_relationshiptype,
+        R.drawable.ac_2_heightscale,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_childfriendly,
+        R.drawable.ac_2_childfriendly,
+        R.drawable.ac_2_hometown,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_work,
+        R.drawable.ac_2_studylevel,
+        R.drawable.ac_2_religiousbeliefs,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_drink,
+        R.drawable.ac_2_somoke,
+        R.drawable.ac_2_weed,
+        R.drawable.ac_2_drugs
     )
     Scaffold(
         floatingActionButton = {
@@ -121,7 +139,25 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                 ) { targetTab ->
                     when (targetTab) {
                         1 -> PronounsSelectionScreen()
-                        //                2-> NotificationSettingsUI()
+                        2 -> GenderSelectionScreen()
+                        3 -> SexualitySelectionScreen()
+                        4 -> DatingPreferenceScreen()
+                        5 -> DatingintationScreen()
+                        6 -> RelationshipTypeScreen()
+                        7 -> HeightSelector()
+                        8 -> EthnicityScreenSelection()
+                        9 -> ChildrenScreen()
+                        10 -> FamilyPlanScreen()
+                        11 -> WorkplaceScreen()
+                        12 -> School_CollegeSelectionScreen()
+                        13 -> WorkplaceSelectionScreen()
+                        14 -> StudySelectionScreen()
+                        15 -> ReligiousBeliefsScreen()
+                        16 -> PoliticalBeliefsScreen()
+                        17 -> DrinkSelectionScreen()
+                        18 -> TobaccoSelectionScreen()
+                        19 -> WeedSelectionScreen()
+                        20 -> DrugsSelectionScreen()
                     }
                 }
             }

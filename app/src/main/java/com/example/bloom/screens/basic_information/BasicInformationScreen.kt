@@ -33,9 +33,9 @@ fun BasicInformationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val tabTitles = listOf(
-        R.drawable.outline_person_24,
-        R.drawable.outline_heart_broken_24,
-        R.drawable.outline_person_24
+        R.drawable.ac_1_name,
+        R.drawable.ac_1_date,
+        R.drawable.ac_1_notification
     )
     Scaffold(
         floatingActionButton = {
