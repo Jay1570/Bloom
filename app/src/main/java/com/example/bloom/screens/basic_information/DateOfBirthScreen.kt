@@ -2,11 +2,13 @@ package com.example.bloom.screens.basic_information
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +29,7 @@ fun DateOfBirthScreen(
     onDialogConfirmClick: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -103,6 +106,9 @@ fun DateOfBirthScreen(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
                 ),
+                keyboardActions = KeyboardActions(
+                    onDone = { focusManager.clearFocus() },
+                ),
                 modifier = Modifier
                     .weight(2f)
                     .padding(horizontal = 4.dp),
@@ -116,6 +122,7 @@ fun DateOfBirthScreen(
         Button(
             onClick = {
                 keyboardController?.hide()
+                focusManager.clearFocus()
                 onConfirmClick()
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)

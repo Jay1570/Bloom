@@ -54,7 +54,6 @@ fun ImageSelectionScreen(
                     cropImage(
                         context = context,
                         sourceUri = uri,
-                        index = clickedIndex,
                         onCropped = {
                             onAddImage(clickedIndex, it)
                             clickedIndex = -1
@@ -110,7 +109,10 @@ fun ImageSelectionScreen(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(8.dp))
-                                .clickable { onRemoveImage(index) }
+                                .clickable {
+                                    deleteFile(context, images[index])
+                                    onRemoveImage(index)
+                                }
                         )
                     }
                 }
@@ -127,8 +129,13 @@ fun ImageSelectionScreen(
     }
 }
 
-fun cropImage(context: Context, sourceUri: Uri, index: Int, onCropped: (Uri) -> Unit) {
-    val croppedUri = getTempCroppedImageUri(context, sourceUri, index)
+fun deleteFile(context: Context, uri: Uri) {
+    val file = File(context.filesDir, uri.lastPathSegment!!)
+    file.delete()
+}
+
+fun cropImage(context: Context, sourceUri: Uri, onCropped: (Uri) -> Unit) {
+    val croppedUri = getTempCroppedImageUri(context, sourceUri)
     val cropIntent = Intent("com.android.camera.action.CROP").apply {
         setDataAndType(croppedUri, "image/*")
         putExtra("crop", "true")
@@ -155,14 +162,17 @@ fun cropImage(context: Context, sourceUri: Uri, index: Int, onCropped: (Uri) -> 
     launcher.launch(cropIntent)
 }
 
-private fun getTempCroppedImageUri(context: Context, uri: Uri, index: Int): Uri {
+private fun getTempCroppedImageUri(context: Context, uri: Uri): Uri {
     val inputStream = context.contentResolver.openInputStream(uri)
-    val file = File(context.filesDir, "temp_image_$index.jpg")
+    val file = File(context.filesDir, "temp_image_${System.currentTimeMillis()}.jpg")
+
     val outputStream = FileOutputStream(file)
 
-    inputStream?.copyTo(outputStream)
-    inputStream?.close()
-    outputStream.close()
+    inputStream?.use { input ->
+        outputStream.use { output ->
+            input.copyTo(output)
+        }
+    }
 
     return FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 }
