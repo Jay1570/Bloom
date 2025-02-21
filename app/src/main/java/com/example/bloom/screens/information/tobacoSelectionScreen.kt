@@ -33,7 +33,9 @@ fun TobaccoSelectionScreen(){
 
         LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
             items(tb){tb->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
+                    selectedOption = tb
+                },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
@@ -46,7 +48,7 @@ fun TobaccoSelectionScreen(){
                         onClick = { selectedOption = tb }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
             }
         }
     }

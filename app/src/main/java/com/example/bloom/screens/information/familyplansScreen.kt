@@ -17,7 +17,7 @@ import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
 fun FamilyPlanScreen(){
-    val Childoptions = listOf("Don't want children","Want children","Open to children","Not sure yet","Prefer not to say")
+    val childOptions = listOf("Don't want children","Want children","Open to children","Not sure yet","Prefer not to say")
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
@@ -28,28 +28,27 @@ fun FamilyPlanScreen(){
             text = "What are your family plans?",
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp,
-            color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
 
         LazyColumn(modifier = Modifier.padding(10.dp)) {
-            items(Childoptions) { Childoptions ->
+            items(childOptions) { options ->
                 Row(modifier = Modifier.fillMaxWidth()
-                    .clickable { selectedOption == Childoptions }
+                    .clickable { selectedOption = options }
                     .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = Childoptions,
+                        text = options,
                         fontSize = 18.sp,
                         modifier = Modifier.weight(.1f)
                     )
                     RadioButton(
-                        selected = selectedOption == Childoptions,
-                        onClick = { selectedOption = Childoptions }
+                        selected = selectedOption == options,
+                        onClick = { selectedOption = options }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
         Column(

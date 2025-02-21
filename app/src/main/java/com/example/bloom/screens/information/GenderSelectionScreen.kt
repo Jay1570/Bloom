@@ -26,13 +26,11 @@ fun GenderSelectionScreen() {
             text = "Which gender best describes you?",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "We match daters using three broad gender groups.\nYou can add more about your gender after.",
             fontSize = 14.sp,
-            color = Color.Black,
             style = MaterialTheme.typography.labelLarge
         )
         Spacer(modifier = Modifier.height(16.dp))

@@ -1,5 +1,6 @@
 package com.example.bloom.screens.information
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,7 +33,9 @@ fun StudySelectionScreen(){
 
         LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
             items(StudyAt){StudyAt->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
+                    selectedOption = StudyAt
+                },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
@@ -45,7 +48,7 @@ fun StudySelectionScreen(){
                         onClick = { selectedOption = StudyAt }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
             }
         }
     }

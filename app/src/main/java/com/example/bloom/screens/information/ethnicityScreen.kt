@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -47,8 +47,6 @@ fun EthnicityScreenSelection(){
         "Open to all" to opentoallChecked
     )
 
-    var isVisibleOnProfile by remember { mutableStateOf(false) }
-
     val onCheckedChange: (String, Boolean) -> Unit = { label, isChecked ->
         when (label) {
             "Black/African Descent" -> blackafricanChecked = isChecked
@@ -76,7 +74,7 @@ fun EthnicityScreenSelection(){
         LazyColumn {
             items(region){(label, isChecked) ->
                 Regionitem(label, isChecked) { onCheckedChange(label,it) }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
     }
@@ -94,7 +92,6 @@ fun Regionitem(label: String, isChecked: Boolean, onCheckedChange: (Boolean) -> 
         Text(
             text = label,
             fontSize = 18.sp,
-            color = Color.Black,
             modifier = Modifier.weight(1f)
         )
 

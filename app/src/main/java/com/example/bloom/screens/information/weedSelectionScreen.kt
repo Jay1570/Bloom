@@ -33,7 +33,9 @@ fun WeedSelectionScreen(){
 
         LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
             items(weed){weed->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
+                    selectedOption = weed
+                },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
@@ -46,7 +48,7 @@ fun WeedSelectionScreen(){
                         onClick = { selectedOption = weed }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
     }

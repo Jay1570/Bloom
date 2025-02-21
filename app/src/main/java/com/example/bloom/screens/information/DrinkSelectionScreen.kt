@@ -33,7 +33,9 @@ fun DrinkSelectionScreen(){
 
         LazyColumn (modifier = Modifier.padding(bottom = 20.dp)){
             items(drink){drink->
-                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                Row (modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp).clickable {
+                    selectedOption = drink
+                },
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
@@ -46,7 +48,7 @@ fun DrinkSelectionScreen(){
                         onClick = { selectedOption = drink }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
     }

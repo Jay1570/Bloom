@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +31,6 @@ fun ChildrenScreen() {
             text = "Do You Have children?",
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp,
-            color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
 
@@ -40,7 +38,7 @@ fun ChildrenScreen() {
             items(optionsChild) { optionsChild ->
                 Row(modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { selectedOption == optionsChild }
+                    .clickable { selectedOption = optionsChild }
                     .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

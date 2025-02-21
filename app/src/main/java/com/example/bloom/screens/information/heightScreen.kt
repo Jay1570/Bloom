@@ -20,19 +20,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
+import kotlin.math.roundToInt
 
 @Composable
 fun HeightSelector() {
     var isFtSelected by remember { mutableStateOf(true) }
-    var selectedHeight by remember { mutableStateOf(165) } // Default in cm
+    var selectedHeight by remember { mutableIntStateOf(0) } // Default in cm
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     val heightList = if (isFtSelected) {
-        listOf(5, 6, 7).flatMap { feet ->
-            listOf("$feet' 0", "$feet' 1", "$feet' 2", "$feet' 3", "$feet' 4", "$feet' 5", "$feet' 6", "$feet' 7", "$feet' 8", "$feet' 9", "$feet' 10", "$feet' 11")
+        (4 .. 7).flatMap { feet ->
+            (0 .. 11).map { inches -> "$feet' $inches"}
         }
     } else {
-        (140..210).map { "$it cm" }
+        (121 .. 241).map { "$it cm" }
     }
 
     Column(
@@ -40,7 +41,6 @@ fun HeightSelector() {
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "How tall are you?",
@@ -50,15 +50,16 @@ fun HeightSelector() {
         )
         // Takes most of the space to push FT/CM to the bottom
         Column(
-            modifier = Modifier.weight(1f).padding(bottom = 150.dp),
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 150.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             // Box to Center the LazyColumn
             Box(
                 modifier = Modifier
-                    .height(150.dp) // Adjust height if needed
+                    .fillMaxHeight(0.7f)
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
@@ -67,11 +68,12 @@ fun HeightSelector() {
                     verticalArrangement = Arrangement.Center
                 ) {
                     items(heightList) { height ->
+                        val isSelected = height == getHeightString(selectedHeight, isFtSelected)
                         Text(
                             text = height,
-                            fontSize = if (height == getHeightString(selectedHeight, isFtSelected)) 22.sp else 16.sp,
-                            fontWeight = if (height == getHeightString(selectedHeight, isFtSelected)) FontWeight.Bold else FontWeight.Normal,
-                            color = if (height == getHeightString(selectedHeight, isFtSelected)) Color.Black else Color.Gray,
+                            fontSize = if (isSelected) 22.sp else 16.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) MaterialTheme.colorScheme.onBackground else Color.Gray,
                             modifier = Modifier
                                 .fillMaxSize(1f)
                                 .wrapContentHeight(Alignment.CenterVertically) // Center text vertically
@@ -106,7 +108,10 @@ fun HeightSelector() {
                         fontWeight = FontWeight.Bold,
                         color = if (isFtSelected) Color.Black else Color.Gray,
                         modifier = Modifier
-                            .background(if (isFtSelected) Color.White else Color.Transparent, shape = RoundedCornerShape(50))
+                            .background(
+                                if (isFtSelected) Color.White else Color.Transparent,
+                                shape = RoundedCornerShape(50)
+                            )
                             .padding(horizontal = 24.dp, vertical = 8.dp)
                             .clickable { isFtSelected = true }
                     )
@@ -116,7 +121,10 @@ fun HeightSelector() {
                         fontWeight = FontWeight.Bold,
                         color = if (!isFtSelected) Color.Black else Color.Gray,
                         modifier = Modifier
-                            .background(if (!isFtSelected) Color.White else Color.Transparent, shape = RoundedCornerShape(50))
+                            .background(
+                                if (!isFtSelected) Color.White else Color.Transparent,
+                                shape = RoundedCornerShape(50)
+                            )
                             .padding(horizontal = 24.dp, vertical = 8.dp)
                             .clickable { isFtSelected = false }
                     )
@@ -160,7 +168,7 @@ fun HeightSelector() {
 
 fun getHeightString(heightCm: Int, isFt: Boolean): String {
     return if (isFt) {
-        val totalInches = (heightCm * 0.393701).toInt()
+        val totalInches = (heightCm * 0.393701).roundToInt()
         val feet = totalInches / 12
         val inches = totalInches % 12
         "$feet' $inches"

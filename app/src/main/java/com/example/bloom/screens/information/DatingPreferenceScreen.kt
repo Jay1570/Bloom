@@ -27,7 +27,6 @@ fun DatingPreferenceScreen() {
         "Non-binary people" to nonBinaryChecked,
         "Everyone" to everyoneChecked
     )
-    var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     val onCheckedChange: (String, Boolean) -> Unit = { label, isChecked ->
         when (label) {
@@ -47,7 +46,6 @@ fun DatingPreferenceScreen() {
             text = "Who would you like to date?",
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
             style = MaterialTheme.typography.titleLarge
         )
 
@@ -62,7 +60,7 @@ fun DatingPreferenceScreen() {
         LazyColumn {
             items(preferences) { (label, isChecked) ->
                 PreferenceItem(label, isChecked) { onCheckedChange(label, it) }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
 
         }
@@ -81,7 +79,6 @@ fun PreferenceItem(label: String, isChecked: Boolean, onCheckedChange: (Boolean)
         Text(
             text = label,
             fontSize = 18.sp,
-            color = Color.Black,
             modifier = Modifier.weight(1f)
         )
 

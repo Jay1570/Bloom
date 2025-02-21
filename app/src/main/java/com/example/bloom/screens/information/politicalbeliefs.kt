@@ -60,7 +60,7 @@ fun PoliticalBeliefsScreen() {
                         onClick = { selectedOption = optionsforpolitical }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
     }
