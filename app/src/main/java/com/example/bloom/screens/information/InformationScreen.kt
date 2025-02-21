@@ -36,10 +36,29 @@ fun InformationScreen(
 fun InformationContent(navigateToNextScreen: () -> Unit) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf(
-        R.drawable.baseline_location_pin_24,
-        R.drawable.baseline_location_pin_24,
-        R.drawable.baseline_location_pin_24
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_pronoun_person,
+        R.drawable.ac_2_pronoun_person,
+        R.drawable.ac_2_sexuality,
+        R.drawable.ac_2_likedate,
+        R.drawable.datingintaion_24,
+        R.drawable.ac_2_relationshiptype,
+        R.drawable.ac_2_heightscale,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_childfriendly,
+        R.drawable.ac_2_childfriendly,
+        R.drawable.ac_2_hometown,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_work,
+        R.drawable.ac_2_studylevel,
+        R.drawable.ac_2_religiousbeliefs,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_drink,
+        R.drawable.ac_2_somoke,
+        R.drawable.ac_2_weed,
+        R.drawable.ac_2_drugs
     )
+
     Scaffold(
         floatingActionButton = {
             Row {
@@ -84,19 +103,23 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                         .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentSize()
                 ) {
-                    tabTitles.forEachIndexed { index, icon ->
+//                    val skip = if (selectedTab > 0) selectedTab - 1 else 0
+                    val skip = selectedTab
+                    tabTitles.drop(skip).forEachIndexed { index, icon ->
+                        val actualIndex = index + skip
                         Icon(
-                            painter = if (selectedTab == index) painterResource(icon) else painterResource(
+                            painter = if (selectedTab == actualIndex) painterResource(icon) else painterResource(
                                 R.drawable.inactive_dot
                             ),
                             contentDescription = "",
-                            tint = if (selectedTab >= index) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.secondary,
+                            tint = if (selectedTab >= actualIndex) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.secondary,
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .padding(horizontal = 5.dp)
-                                .size(if (selectedTab == index) 40.dp else 10.dp)
+                                .size(if (selectedTab == actualIndex) 40.dp else 10.dp)
                         )
                     }
+
                 }
                 AnimatedContent(
                     targetState = selectedTab,
@@ -113,7 +136,25 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                 ) { targetTab ->
                     when (targetTab) {
                         1 -> PronounsSelectionScreen()
-//                2-> NotificationSettingsUI()
+                        2 -> GenderSelectionScreen()
+                        3 -> SexualitySelectionScreen()
+                        4 -> DatingPreferenceScreen()
+                        5 -> DatingintationScreen()
+                        6 -> RelationshipTypeScreen()
+                        7 -> HeightSelector()
+                        8 -> EthnicityScreenSelection()
+                        9 -> ChildrenScreen()
+                        10 -> FamilyPlanScreen()
+                        11 -> WorkplaceScreen()
+                        12 -> School_CollegeSelectionScreen()
+                        13 -> WorkplaceSelectionScreen()
+                        14 -> StudySelectionScreen()
+                        15 -> ReligiousBeliefsScreen()
+                        16 -> PoliticalBeliefsScreen()
+                        17 -> DrinkSelectionScreen()
+                        18 -> TobaccoSelectionScreen()
+                        19 -> WeedSelectionScreen()
+                        20 -> DrugsSelectionScreen()
                     }
                 }
             }

@@ -166,7 +166,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
                         composable<Home> {
                             HomeScreen(
                                 navControllerMain = navController,

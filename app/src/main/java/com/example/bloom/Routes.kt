@@ -31,6 +31,12 @@ data object Intermediate : Routes
 data object Information : Routes
 
 @Serializable
+data object GenderSelection : Routes
+
+@Serializable
+data object GenderIdentity : Routes
+
+@Serializable
 data object Home : Routes
 
 @Serializable
