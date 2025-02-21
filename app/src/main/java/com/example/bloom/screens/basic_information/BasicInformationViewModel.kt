@@ -6,15 +6,23 @@ import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class BasicInformationViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(BasicInformationUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState get() = _uiState.asStateFlow()
 
     private val isDialogVisible: Boolean get() = _uiState.value.isDialogVisible
+    private val currentTab: Int get() = _uiState.value.currentTab
+    private val firstName: String get() = _uiState.value.firstName
+    private val lastName: String get() = _uiState.value.lastName
+    private val day: String get() = _uiState.value.day
+    private val month: String get() = _uiState.value.month
+    private val year: String get() = _uiState.value.year
+    private val age: Int get() = _uiState.value.age
 
     fun onFirstNameChange(newValue: String) {
         _uiState.value = _uiState.value.copy(firstName = newValue)
@@ -32,6 +40,29 @@ class BasicInformationViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(isDialogVisible = !isDialogVisible)
     }
 
+    fun goToPrevious() {
+        _uiState.update { it.copy(currentTab = currentTab - 1) }
+    }
+
+    fun goToNext() {
+        when (currentTab) {
+            0 -> if (firstName.isNotEmpty()) incrementCurrentTab() else showSnackbar("Every Field is mandatory")
+            1 -> if (day.isNotEmpty() && year.isNotEmpty() && month.isNotEmpty()) onConfirmClick() else showSnackbar(
+                "Every Field is mandatory"
+            )
+
+            2 -> incrementCurrentTab()
+        }
+    }
+
+    private fun incrementCurrentTab() {
+        _uiState.update { it.copy(currentTab = currentTab + 1) }
+    }
+
+    fun onDialogConfirmClick() {
+        _uiState.update { it.copy(currentTab = currentTab + 1) }
+    }
+
     fun onConfirmClick() {
         try {
             val todayCalendar = Calendar.getInstance()
@@ -44,7 +75,7 @@ class BasicInformationViewModel : ViewModel() {
                 )
             }
             if (birthCalendar.after(todayCalendar)) {
-                showSnackbar(SnackbarEvent("Invalid Date"))
+                showSnackbar("Invalid Date")
                 return
             }
             var age = todayCalendar.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
@@ -55,16 +86,16 @@ class BasicInformationViewModel : ViewModel() {
             if (age >= 18) {
                 onDialogVisibilityChange()
             } else {
-                showSnackbar(SnackbarEvent("Your age has to be greater than 18"))
+                showSnackbar("Your age has to be greater than 18")
             }
         } catch (ex: IllegalArgumentException) {
-            showSnackbar(SnackbarEvent("Invalid Date"))
+            showSnackbar("Invalid Date")
         }
     }
 
-    private fun showSnackbar(snackbarEvent: SnackbarEvent) {
+    private fun showSnackbar(message: String) {
         viewModelScope.launch {
-            SnackbarManager.sendEvent(snackbarEvent)
+            SnackbarManager.sendEvent(SnackbarEvent(message))
         }
     }
 }
@@ -76,5 +107,6 @@ data class BasicInformationUiState(
     val month: String = "",
     val year: String = "",
     val age: Int = 0,
-    val isDialogVisible: Boolean = false
+    val isDialogVisible: Boolean = false,
+    val currentTab: Int = 0
 )

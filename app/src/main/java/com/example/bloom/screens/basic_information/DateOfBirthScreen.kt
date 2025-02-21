@@ -24,7 +24,7 @@ fun DateOfBirthScreen(
     onDateChange: (String, String, String) -> Unit,
     onConfirmClick: () -> Unit,
     onDialogVisibilityChange: () -> Unit,
-    navigateToNextScreen: () -> Unit
+    onDialogConfirmClick: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
@@ -34,7 +34,6 @@ fun DateOfBirthScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
-        // Title Text
         Text(
             text = "What's your date of birth?",
             style = MaterialTheme.typography.headlineLarge.copy(
@@ -127,7 +126,7 @@ fun DateOfBirthScreen(
         if (uiState.isDialogVisible) {
             AgeVerificationDialog(
                 uiState = uiState,
-                onConfirm = navigateToNextScreen,
+                onConfirm = onDialogConfirmClick,
                 onDismiss = onDialogVisibilityChange
             )
         }
@@ -203,7 +202,7 @@ fun PreviewDateOfBirthScreen() {
         uiState = BasicInformationUiState(),
         onDateChange = { _, _, _ -> },
         onConfirmClick = {},
-        navigateToNextScreen = {},
+        onDialogConfirmClick = {},
         onDialogVisibilityChange = {}
     )
 }

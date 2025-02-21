@@ -90,17 +90,19 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                         .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentSize()
                 ) {
-                    tabTitles.forEachIndexed { index, icon ->
+                    val skip = selectedTab
+                    tabTitles.drop(skip).forEachIndexed { index, icon ->
+                        val actualIndex = index + skip
                         Icon(
-                            painter = if (selectedTab == index) painterResource(icon) else painterResource(
+                            painter = if (selectedTab == actualIndex) painterResource(icon) else painterResource(
                                 R.drawable.inactive_dot
                             ),
                             contentDescription = "",
-                            tint = if (selectedTab >= index) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.secondary,
+                            tint = if (selectedTab >= actualIndex) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.secondary,
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .padding(horizontal = 5.dp)
-                                .size(if (selectedTab == index) 40.dp else 10.dp)
+                                .size(if (selectedTab == actualIndex) 40.dp else 10.dp)
                         )
                     }
                 }
@@ -119,7 +121,7 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                 ) { targetTab ->
                     when (targetTab) {
                         1 -> PronounsSelectionScreen()
-//                2-> NotificationSettingsUI()
+                        //                2-> NotificationSettingsUI()
                     }
                 }
             }

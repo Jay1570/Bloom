@@ -25,10 +25,16 @@ data class EmailVerification(
 data object BasicInformation : Routes
 
 @Serializable
-data object Intermediate : Routes
+data object Intermediate1 : Routes
+
+@Serializable
+data object Intermediate2 : Routes
 
 @Serializable
 data object Information : Routes
+
+@Serializable
+data object AdvancedInformation : Routes
 
 @Serializable
 data object Home : Routes

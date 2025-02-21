@@ -1,6 +1,5 @@
-package com.example.bloom.screens.information
+package com.example.bloom.screens.advanced_info
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -10,14 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun IntermediateScreen(navigateToNextScreen: () -> Unit) {
+fun IntermediateScreen2(navigateToNextScreen: () -> Unit) {
     Scaffold {
         Box(
             modifier = Modifier
@@ -32,24 +29,14 @@ fun IntermediateScreen(navigateToNextScreen: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(Modifier.weight(1f))
                 Text(
-                    text = "The more you share, the better your matches will be.",
-                    fontSize = 24.sp,
+                    text = "Show off the person behind the profile with pics, videos and prompts",
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .background(MaterialTheme.colorScheme.secondaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "👀", fontSize = 32.sp)
-                }
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = { navigateToNextScreen() },
@@ -69,7 +56,7 @@ fun IntermediateScreen(navigateToNextScreen: () -> Unit) {
 @Composable
 fun InformationScreenPreview() {
     BloomTheme {
-        IntermediateScreen(
+        IntermediateScreen2(
             navigateToNextScreen = {}
         )
     }

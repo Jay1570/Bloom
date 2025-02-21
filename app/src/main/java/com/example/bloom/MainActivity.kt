@@ -18,6 +18,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.bloom.screens.advanced_info.AdvancedInformationScreen
+import com.example.bloom.screens.advanced_info.IntermediateScreen2
 import com.example.bloom.screens.auth.EmailVerificationScreen
 import com.example.bloom.screens.auth.IntroScreen
 import com.example.bloom.screens.auth.LoginScreen
@@ -26,7 +28,7 @@ import com.example.bloom.screens.basic_information.BasicInformationScreen
 import com.example.bloom.screens.connection.ChatScreen
 import com.example.bloom.screens.home.HomeScreen
 import com.example.bloom.screens.information.InformationScreen
-import com.example.bloom.screens.information.IntermediateScreen
+import com.example.bloom.screens.information.IntermediateScreen1
 import com.example.bloom.screens.settings.ChangeEmailScreen
 import com.example.bloom.screens.settings.ChangePasswordScreen
 import com.example.bloom.screens.settings.SettingsScreen
@@ -143,21 +145,37 @@ class MainActivity : ComponentActivity() {
                         composable<BasicInformation> {
                             BasicInformationScreen(
                                 navigateToNextScreen = {
-                                    navController.navigate(Intermediate)
+                                    navController.navigate(Intermediate1)
                                 }
                             )
                         }
 
-                        composable<Intermediate> {
-                            IntermediateScreen(
+                        composable<Intermediate1> {
+                            IntermediateScreen1(
                                 navigateToNextScreen = {
                                     navController.navigate(Information)
                                 }
                             )
                         }
 
+                        composable<Intermediate2> {
+                            IntermediateScreen2(
+                                navigateToNextScreen = {
+                                    navController.navigate(AdvancedInformation)
+                                }
+                            )
+                        }
+
                         composable<Information> {
                             InformationScreen(
+                                navigateToNextScreen = {
+                                    navController.navigate(Intermediate2)
+                                }
+                            )
+                        }
+
+                        composable<AdvancedInformation> {
+                            AdvancedInformationScreen(
                                 navigateToNextScreen = {
                                     navController.navigate(Home) {
                                         launchSingleTop = true
