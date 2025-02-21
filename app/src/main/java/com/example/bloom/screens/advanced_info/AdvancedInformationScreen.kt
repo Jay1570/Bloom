@@ -29,9 +29,9 @@ fun AdvancedInformationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val tabTitles = listOf(
-        R.drawable.baseline_location_pin_24,
-        R.drawable.baseline_location_pin_24,
-        R.drawable.baseline_location_pin_24
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_location,
+        R.drawable.ac_2_location
     )
     Scaffold(
         floatingActionButton = {

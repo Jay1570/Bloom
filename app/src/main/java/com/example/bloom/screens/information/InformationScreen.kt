@@ -4,9 +4,7 @@ import android.Manifest
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.*
@@ -99,7 +97,6 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .verticalScroll(rememberScrollState())
             ) {
                 Spacer(Modifier.height(16.dp))
                 Row(

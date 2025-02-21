@@ -16,13 +16,17 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun ChildrenScreen(){
-    val optionsChild = listOf("Don't have children","Have children","Prefer not to say")
+fun ChildrenScreen() {
+    val optionsChild = listOf("Don't have children", "Have children", "Prefer not to say")
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
-    Column (modifier = Modifier.fillMaxSize().padding(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
     {
         Text(
             text = "Do You Have children?",
@@ -34,7 +38,8 @@ fun ChildrenScreen(){
 
         LazyColumn(modifier = Modifier.padding(10.dp)) {
             items(optionsChild) { optionsChild ->
-                Row(modifier = Modifier.fillMaxWidth()
+                Row(modifier = Modifier
+                    .fillMaxWidth()
                     .clickable { selectedOption == optionsChild }
                     .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -49,7 +54,7 @@ fun ChildrenScreen(){
                         onClick = { selectedOption = optionsChild }
                     )
                 }
-                Divider(color = Color.LightGray, thickness = 1.dp)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
             }
         }
         Column(
@@ -86,7 +91,7 @@ fun ChildrenScreen(){
 
 @Preview(showBackground = true)
 @Composable
-fun ChildrenSelectionScreenPreview(){
+fun ChildrenSelectionScreenPreview() {
     BloomTheme {
         ChildrenScreen()
     }
