@@ -7,28 +7,32 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.bloom.R
-import com.example.bloom.ui.theme.orange
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
+import com.example.bloom.screens.RequestPermissionDialog
 
 @Composable
 fun InformationScreen(
     navigateToNextScreen: () -> Unit,
 ) {
-    RequestLocationPermissionDialog()
+    RequestPermissionDialog(
+        title = "give location permission",
+        permission = Manifest.permission.ACCESS_FINE_LOCATION
+    )
     InformationContent(navigateToNextScreen = navigateToNextScreen)
 }
 
@@ -52,7 +56,7 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
         R.drawable.ac_2_work,
         R.drawable.ac_2_studylevel,
         R.drawable.ac_2_religiousbeliefs,
-        R.drawable.ac_2_location,
+        R.drawable.ac_2_parliament,
         R.drawable.ac_2_drink,
         R.drawable.ac_2_somoke,
         R.drawable.ac_2_weed,
@@ -159,77 +163,5 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun RequestLocationPermissionDialog() {
-    val permissionState =
-        rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-
-    if (!permissionState.status.isGranted) {
-        if (permissionState.status.shouldShowRationale) RationaleDialog(onRequestPermission = { permissionState.launchPermissionRequest() })
-        else PermissionDialog(onRequestPermission = { permissionState.launchPermissionRequest() })
-    }
-}
-
-@Composable
-fun RationaleDialog(onRequestPermission: () -> Unit) {
-    var showWarningDialog by remember { mutableStateOf(true) }
-
-    if (showWarningDialog) {
-        AlertDialog(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
-            title = { Text(text = "give location permission") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showWarningDialog = false
-                        onRequestPermission()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 8.dp, 16.dp, 0.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = orange,
-                        contentColor = Color.White
-                    )
-                ) { Text(text = "ok") }
-            },
-            onDismissRequest = { showWarningDialog = false }
-        )
-    }
-}
-
-@Composable
-fun PermissionDialog(onRequestPermission: () -> Unit) {
-    var showWarningDialog by remember { mutableStateOf(true) }
-
-    if (showWarningDialog) {
-        AlertDialog(
-            modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
-            title = { Text(text = "give location permission") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showWarningDialog = false
-                        onRequestPermission()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp, 8.dp, 16.dp, 0.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = orange,
-                        contentColor = Color.White
-                    )
-                ) { Text(text = "ok") }
-            },
-            onDismissRequest = { showWarningDialog = false }
-        )
     }
 }

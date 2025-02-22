@@ -37,6 +37,12 @@ data object Information : Routes
 data object AdvancedInformation : Routes
 
 @Serializable
+data object RegistrationComplete : Routes
+
+@Serializable
+data object SuggestSubscription : Routes
+
+@Serializable
 data object GenderSelection : Routes
 
 @Serializable

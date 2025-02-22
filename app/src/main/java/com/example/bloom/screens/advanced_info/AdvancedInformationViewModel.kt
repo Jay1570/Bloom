@@ -1,6 +1,11 @@
 package com.example.bloom.screens.advanced_info
 
+import android.content.Context
+import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
@@ -9,11 +14,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.IOException
 
 class AdvancedInformationViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdvancedInformationUiState())
     val uiState get() = _uiState.asStateFlow()
+
+    private var mediaRecorder: MediaRecorder? = null
+    private var outputFile: File? = null
 
     private val currentTab: Int get() = _uiState.value.currentTab
 
@@ -24,6 +34,7 @@ class AdvancedInformationViewModel : ViewModel() {
     fun goToNext() {
         when (currentTab) {
             0 -> if (_uiState.value.images.size == 6) incrementCurrentTab() else showSnackbar("Please select at least 6 images")
+            1 -> incrementCurrentTab()
         }
     }
 
@@ -41,6 +52,76 @@ class AdvancedInformationViewModel : ViewModel() {
         _uiState.update { it.copy(images = updatedImages) }
     }
 
+    fun updatePrompt(newPrompt: String) {
+        _uiState.update {
+            it.copy(selectedVoicePrompt = newPrompt)
+        }
+    }
+
+    fun startRecording(context: Context) {
+        if (_uiState.value.isRecording) return
+        try {
+            outputFile = File(context.filesDir, "voice_prompt.3gp")
+
+            mediaRecorder = MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                setOutputFile(outputFile!!.absolutePath)
+                setMaxDuration(30000)
+                try {
+                    prepare()
+                    start()
+                    _uiState.update { it.copy(isRecording = true) }
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (_uiState.value.isRecording) stopRecording()
+                    }, 30000)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Exception) {
+            showSnackbar(e.message.toString())
+        }
+    }
+
+    fun stopRecording() {
+        if (!_uiState.value.isRecording) return
+
+        mediaRecorder?.apply {
+            stop()
+            release()
+        }
+        mediaRecorder = null
+        val uri = outputFile?.let { Uri.fromFile(it) }
+        _uiState.update {
+            it.copy(
+                isRecording = false,
+                recorderAudioUri = uri
+            )
+        }
+    }
+
+    fun playRecording(context: Context) {
+        if (_uiState.value.recorderAudioUri != null) {
+            MediaPlayer().apply {
+                setDataSource(context, _uiState.value.recorderAudioUri!!)
+                prepare()
+                start()
+            }
+        } else {
+            showSnackbar("Recording is not available")
+        }
+    }
+
+    fun clearRecording() {
+        _uiState.update { it.copy(recorderAudioUri = null) }
+    }
+
+    fun isSelectingPrompt(newValue: Boolean = !_uiState.value.isSelectingPrompt) {
+        _uiState.update { it.copy(isSelectingPrompt = newValue) }
+    }
+
     private fun incrementCurrentTab() {
         _uiState.update { it.copy(currentTab = currentTab + 1) }
     }
@@ -54,5 +135,9 @@ class AdvancedInformationViewModel : ViewModel() {
 
 data class AdvancedInformationUiState(
     val currentTab: Int = 0,
-    val images: List<Uri> = List(6) { Uri.EMPTY }
+    val images: List<Uri> = List(6) { Uri.EMPTY },
+    val selectedVoicePrompt: String = "The way to win me over",
+    val isSelectingPrompt: Boolean = false,
+    val isRecording: Boolean = false,
+    val recorderAudioUri: Uri? = null
 )

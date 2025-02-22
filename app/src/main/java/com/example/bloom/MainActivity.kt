@@ -29,6 +29,8 @@ import com.example.bloom.screens.connection.ChatScreen
 import com.example.bloom.screens.home.HomeScreen
 import com.example.bloom.screens.information.InformationScreen
 import com.example.bloom.screens.information.IntermediateScreen1
+import com.example.bloom.screens.registration_completion.RegistrationCompleteScreen
+import com.example.bloom.screens.registration_completion.SuggestSubscriptionScreen
 import com.example.bloom.screens.settings.ChangeEmailScreen
 import com.example.bloom.screens.settings.ChangePasswordScreen
 import com.example.bloom.screens.settings.SettingsScreen
@@ -177,6 +179,29 @@ class MainActivity : ComponentActivity() {
                         composable<AdvancedInformation> {
                             AdvancedInformationScreen(
                                 navigateToNextScreen = {
+                                    navController.navigate(RegistrationComplete) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        composable<RegistrationComplete> {
+                            RegistrationCompleteScreen(
+                                navigateToNextScreen = {
+                                    navController.navigate(SuggestSubscription) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        composable<SuggestSubscription> {
+                            SuggestSubscriptionScreen(
+                                navigateToPayment = { /*TODO: Navigate To Payment Screen*/ },
+                                navigateToHome = {
                                     navController.navigate(Home) {
                                         launchSingleTop = true
                                         popUpTo(0) { inclusive = true }
@@ -184,6 +209,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
                         composable<Home> {
                             HomeScreen(
                                 navControllerMain = navController,
