@@ -9,12 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.Bolt
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +34,9 @@ import com.example.bloom.ui.theme.orange
 fun ProfileScreen(
     navigateToSettings: () -> Unit
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var isBottomSheetVisible by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopBar(
@@ -91,7 +92,7 @@ fun ProfileScreen(
                         .background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     IconButton(
-                        onClick = { /* Handle edit */ },
+                        onClick = { isBottomSheetVisible = true },
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
@@ -158,6 +159,17 @@ fun ProfileScreen(
                 }
             }
         }
+        if (isBottomSheetVisible) {
+            ModalBottomSheet(
+                onDismissRequest = { isBottomSheetVisible = false },
+                sheetState = sheetState
+            ) {
+                BottomSheetContent(
+                    onEditClick = { /* TODO: Handle Edit */ },
+                    onConfirmClick = { isBottomSheetVisible = false },
+                )
+            }
+        }
     }
 }
 
@@ -196,6 +208,91 @@ fun FeatureCard(icon: ImageVector, label: String, subLabel: String) {
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Composable
+fun BottomSheetContent(onEditClick: () -> Unit, onConfirmClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Does this all look right?",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Make sure all of your vitals match your identity and preferences.",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
+                .padding(16.dp)
+        ) {
+            InfoRow(icon = Icons.Default.Person, label = "he/his/him", visibility = "Visible")
+            InfoRow(icon = Icons.Default.Person, label = "Man", visibility = "Visible")
+            InfoRow(icon = Icons.Default.Favorite, label = "Straight", visibility = "Visible")
+            InfoRow(
+                icon = Icons.Default.FavoriteBorder,
+                label = "Interested in: Women",
+                visibility = "Hidden"
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onEditClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = orange,
+                contentColor = MaterialTheme.colorScheme.onBackground
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Edit my vitals", color = Color.White)
+        }
+
+        TextButton(onClick = onConfirmClick) {
+            Text(text = "Looks right", color = MaterialTheme.colorScheme.primary)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+fun InfoRow(icon: ImageVector, label: String, visibility: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = label, style = MaterialTheme.typography.bodyMedium)
+        }
+        Text(text = visibility, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
     }
 }
 

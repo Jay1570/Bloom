@@ -121,6 +121,14 @@ fun AdvancedInformationScreen(
                             onPlayRecording = viewModel::playRecording,
                             onPromptChange = viewModel::updatePrompt
                         )
+
+                        2 -> TextPromptScreen(
+                            uiState = uiState,
+                            togglePromptList = viewModel::toggleTextPromptList,
+                            toggleTextField = viewModel::toggleTextField,
+                            addPrompt = viewModel::addTextPrompt,
+                            removePrompt = viewModel::removeTextPrompt
+                        )
                     }
                 }
             }

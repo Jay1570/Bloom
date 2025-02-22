@@ -114,12 +114,26 @@ class AdvancedInformationViewModel : ViewModel() {
         }
     }
 
-    fun clearRecording() {
-        _uiState.update { it.copy(recorderAudioUri = null) }
+    fun addTextPrompt(index: Int, prompt: String, answer: String) {
+        val newList = _uiState.value.selectedTextPrompts.toMutableList().apply {
+            this[index] = Pair(prompt, answer)
+        }
+        _uiState.update { it.copy(selectedTextPrompts = newList) }
     }
 
-    fun isSelectingPrompt(newValue: Boolean = !_uiState.value.isSelectingPrompt) {
-        _uiState.update { it.copy(isSelectingPrompt = newValue) }
+    fun removeTextPrompt(index: Int) {
+        val newList = _uiState.value.selectedTextPrompts.toMutableList().apply {
+            this[index] = null
+        }
+        _uiState.update { it.copy(selectedTextPrompts = newList) }
+    }
+
+    fun toggleTextPromptList() {
+        _uiState.update { it.copy(isTextPromptListVisible = !it.isTextPromptListVisible) }
+    }
+
+    fun toggleTextField() {
+        _uiState.update { it.copy(isTextFieldVisible = !it.isTextFieldVisible) }
     }
 
     private fun incrementCurrentTab() {
@@ -137,7 +151,9 @@ data class AdvancedInformationUiState(
     val currentTab: Int = 0,
     val images: List<Uri> = List(6) { Uri.EMPTY },
     val selectedVoicePrompt: String = "The way to win me over",
-    val isSelectingPrompt: Boolean = false,
     val isRecording: Boolean = false,
-    val recorderAudioUri: Uri? = null
+    val recorderAudioUri: Uri? = null,
+    val selectedTextPrompts: List<Pair<String, String>?> = List(3) { null },
+    val isTextPromptListVisible: Boolean = false,
+    val isTextFieldVisible: Boolean = false
 )
