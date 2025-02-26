@@ -31,8 +31,6 @@ import com.example.bloom.screens.information.InformationScreen
 import com.example.bloom.screens.information.IntermediateScreen1
 import com.example.bloom.screens.registration_completion.RegistrationCompleteScreen
 import com.example.bloom.screens.registration_completion.SuggestSubscriptionScreen
-import com.example.bloom.screens.settings.ChangeEmailScreen
-import com.example.bloom.screens.settings.ChangePasswordScreen
 import com.example.bloom.screens.settings.SettingsScreen
 import com.example.bloom.ui.theme.BloomTheme
 import kotlinx.coroutines.launch
@@ -228,12 +226,6 @@ class MainActivity : ComponentActivity() {
 
                         composable<Settings> {
                             SettingsScreen(
-                                navigateToChangeEmail = {
-                                    navController.navigate(ChangeEmail)
-                                },
-                                navigateToChangePassword = {
-                                    navController.navigate(ChangePassword)
-                                },
                                 navigateToIntro = {
                                     navController.navigate(Intro) {
                                         launchSingleTop = true
@@ -242,24 +234,6 @@ class MainActivity : ComponentActivity() {
                                 },
                                 navigateBack = {
                                     navController.popBackStack()
-                                }
-                            )
-                        }
-
-                        composable<ChangeEmail> {
-                            ChangeEmailScreen(
-                                navigateBack = { navController.popBackStack() },
-                                navigateToVerification = {
-                                    navController.navigate(EmailVerification("change"))
-                                }
-                            )
-                        }
-
-                        composable<ChangePassword> {
-                            ChangePasswordScreen(
-                                navigateBack = { navController.popBackStack() },
-                                navigateToVerification = {
-                                    navController.navigate(EmailVerification("change"))
                                 }
                             )
                         }

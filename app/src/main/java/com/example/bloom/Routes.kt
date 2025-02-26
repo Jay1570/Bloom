@@ -43,12 +43,6 @@ data object RegistrationComplete : Routes
 data object SuggestSubscription : Routes
 
 @Serializable
-data object GenderSelection : Routes
-
-@Serializable
-data object GenderIdentity : Routes
-
-@Serializable
 data object Home : Routes
 
 @Serializable
@@ -71,9 +65,3 @@ data object LikedYou : Routes
 
 @Serializable
 data object Settings : Routes
-
-@Serializable
-data object ChangeEmail : Routes
-
-@Serializable
-data object ChangePassword : Routes

@@ -38,16 +38,15 @@ fun ReligiousBeliefsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, bottom = 60.dp, top = 20.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = "What are your religious beliefs ?",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
         )
-
-        LazyColumn(modifier = Modifier.padding(bottom = 20.dp)) {
+        Spacer(Modifier.height(16.dp))
+        LazyColumn(Modifier.weight(1f)) {
             items(options) { option ->
                 Row(
                     modifier = Modifier
@@ -69,13 +68,7 @@ fun ReligiousBeliefsScreen() {
                 HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
-    }
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+        Spacer(Modifier.height(16.dp))
         Card(
             modifier = Modifier.clickable(
                 onClick = {

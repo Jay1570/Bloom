@@ -1,16 +1,13 @@
 package com.example.bloom.screens.information
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,10 +30,8 @@ fun WorkplaceScreen() {
             text = "Where's  your home Town ?",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 10.dp, top = 20.dp, bottom = 60.dp)
         )
-
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(60.dp))
         OutlinedTextField(
             value = workplace,
             onValueChange = { workplace = it },
@@ -52,13 +47,18 @@ fun WorkplaceScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
         Column(verticalArrangement = Arrangement.Bottom) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    isChecked = !isChecked
+                }
+            ) {
                 Checkbox(
                     checked = isChecked,
                     onCheckedChange = { isChecked = it },
-                    colors = CheckboxDefaults.colors(checkedColor = Color(0xFF6A1B9A))
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.onBackground)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Visible on profile")
             }
         }

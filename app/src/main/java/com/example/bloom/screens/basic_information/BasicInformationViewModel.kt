@@ -45,12 +45,14 @@ class BasicInformationViewModel : ViewModel() {
     }
 
     fun goToNext() {
-        incrementCurrentTab()
-        /*        when (currentTab) {
-                    0 -> if (firstName.isNotEmpty()) incrementCurrentTab() else showSnackbar("Every Field is mandatory")
-                    1 -> if (day.isNotEmpty() && year.isNotEmpty() && month.isNotEmpty()) onConfirmClick() else showSnackbar("Every Field is mandatory")
-                    2 -> incrementCurrentTab()
-                }*/
+        when (currentTab) {
+            0 -> if (firstName.isNotEmpty()) incrementCurrentTab() else showSnackbar("Every Field is mandatory")
+            1 -> if (day.isNotEmpty() && year.isNotEmpty() && month.isNotEmpty()) onConfirmClick() else showSnackbar(
+                "Every Field is mandatory"
+            )
+
+            2 -> incrementCurrentTab()
+        }
     }
 
     private fun incrementCurrentTab() {

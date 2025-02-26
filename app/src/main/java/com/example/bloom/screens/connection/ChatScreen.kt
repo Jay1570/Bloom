@@ -131,19 +131,12 @@ fun AppBar(
             ) {
                 ProfileImage(40.dp)
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = name,
-                        modifier = Modifier.padding(),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(
-                        "Active Now",
-                        color = Color.Green,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+                Text(
+                    text = name,
+                    modifier = Modifier.padding(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),

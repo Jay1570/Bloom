@@ -1,5 +1,7 @@
 package com.example.bloom.screens.basic_information
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,10 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.bloom.screens.RequestPermissionDialog
 
 @Composable
 fun NotificationScreen() {
-    var isNotificationEnabled by remember { mutableStateOf<Boolean?>(null) }
+    var isNotificationEnabled by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -27,7 +30,6 @@ fun NotificationScreen() {
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Title
         Text(
             text = "Never miss a message from someone great",
             style = MaterialTheme.typography.headlineMedium.copy(
@@ -37,11 +39,10 @@ fun NotificationScreen() {
             modifier = Modifier.padding(bottom = 24.dp, top = 24.dp)
         )
 
-        // Enable Notifications Button
         Button(
             onClick = { isNotificationEnabled = true },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isNotificationEnabled == true) Color(0xFFB2FF59) else Color(
+                containerColor = if (isNotificationEnabled) Color(0xFFB2FF59) else Color(
                     0xFFE0E0E0
                 )
             ),
@@ -52,11 +53,10 @@ fun NotificationScreen() {
             Text(text = "Enable notifications", color = Color.Black)
         }
 
-        // Disable Notifications Button
         Button(
             onClick = { isNotificationEnabled = false },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isNotificationEnabled == false) Color(0xFFFF5252) else Color(
+                containerColor = if (!isNotificationEnabled) Color(0xFFFF5252) else Color(
                     0xFFE0E0E0
                 )
             ),
@@ -66,6 +66,12 @@ fun NotificationScreen() {
         ) {
             Text(text = "Disable notifications", color = Color.Black)
         }
+    }
+    if (isNotificationEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        RequestPermissionDialog(
+            permission = Manifest.permission.POST_NOTIFICATIONS,
+            title = "give notification permission"
+        )
     }
 }
 

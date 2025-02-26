@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,16 +28,18 @@ fun DatingintationScreen() {
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp, bottom = 60.dp, top = 20.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text(
             text = "What's Your dating intention?",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
         )
-        LazyColumn {
+        Spacer(Modifier.height(16.dp))
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(options) { option ->
                 Row(
                     modifier = Modifier
@@ -50,23 +51,20 @@ fun DatingintationScreen() {
                     Text(
                         text = option,
                         fontSize = 18.sp,
-                        modifier = Modifier.weight(.1f)
                     )
+                    Spacer(Modifier.weight(1f))
                     RadioButton(
                         selected = selectedOption == option,
                         onClick = { selectedOption = option }
                     )
                 }
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
             }
         }
-    }
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+        Spacer(Modifier.height(16.dp))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -91,9 +89,10 @@ fun DatingintationScreen() {
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun DatingintationScreenPreview(){
+fun DatingintationScreenPreview() {
     BloomTheme {
         DatingintationScreen()
     }

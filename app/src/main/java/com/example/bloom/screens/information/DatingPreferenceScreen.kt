@@ -40,7 +40,7 @@ fun DatingPreferenceScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = "Who would you like to date?",
@@ -79,16 +79,12 @@ fun PreferenceItem(label: String, isChecked: Boolean, onCheckedChange: (Boolean)
         Text(
             text = label,
             fontSize = 18.sp,
-            modifier = Modifier.weight(1f)
         )
-
+        Spacer(Modifier.weight(1f))
         Checkbox(
             checked = isChecked,
             onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFF7B3F8F), // Adjust color as needed
-                uncheckedColor = Color.LightGray
-            )
+            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.onBackground)
         )
     }
 }

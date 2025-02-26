@@ -79,7 +79,7 @@ fun VoicePromptScreen(
                 },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = orange,
-                    contentColor = MaterialTheme.colorScheme.onBackground
+                    contentColor = Color.White
                 ),
                 modifier = Modifier
                     .clip(CircleShape)

@@ -25,8 +25,7 @@ fun ChildrenScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-    )
-    {
+    ) {
         Text(
             text = "Do You Have children?",
             fontWeight = FontWeight.Bold,
@@ -34,54 +33,52 @@ fun ChildrenScreen() {
             modifier = Modifier.padding(16.dp)
         )
 
-        LazyColumn(modifier = Modifier.padding(10.dp)) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(optionsChild) { optionsChild ->
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = optionsChild }
-                    .padding(vertical = 12.dp),
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = optionsChild }
+                        .padding(vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = optionsChild,
                         fontSize = 18.sp,
-                        modifier = Modifier.weight(.1f)
                     )
+                    Spacer(modifier = Modifier.weight(1f))
                     RadioButton(
                         selected = selectedOption == optionsChild,
                         onClick = { selectedOption = optionsChild }
                     )
                 }
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline, thickness = 1.dp)
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    thickness = 1.dp
+                )
             }
         }
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Card(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        isVisibleOnProfile = !isVisibleOnProfile
-                    }
-                )
-            ) {
-                Row(
-                    modifier = Modifier.wrapContentWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = isVisibleOnProfile,
-                        onCheckedChange = { isVisibleOnProfile = it }
-                    )
-                    Text(
-                        text = "Visible on profile",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
+        Spacer(Modifier.height(16.dp))
+        Card(
+            modifier = Modifier.clickable(
+                onClick = {
+                    isVisibleOnProfile = !isVisibleOnProfile
                 }
+            )
+        ) {
+            Row(
+                modifier = Modifier.wrapContentWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = isVisibleOnProfile,
+                    onCheckedChange = { isVisibleOnProfile = it }
+                )
+                Text(
+                    text = "Visible on profile",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
             }
         }
     }

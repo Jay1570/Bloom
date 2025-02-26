@@ -39,19 +39,22 @@ fun RelationshipTypeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = "What's tupe of relationship are you looking for?",
             fontWeight = FontWeight.ExtraBold,
             fontSize = 26.sp,
-            modifier = Modifier.padding(top = 10.dp, bottom = 16.dp),
             style = MaterialTheme.typography.titleLarge
         )
+        Spacer(Modifier.height(16.dp))
         LazyColumn {
             items(relation) { (label, isChecked) ->
                 relationItem(label, isChecked) { onCheckedChange(label, it) }
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
             }
         }
     }
@@ -98,8 +101,8 @@ fun relationItem(label: String, isChecked: Boolean, onCheckedChange: (Boolean) -
         Text(
             text = label,
             fontSize = 18.sp,
-            modifier = Modifier.weight(1f)
         )
+        Spacer(Modifier.weight(1f))
         Checkbox(
             checked = isChecked,
             onCheckedChange = onCheckedChange,

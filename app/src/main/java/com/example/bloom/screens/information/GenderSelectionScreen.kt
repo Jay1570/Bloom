@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,25 +26,18 @@ fun GenderSelectionScreen() {
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = "We match daters using three broad gender groups.\nYou can add more about your gender after.",
             fontSize = 14.sp,
             style = MaterialTheme.typography.labelLarge
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Gender Options
         GenderOption("Man", selectedGender) { selectedGender = it }
-//        Text(
-//            text = "Add your gender identity > ",
-//            fontSize = 14.sp,
-//            color = Color(0xFF6A1B9A), // Purple color
-//            modifier = Modifier
-//                .padding(start = 48.dp, top = 4.dp),
-//            style = MaterialTheme.typography.titleLarge,
-//        )
-        Spacer(modifier = Modifier.height(8.dp))
         GenderOption("Woman", selectedGender) { selectedGender = it }
         GenderOption("Non-binary", selectedGender) { selectedGender = it }
     }
@@ -86,7 +78,7 @@ fun GenderOption(label: String, selectedGender: String, onSelected: (String) -> 
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onSelected(label) }
-            .padding(top = 8.dp),
+            .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -94,12 +86,12 @@ fun GenderOption(label: String, selectedGender: String, onSelected: (String) -> 
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .padding(start = 8.dp)
-                .weight(1f)
         )
+        Spacer(modifier = Modifier.weight(1f))
         RadioButton(
             selected = selectedGender == label,
             onClick = { onSelected(label) },
-            colors = RadioButtonDefaults.colors(selectedColor = Color(0xFF6A1B9A)) // Purple color
+            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.onBackground)
         )
     }
 }

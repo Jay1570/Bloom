@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,16 +25,15 @@ fun DrinkSelectionScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, bottom = 60.dp, top = 20.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = "Do you drink?",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp, top = 10.dp)
         )
-
-        LazyColumn(modifier = Modifier.padding(bottom = 20.dp)) {
+        Spacer(Modifier.height(16.dp))
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(drink) { drink ->
                 Row(
                     modifier = Modifier
@@ -49,23 +47,20 @@ fun DrinkSelectionScreen() {
                     Text(
                         text = drink,
                         fontSize = 18.sp,
-                        modifier = Modifier.weight(.1f)
                     )
+                    Spacer(Modifier.weight(1f))
                     RadioButton(
                         selected = selectedOption == drink,
                         onClick = { selectedOption = drink }
                     )
                 }
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
             }
         }
-    }
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+        Spacer(Modifier.height(16.dp))
         Card(
             modifier = Modifier.clickable(
                 onClick = {

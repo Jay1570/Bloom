@@ -8,8 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Contrast
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,8 +26,6 @@ import com.example.bloom.ui.theme.BloomTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    navigateToChangeEmail: () -> Unit,
-    navigateToChangePassword: () -> Unit,
     navigateToIntro: () -> Unit,
     navigateBack: () -> Unit,
     viewModel: SettingsViewModel = viewModel()
@@ -37,18 +33,6 @@ fun SettingsScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState
     val items = listOf(
-        SettingsItem(
-            Icons.Default.Email,
-            "Change Your Email",
-            null,
-            onClick = navigateToChangeEmail
-        ),
-        SettingsItem(
-            Icons.Default.Security,
-            "Change Your Password",
-            null,
-            onClick = navigateToChangePassword
-        ),
         SettingsItem(
             Icons.Default.Share,
             "Invite Your Friends",
@@ -229,18 +213,6 @@ fun SettingsPreview() {
         SettingsScreenContent(
             onSignOutClick = {},
             itemsList = listOf(
-                SettingsItem(
-                    Icons.Default.Email,
-                    "Change Your Email",
-                    null,
-                    onClick = {}
-                ),
-                SettingsItem(
-                    Icons.Default.Security,
-                    "Change Your Password",
-                    null,
-                    onClick = {}
-                ),
                 SettingsItem(
                     Icons.Default.Share,
                     "Invite Your Friends",

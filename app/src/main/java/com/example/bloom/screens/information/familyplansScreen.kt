@@ -41,7 +41,7 @@ fun FamilyPlanScreen() {
             modifier = Modifier.padding(16.dp)
         )
 
-        LazyColumn(modifier = Modifier.padding(10.dp)) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(childOptions) { options ->
                 Row(
                     modifier = Modifier
@@ -63,33 +63,27 @@ fun FamilyPlanScreen() {
                 HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
             }
         }
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Card(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        isVisibleOnProfile = !isVisibleOnProfile
-                    }
-                )
-            ) {
-                Row(
-                    modifier = Modifier.wrapContentWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = isVisibleOnProfile,
-                        onCheckedChange = { isVisibleOnProfile = it }
-                    )
-                    Text(
-                        text = "Visible on profile",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
+        Spacer(modifier = Modifier.height(16.dp))
+        Card(
+            modifier = Modifier.clickable(
+                onClick = {
+                    isVisibleOnProfile = !isVisibleOnProfile
                 }
+            )
+        ) {
+            Row(
+                modifier = Modifier.wrapContentWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = isVisibleOnProfile,
+                    onCheckedChange = { isVisibleOnProfile = it }
+                )
+                Text(
+                    text = "Visible on profile",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
             }
         }
     }

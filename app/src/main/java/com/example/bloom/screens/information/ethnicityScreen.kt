@@ -4,10 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,15 +64,15 @@ fun EthnicityScreenSelection() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp, bottom = 80.dp, top = 20.dp)
+            .padding(16.dp)
     ) {
         Text(
             text = "What's Your ethnicity?",
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            lineHeight = 36.sp,
         )
-
+        Spacer(modifier = Modifier.height(16.dp))
         LazyColumn {
             items(region) { (label, isChecked) ->
                 Regionitem(label, isChecked) { onCheckedChange(label, it) }
@@ -97,16 +94,12 @@ fun Regionitem(label: String, isChecked: Boolean, onCheckedChange: (Boolean) -> 
         Text(
             text = label,
             fontSize = 18.sp,
-            modifier = Modifier.weight(1f)
         )
-
+        Spacer(Modifier.weight(1f))
         Checkbox(
             checked = isChecked,
             onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFF7B3F8F), // Adjust color as needed
-                uncheckedColor = Color.LightGray
-            )
+            colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.onBackground)
         )
     }
 }
