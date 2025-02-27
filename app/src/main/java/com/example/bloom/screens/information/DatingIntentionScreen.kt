@@ -4,7 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,10 +15,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bloom.screens.RadioButtonListItem
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun DatingintationScreen() {
+fun DatingIntentionScreen(
+    uiState: InformationUiState,
+    changeIntention: (String) -> Unit
+) {
     val options = listOf(
         "Life pater",
         "Long-term relationship, open to short",
@@ -25,7 +32,6 @@ fun DatingintationScreen() {
         "prefer not to say"
     )
 
-    var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     Column(
@@ -39,32 +45,18 @@ fun DatingintationScreen() {
             fontWeight = FontWeight.Bold,
         )
         Spacer(Modifier.height(16.dp))
-        LazyColumn(modifier = Modifier.weight(1f)) {
+        LazyColumn(modifier = Modifier.fillMaxHeight(0.9f)) {
             items(options) { option ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { selectedOption = option }
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = option,
-                        fontSize = 18.sp,
-                    )
-                    Spacer(Modifier.weight(1f))
-                    RadioButton(
-                        selected = selectedOption == option,
-                        onClick = { selectedOption = option }
-                    )
-                }
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
+                RadioButtonListItem(
+                    label = option,
+                    isSelected = uiState.selectedDatingIntention == option,
+                    onClick = {
+                        changeIntention(option)
+                    }
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.weight(1f))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -92,8 +84,11 @@ fun DatingintationScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun DatingintationScreenPreview() {
+fun DatingIntentionScreenPreview() {
     BloomTheme {
-        DatingintationScreen()
+        DatingIntentionScreen(
+            uiState = InformationUiState(),
+            changeIntention = {}
+        )
     }
 }

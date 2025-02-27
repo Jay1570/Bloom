@@ -15,16 +15,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.bloom.screens.RadioButtonListItem
+import com.example.bloom.screens.CheckBoxListItem
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun ChildrenScreen(
+fun RelationshipTypeScreen(
     uiState: InformationUiState,
-    changeValue: (String) -> Unit
+    addOrRemoveRelationshipType: (String) -> Unit
 ) {
-    val optionsChild = listOf("Don't have children", "Have children", "Prefer not to say")
     var isVisibleOnProfile by remember { mutableStateOf(false) }
+
+    val relation = listOf(
+        "Monogamy",
+        "Non-Monogamy",
+        "Figuring out my relationship type"
+    )
 
     Column(
         modifier = Modifier
@@ -32,24 +37,24 @@ fun ChildrenScreen(
             .padding(16.dp)
     ) {
         Text(
-            text = "Do You Have children?",
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            modifier = Modifier.padding(16.dp)
+            text = "What is the type of relationship are you looking for?",
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 26.sp,
+            style = MaterialTheme.typography.titleLarge
         )
-
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(optionsChild) { optionsChild ->
-                RadioButtonListItem(
-                    label = optionsChild,
-                    isSelected = uiState.doYouHaveChildren == optionsChild,
-                    onClick = {
-                        changeValue(optionsChild)
+        Spacer(Modifier.height(16.dp))
+        LazyColumn(modifier = Modifier.fillMaxHeight(0.9f)) {
+            items(relation) { relation ->
+                CheckBoxListItem(
+                    label = relation,
+                    isChecked = uiState.selectedRelationshipType.contains(relation),
+                    onCheckedChange = {
+                        addOrRemoveRelationshipType(relation)
                     }
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.weight(1f))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -77,11 +82,11 @@ fun ChildrenScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun ChildrenSelectionScreenPreview() {
+fun RelationshipTypeScreenPreview() {
     BloomTheme {
-        ChildrenScreen(
+        RelationshipTypeScreen(
             uiState = InformationUiState(),
-            changeValue = {}
+            addOrRemoveRelationshipType = {}
         )
     }
 }

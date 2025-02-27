@@ -13,32 +13,38 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.R
 import com.example.bloom.screens.RequestPermissionDialog
 
 @Composable
 fun InformationScreen(
     navigateToNextScreen: () -> Unit,
+    viewModel: InformationViewModel = viewModel()
 ) {
     RequestPermissionDialog(
         title = "give location permission",
         permission = Manifest.permission.ACCESS_FINE_LOCATION
     )
-    InformationContent(navigateToNextScreen = navigateToNextScreen)
+    InformationContent(
+        navigateToNextScreen = navigateToNextScreen,
+        viewModel = viewModel
+    )
 }
 
 @Composable
-fun InformationContent(navigateToNextScreen: () -> Unit) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+fun InformationContent(
+    navigateToNextScreen: () -> Unit,
+    viewModel: InformationViewModel
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val tabTitles = listOf(
         R.drawable.ac_2_location,
         R.drawable.ac_2_pronoun_person,
@@ -65,21 +71,23 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
     Scaffold(
         floatingActionButton = {
             Row {
-                IconButton(
-                    onClick = { if (selectedTab > 0) selectedTab-- },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
-                        contentDescription = "",
-                        modifier = Modifier.rotate(180f)
-                    )
+                if (uiState.currentTab > 0) {
+                    IconButton(
+                        onClick = { viewModel.goToPrevious() },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowForwardIos,
+                            contentDescription = "",
+                            modifier = Modifier.rotate(180f)
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
-                    onClick = { if (selectedTab < tabTitles.size - 1) selectedTab++ else navigateToNextScreen() },
+                    onClick = { if (uiState.currentTab < tabTitles.size - 1) viewModel.goToNext() else navigateToNextScreen() },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -109,24 +117,24 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                         .padding(horizontal = 8.dp, vertical = 16.dp)
                         .wrapContentSize()
                 ) {
-                    val skip = selectedTab
+                    val skip = uiState.currentTab
                     tabTitles.drop(skip).forEachIndexed { index, icon ->
                         val actualIndex = index + skip
                         Icon(
-                            painter = if (selectedTab == actualIndex) painterResource(icon) else painterResource(
+                            painter = if (uiState.currentTab == actualIndex) painterResource(icon) else painterResource(
                                 R.drawable.inactive_dot
                             ),
                             contentDescription = "",
-                            tint = if (selectedTab >= actualIndex) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.secondary,
+                            tint = if (uiState.currentTab >= actualIndex) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.secondary,
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .padding(horizontal = 5.dp)
-                                .size(if (selectedTab == actualIndex) 40.dp else 10.dp)
+                                .size(if (uiState.currentTab == actualIndex) 40.dp else 10.dp)
                         )
                     }
                 }
                 AnimatedContent(
-                    targetState = selectedTab,
+                    targetState = uiState.currentTab,
                     label = "animated content",
                     transitionSpec = {
                         if (targetState > initialState) {
@@ -139,16 +147,60 @@ fun InformationContent(navigateToNextScreen: () -> Unit) {
                     }
                 ) { targetTab ->
                     when (targetTab) {
-                        1 -> PronounsSelectionScreen()
-                        2 -> GenderSelectionScreen()
-                        3 -> SexualitySelectionScreen()
-                        4 -> DatingPreferenceScreen()
-                        5 -> DatingintationScreen()
-                        6 -> RelationshipTypeScreen()
-                        7 -> HeightSelector()
-                        8 -> EthnicityScreenSelection()
-                        9 -> ChildrenScreen()
-                        10 -> FamilyPlanScreen()
+                        /*0 -> CurrentLocationScreen(
+                            uiState = uiState,
+                            onLocationChange = viewModel::onLocationChange
+                        )*/
+                        1 -> PronounsSelectionScreen(
+                            uiState = uiState,
+                            addOrRemovePronoun = viewModel::addOrRemovePronoun
+                        )
+
+                        2 -> GenderSelectionScreen(
+                            uiState = uiState,
+                            changeSelectedGender = viewModel::changeSelectedGender
+                        )
+
+                        3 -> SexualitySelectionScreen(
+                            uiState = uiState,
+                            changeSelectedSexuality = viewModel::changeSelectedSexuality
+                        )
+
+                        4 -> DatingPreferenceScreen(
+                            uiState = uiState,
+                            addOrRemoveDatingPreference = viewModel::addOrRemoveDatingPreference
+                        )
+
+                        5 -> DatingIntentionScreen(
+                            uiState = uiState,
+                            changeIntention = viewModel::changeDatingIntention
+                        )
+
+                        6 -> RelationshipTypeScreen(
+                            uiState = uiState,
+                            addOrRemoveRelationshipType = viewModel::addOrRemoveRelationshipType
+                        )
+
+                        7 -> HeightSelectionScreen(
+                            uiState = uiState,
+                            changeSelectedHeightInCm = viewModel::changeSelectedHeightInCm
+                        )
+
+                        8 -> EthnicitySelectionScreen(
+                            uiState = uiState,
+                            addOrRemoveEthnicity = viewModel::addOrRemoveEthnicity
+                        )
+
+                        9 -> ChildrenScreen(
+                            uiState = uiState,
+                            changeValue = viewModel::changeDoYouHaveChildren
+                        )
+
+                        10 -> FamilyPlanScreen(
+                            uiState = uiState,
+                            changeFamilyPlan = viewModel::changeFamilyPlan
+                        )
+
                         11 -> WorkplaceScreen()
                         12 -> School_CollegeSelectionScreen()
                         13 -> WorkplaceSelectionScreen()

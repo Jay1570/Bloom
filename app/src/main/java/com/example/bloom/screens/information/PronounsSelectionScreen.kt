@@ -19,7 +19,10 @@ import com.example.bloom.ui.theme.BloomTheme
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PronounsSelectionScreen() {
+fun PronounsSelectionScreen(
+    uiState: InformationUiState,
+    addOrRemovePronoun: (String) -> Unit
+) {
     val pronouns = listOf(
         "she",
         "her",
@@ -37,7 +40,6 @@ fun PronounsSelectionScreen() {
         "zirs",
         "Not listed"
     )
-    val selectedPronouns = remember { mutableStateListOf<String>() }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     Column(
@@ -53,17 +55,17 @@ fun PronounsSelectionScreen() {
         )
 
         // Display selected pronouns as chips
-        if (selectedPronouns.isNotEmpty()) {
+        if (uiState.selectedPronouns.isNotEmpty()) {
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(selectedPronouns) { pronoun ->
+                items(uiState.selectedPronouns) { pronoun ->
                     Chip(
                         text = pronoun,
-                        onClose = { selectedPronouns.remove(pronoun) }
+                        onClose = { addOrRemovePronoun(pronoun) }
                     )
                 }
             }
@@ -88,11 +90,7 @@ fun PronounsSelectionScreen() {
                 modifier = Modifier
                     .clickable(
                         onClick = {
-                            if (selectedPronouns.contains(pronouns[index])) {
-                                selectedPronouns.remove(pronouns[index])
-                            } else if (selectedPronouns.size < 4) {
-                                selectedPronouns.add(pronouns[index])
-                            }
+                            addOrRemovePronoun(pronouns[index])
                         }
                     )
                     .wrapContentHeight()
@@ -108,18 +106,15 @@ fun PronounsSelectionScreen() {
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     Checkbox(
-                        checked = selectedPronouns.contains(pronouns[index]),
+                        checked = uiState.selectedPronouns.contains(pronouns[index]),
                         onCheckedChange = {
-                            if (selectedPronouns.contains(pronouns[index])) {
-                                selectedPronouns.remove(pronouns[index])
-                            } else if (selectedPronouns.size < 4) {
-                                selectedPronouns.add(pronouns[index])
-                            }
+                            addOrRemovePronoun(pronouns[index])
                         }
                     )
                 }
             }
         }
+        Spacer(Modifier.weight(1f))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -189,6 +184,9 @@ fun ChipPreview() {
 @Composable
 fun PronounsSelectionPreview() {
     BloomTheme {
-        PronounsSelectionScreen()
+        PronounsSelectionScreen(
+            uiState = InformationUiState(),
+            addOrRemovePronoun = {}
+        )
     }
 }

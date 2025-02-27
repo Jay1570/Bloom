@@ -11,6 +11,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,9 +24,11 @@ import com.example.bloom.ui.theme.BloomTheme
 import kotlin.math.roundToInt
 
 @Composable
-fun HeightSelector() {
-    var isFtSelected by remember { mutableStateOf(true) }
-    var selectedHeight by remember { mutableIntStateOf(0) } // Default in cm
+fun HeightSelectionScreen(
+    uiState: InformationUiState,
+    changeSelectedHeightInCm: (Int) -> Unit
+) {
+    var isFtSelected by rememberSaveable { mutableStateOf(true) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     val heightList = if (isFtSelected) {
@@ -51,7 +54,7 @@ fun HeightSelector() {
         // Takes most of the space to push FT/CM to the bottom
         Column(
             modifier = Modifier
-                .weight(1f)
+                .fillMaxHeight(0.9f)
                 .padding(bottom = 150.dp),
             verticalArrangement = Arrangement.Center,
         ) {
@@ -68,7 +71,8 @@ fun HeightSelector() {
                     verticalArrangement = Arrangement.Center
                 ) {
                     items(heightList) { height ->
-                        val isSelected = height == getHeightString(selectedHeight, isFtSelected)
+                        val isSelected =
+                            height == getHeightString(uiState.selectedHeightInCm, isFtSelected)
                         Text(
                             text = height,
                             fontSize = if (isSelected) 22.sp else 16.sp,
@@ -76,16 +80,17 @@ fun HeightSelector() {
                             color = if (isSelected) MaterialTheme.colorScheme.onBackground else Color.Gray,
                             modifier = Modifier
                                 .fillMaxSize(1f)
-                                .wrapContentHeight(Alignment.CenterVertically) // Center text vertically
+                                .wrapContentHeight(Alignment.CenterVertically)
                                 .padding(8.dp)
                                 .clickable {
-                                    selectedHeight = if (isFtSelected) {
-                                        convertFeetToCm(height)
-                                    } else {
-                                        height.replace(" cm", "").toInt()
-                                    }
+                                    val heightInCm =
+                                        if (isFtSelected) convertFeetToCm(height) else height.replace(
+                                            " cm",
+                                            ""
+                                        ).toInt()
+                                    changeSelectedHeightInCm(heightInCm)
                                 },
-                            textAlign = TextAlign.Center // Center text horizontally
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -95,7 +100,7 @@ fun HeightSelector() {
             // Toggle between FT and CM - Now placed at the bottom
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd // Align to the right side
+                contentAlignment = Alignment.CenterEnd
             ) {
                 Row(
                     modifier = Modifier
@@ -131,15 +136,7 @@ fun HeightSelector() {
                 }
             }
         }
-    }
-
-    // visible
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+        Spacer(Modifier.weight(1f))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -163,7 +160,6 @@ fun HeightSelector() {
             }
         }
     }
-
 }
 
 fun getHeightString(heightCm: Int, isFt: Boolean): String {
@@ -193,6 +189,9 @@ fun convertFeetToCm(height: String): Int {
 @Composable
 fun PreviewHeightSelector() {
     BloomTheme {
-        HeightSelector()
+        HeightSelectionScreen(
+            uiState = InformationUiState(),
+            changeSelectedHeightInCm = {}
+        )
     }
 }
