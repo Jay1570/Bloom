@@ -29,6 +29,7 @@ fun RadioButtonListItem(label: String, isSelected: Boolean, onClick: () -> Unit)
         Text(
             text = label,
             fontSize = 18.sp,
+            maxLines = 2
         )
         Spacer(Modifier.weight(1f))
         RadioButton(

@@ -4,19 +4,25 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bloom.screens.RadioButtonListItem
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun ReligiousBeliefsScreen() {
+fun ReligiousBeliefsScreen(
+    uiState: InformationUiState,
+    changeSelectedReligiousBelief: (String) -> Unit
+) {
     val options = listOf(
         "Agnostic",
         "Atheist",
@@ -32,7 +38,6 @@ fun ReligiousBeliefsScreen() {
         "Open to all"
     )
 
-    var selectedOption by remember { mutableStateOf<String?>(null) }
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     Column(
@@ -41,34 +46,24 @@ fun ReligiousBeliefsScreen() {
             .padding(16.dp)
     ) {
         Text(
-            text = "What are your religious beliefs ?",
+            text = "What are your religious belief?",
             fontSize = 30.sp,
+            lineHeight = 30.sp,
             fontWeight = FontWeight.Bold,
         )
         Spacer(Modifier.height(16.dp))
-        LazyColumn(Modifier.weight(1f)) {
+        LazyColumn(Modifier.fillMaxHeight(0.9f)) {
             items(options) { option ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { selectedOption = option }
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = option,
-                        fontSize = 18.sp,
-                        modifier = Modifier.weight(.1f)
-                    )
-                    RadioButton(
-                        selected = selectedOption == option,
-                        onClick = { selectedOption = option }
-                    )
-                }
-                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+                RadioButtonListItem(
+                    label = option,
+                    isSelected = uiState.selectedReligiousBelief == option,
+                    onClick = {
+                        changeSelectedReligiousBelief(option)
+                    }
+                )
             }
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.weight(1f))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -98,6 +93,9 @@ fun ReligiousBeliefsScreen() {
 @Composable
 fun ReligiousScreenPreview() {
     BloomTheme {
-        ReligiousBeliefsScreen()
+        ReligiousBeliefsScreen(
+            uiState = InformationUiState(),
+            changeSelectedReligiousBelief = {}
+        )
     }
 }

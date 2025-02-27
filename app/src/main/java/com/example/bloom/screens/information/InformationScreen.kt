@@ -87,7 +87,7 @@ fun InformationContent(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
-                    onClick = { if (uiState.currentTab < tabTitles.size - 1) viewModel.goToNext() else navigateToNextScreen() },
+                    onClick = { viewModel.goToNext(navigateToNextScreen) },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -201,16 +201,55 @@ fun InformationContent(
                             changeFamilyPlan = viewModel::changeFamilyPlan
                         )
 
-                        11 -> WorkplaceScreen()
-                        12 -> School_CollegeSelectionScreen()
-                        13 -> WorkplaceSelectionScreen()
-                        14 -> StudySelectionScreen()
-                        15 -> ReligiousBeliefsScreen()
-                        16 -> PoliticalBeliefsScreen()
-                        17 -> DrinkSelectionScreen()
-                        18 -> TobaccoSelectionScreen()
-                        19 -> WeedSelectionScreen()
-                        20 -> DrugsSelectionScreen()
+                        11 -> HomeTownScreen(
+                            uiState = uiState,
+                            onHomeTownChange = viewModel::onHomeTownChange
+                        )
+
+                        12 -> SchoolCollegeSelectionScreen(
+                            uiState = uiState,
+                            onSchoolOrCollegeChange = viewModel::onSchoolOrCollegeChange
+                        )
+
+                        13 -> WorkplaceSelectionScreen(
+                            uiState = uiState,
+                            onWorkPlaceChange = viewModel::onWorkPlaceChange
+                        )
+
+                        14 -> StudySelectionScreen(
+                            uiState = uiState,
+                            changeSelectedEducation = viewModel::changeSelectedEducation
+                        )
+
+                        15 -> ReligiousBeliefsScreen(
+                            uiState = uiState,
+                            changeSelectedReligiousBelief = viewModel::changeSelectedReligiousBelief
+                        )
+
+                        16 -> PoliticalBeliefsScreen(
+                            uiState = uiState,
+                            changeSelectedPoliticalBelief = viewModel::changeSelectedPoliticalBelief
+                        )
+
+                        17 -> DrinkSelectionScreen(
+                            uiState = uiState,
+                            changeSelectedDrinkOption = viewModel::changeSelectedDrinkOption
+                        )
+
+                        18 -> TobaccoSelectionScreen(
+                            uiState = uiState,
+                            changeSelectedTobaccoOption = viewModel::changeSelectedTobaccoOption
+                        )
+
+                        19 -> WeedSelectionScreen(
+                            uiState = uiState,
+                            changeSelectedWeedOption = viewModel::changeSelectedWeedOption
+                        )
+
+                        20 -> DrugsSelectionScreen(
+                            uiState = uiState,
+                            changeSelectedDrugOption = viewModel::changeSelectedDrugOption
+                        )
                     }
                 }
             }

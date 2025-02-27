@@ -17,8 +17,10 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun School_CollegeSelectionScreen() {
-    var workplace by remember { mutableStateOf("") }
+fun SchoolCollegeSelectionScreen(
+    uiState: InformationUiState,
+    onSchoolOrCollegeChange: (String) -> Unit
+) {
     var isChecked by remember { mutableStateOf(true) }
 
     Column(
@@ -33,8 +35,10 @@ fun School_CollegeSelectionScreen() {
         )
         Spacer(modifier = Modifier.height(60.dp))
         OutlinedTextField(
-            value = workplace,
-            onValueChange = { workplace = it },
+            value = uiState.schoolOrCollege,
+            onValueChange = {
+                onSchoolOrCollegeChange(it)
+            },
             label = {
                 Text(
                     "School/college  Name",
@@ -76,6 +80,9 @@ fun School_CollegeSelectionScreen() {
 @Composable
 fun SchoolSelectionPreview() {
     BloomTheme {
-        School_CollegeSelectionScreen()
+        SchoolCollegeSelectionScreen(
+            uiState = InformationUiState(),
+            onSchoolOrCollegeChange = {}
+        )
     }
 }

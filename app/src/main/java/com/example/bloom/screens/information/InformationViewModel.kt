@@ -1,9 +1,13 @@
 package com.example.bloom.screens.information
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.bloom.SnackbarEvent
+import com.example.bloom.SnackbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class InformationViewModel : ViewModel() {
 
@@ -12,11 +16,77 @@ class InformationViewModel : ViewModel() {
 
     private val currentTab get() = _uiState.value.currentTab
 
-    fun goToNext() {
-        incrementTab()
-        /*        when (currentTab) {
+    fun goToNext(navigateToNext: () -> Unit) {
+        when (currentTab) {
+            0 -> incrementTab()
+            1 -> if (_uiState.value.selectedPronouns.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select at least one pronoun"
+            )
 
-                }*/
+            2 -> if (_uiState.value.selectedGender.isNotEmpty()) incrementTab() else showSnackbar("Please select a gender")
+            3 -> if (_uiState.value.selectedSexuality.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a sexuality"
+            )
+
+            4 -> if (_uiState.value.selectedDatingPreferences.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select at least one dating preference"
+            )
+
+            5 -> if (_uiState.value.selectedDatingIntention.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a dating intention"
+            )
+
+            6 -> if (_uiState.value.selectedRelationshipType.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select at least one relationship type"
+            )
+
+            7 -> if (_uiState.value.selectedHeightInCm > 0) incrementTab() else showSnackbar("Please select a height")
+            8 -> if (_uiState.value.selectedEthnicity.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select at least one ethnicity"
+            )
+
+            9 -> if (_uiState.value.doYouHaveChildren.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a value"
+            )
+
+            10 -> if (_uiState.value.selectedFamilyPlan.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a family plan"
+            )
+
+            11 -> if (_uiState.value.homeTown.isNotEmpty()) incrementTab() else showSnackbar("Please select a home town")
+            12 -> if (_uiState.value.schoolOrCollege.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a school or college"
+            )
+
+            13 -> if (_uiState.value.workPlace.isNotEmpty()) incrementTab() else showSnackbar("Please select a work place")
+            14 -> if (_uiState.value.selectedEducation.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a education"
+            )
+
+            15 -> if (_uiState.value.selectedReligiousBelief.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a religious belief"
+            )
+
+            16 -> if (_uiState.value.selectedPoliticalBelief.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a political belief"
+            )
+
+            17 -> if (_uiState.value.selectedDrinkOption.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a drink option"
+            )
+
+            18 -> if (_uiState.value.selectedTobaccoOption.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a tobacco option"
+            )
+
+            19 -> if (_uiState.value.selectedWeedOption.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please select a weed option"
+            )
+
+            20 -> if (_uiState.value.selectedDrugOption.isNotEmpty()) navigateToNext() else showSnackbar(
+                "Please select a drug option"
+            )
+        }
     }
 
     private fun incrementTab() {
@@ -71,7 +141,7 @@ class InformationViewModel : ViewModel() {
             } else {
                 selectedRelationshipType.add(type)
             }
-            it.copy(selectedDatingPreferences = selectedRelationshipType)
+            it.copy(selectedRelationshipType = selectedRelationshipType)
         }
     }
 
@@ -98,6 +168,52 @@ class InformationViewModel : ViewModel() {
     fun changeFamilyPlan(plan: String) {
         _uiState.update { it.copy(selectedFamilyPlan = plan) }
     }
+
+    fun onHomeTownChange(homeTown: String) {
+        _uiState.update { it.copy(homeTown = homeTown) }
+    }
+
+    fun onSchoolOrCollegeChange(schoolOrCollege: String) {
+        _uiState.update { it.copy(schoolOrCollege = schoolOrCollege) }
+    }
+
+    fun onWorkPlaceChange(workPlace: String) {
+        _uiState.update { it.copy(workPlace = workPlace) }
+    }
+
+    fun changeSelectedEducation(education: String) {
+        _uiState.update { it.copy(selectedEducation = education) }
+    }
+
+    fun changeSelectedReligiousBelief(religiousBelief: String) {
+        _uiState.update { it.copy(selectedReligiousBelief = religiousBelief) }
+    }
+
+    fun changeSelectedPoliticalBelief(politicalBelief: String) {
+        _uiState.update { it.copy(selectedPoliticalBelief = politicalBelief) }
+    }
+
+    fun changeSelectedDrinkOption(drinkOption: String) {
+        _uiState.update { it.copy(selectedDrinkOption = drinkOption) }
+    }
+
+    fun changeSelectedTobaccoOption(tobaccoOption: String) {
+        _uiState.update { it.copy(selectedTobaccoOption = tobaccoOption) }
+    }
+
+    fun changeSelectedWeedOption(weedOption: String) {
+        _uiState.update { it.copy(selectedWeedOption = weedOption) }
+    }
+
+    fun changeSelectedDrugOption(drugOption: String) {
+        _uiState.update { it.copy(selectedDrugOption = drugOption) }
+    }
+
+    private fun showSnackbar(message: String) {
+        viewModelScope.launch {
+            SnackbarManager.sendEvent(SnackbarEvent(message))
+        }
+    }
 }
 
 data class InformationUiState(
@@ -108,8 +224,18 @@ data class InformationUiState(
     val selectedDatingPreferences: List<String> = emptyList(),
     val selectedDatingIntention: String = "",
     val selectedRelationshipType: List<String> = emptyList(),
-    val selectedHeightInCm: Int = 121,
+    val selectedHeightInCm: Int = 0,
     val selectedEthnicity: List<String> = emptyList(),
     val doYouHaveChildren: String = "",
-    val selectedFamilyPlan: String = ""
+    val selectedFamilyPlan: String = "",
+    val homeTown: String = "",
+    val schoolOrCollege: String = "",
+    val workPlace: String = "",
+    val selectedEducation: String = "",
+    val selectedReligiousBelief: String = "",
+    val selectedPoliticalBelief: String = "",
+    val selectedDrinkOption: String = "",
+    val selectedTobaccoOption: String = "",
+    val selectedWeedOption: String = "",
+    val selectedDrugOption: String = ""
 )

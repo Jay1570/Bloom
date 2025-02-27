@@ -17,8 +17,8 @@ fun CheckBoxListItem(label: String, isChecked: Boolean, onCheckedChange: () -> U
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onCheckedChange() },
+            .clickable { onCheckedChange() }
+            .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

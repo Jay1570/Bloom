@@ -4,7 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,20 +15,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bloom.screens.RadioButtonListItem
 import com.example.bloom.ui.theme.BloomTheme
 
-@Composable
-fun PoliticalBeliefsScreen() {
-    val optionsforpolitical = listOf(
-        "Liberal",
-        "Moderate",
-        "Conservative",
-        "Not political",
-        "Other",
-        "Prefer not to say"
-    )
 
-    var selectedOption by remember { mutableStateOf<String?>(null) }
+@Composable
+fun WeedSelectionScreen(
+    uiState: InformationUiState,
+    changeSelectedWeedOption: (String) -> Unit
+) {
+    val weed = listOf("Yes", "Sometimes", "No", "Prefer not to say")
+
     var isVisibleOnProfile by remember { mutableStateOf(false) }
 
     Column(
@@ -34,37 +34,23 @@ fun PoliticalBeliefsScreen() {
             .padding(16.dp)
     ) {
         Text(
-            text = "What are your political beliefs?",
-            fontSize = 30.sp,
+            text = "Do you smoke Weed?",
+            fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
         )
         Spacer(Modifier.height(16.dp))
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(optionsforpolitical) { optionsforpolitical ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { selectedOption = optionsforpolitical }
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = optionsforpolitical,
-                        fontSize = 18.sp,
-                    )
-                    Spacer(Modifier.weight(1f))
-                    RadioButton(
-                        selected = selectedOption == optionsforpolitical,
-                        onClick = { selectedOption = optionsforpolitical }
-                    )
-                }
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
+        LazyColumn(modifier = Modifier.fillMaxHeight(0.9f)) {
+            items(weed) { weed ->
+                RadioButtonListItem(
+                    label = weed,
+                    isSelected = uiState.selectedWeedOption == weed,
+                    onClick = {
+                        changeSelectedWeedOption(weed)
+                    }
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.weight(1f))
         Card(
             modifier = Modifier.clickable(
                 onClick = {
@@ -92,8 +78,11 @@ fun PoliticalBeliefsScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun PoliticalBeliefsScreenPreview() {
+fun WeedSelectionScreenPreview() {
     BloomTheme {
-        PoliticalBeliefsScreen()
+        WeedSelectionScreen(
+            uiState = InformationUiState(),
+            changeSelectedWeedOption = {}
+        )
     }
 }

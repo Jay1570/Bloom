@@ -31,10 +31,16 @@ class AdvancedInformationViewModel : ViewModel() {
         _uiState.update { it.copy(currentTab = currentTab - 1) }
     }
 
-    fun goToNext() {
+    fun goToNext(navigateToNext: () -> Unit) {
+        val imageCount = _uiState.value.images.count { it != Uri.EMPTY }
+        val promptCount = _uiState.value.selectedTextPrompts.count { it != null }
         when (currentTab) {
-            0 -> if (_uiState.value.images.size == 6) incrementCurrentTab() else showSnackbar("Please select at least 6 images")
-            1 -> incrementCurrentTab()
+            0 -> if (imageCount == 6) incrementCurrentTab() else showSnackbar("Please select at least 6 images")
+            1 -> if (_uiState.value.recorderAudioUri != null) incrementCurrentTab() else showSnackbar(
+                "Please record audio"
+            )
+
+            2 -> if (promptCount == 3) navigateToNext() else showSnackbar("Please select at least 3 text prompts")
         }
     }
 

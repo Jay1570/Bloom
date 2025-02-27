@@ -17,8 +17,10 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun WorkplaceScreen() {
-    var workplace by remember { mutableStateOf("") }
+fun HomeTownScreen(
+    uiState: InformationUiState,
+    onHomeTownChange: (String) -> Unit
+) {
     var isChecked by remember { mutableStateOf(true) }
 
     Column(
@@ -33,12 +35,14 @@ fun WorkplaceScreen() {
         )
         Spacer(modifier = Modifier.height(60.dp))
         OutlinedTextField(
-            value = workplace,
-            onValueChange = { workplace = it },
+            value = uiState.homeTown,
+            onValueChange = {
+                onHomeTownChange(it)
+            },
             label = { Text("Home Town ", fontSize = 20.sp, fontWeight = FontWeight.Medium) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text // Correct keyboard type
+                keyboardType = KeyboardType.Text
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -70,6 +74,9 @@ fun WorkplaceScreen() {
 @Composable
 fun HomeTownScreenPreview() {
     BloomTheme {
-        WorkplaceScreen()
+        HomeTownScreen(
+            uiState = InformationUiState(),
+            onHomeTownChange = {}
+        )
     }
 }

@@ -17,8 +17,10 @@ import androidx.compose.ui.unit.sp
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
-fun WorkplaceSelectionScreen() {
-    var workplace by remember { mutableStateOf("") }
+fun WorkplaceSelectionScreen(
+    uiState: InformationUiState,
+    onWorkPlaceChange: (String) -> Unit
+) {
     var isChecked by remember { mutableStateOf(true) }
 
     Column(
@@ -33,8 +35,10 @@ fun WorkplaceSelectionScreen() {
         )
         Spacer(modifier = Modifier.height(60.dp))
         OutlinedTextField(
-            value = workplace,
-            onValueChange = { workplace = it },
+            value = uiState.workPlace,
+            onValueChange = {
+                onWorkPlaceChange(it)
+            },
             label = { Text("Work Place ", fontSize = 20.sp, fontWeight = FontWeight.Medium) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
@@ -68,6 +72,9 @@ fun WorkplaceSelectionScreen() {
 @Composable
 fun WorkPlaceScreenPreview() {
     BloomTheme {
-        WorkplaceSelectionScreen()
+        WorkplaceSelectionScreen(
+            uiState = InformationUiState(),
+            onWorkPlaceChange = {}
+        )
     }
 }

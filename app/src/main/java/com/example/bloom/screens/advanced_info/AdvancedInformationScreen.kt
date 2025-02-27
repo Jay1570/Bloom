@@ -50,7 +50,7 @@ fun AdvancedInformationScreen(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(
-                    onClick = { if (uiState.currentTab < tabTitles.size - 1) viewModel.goToNext() else navigateToNextScreen() },
+                    onClick = { viewModel.goToNext(navigateToNextScreen) },
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceContainer)
