@@ -9,11 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +40,7 @@ fun TextPromptScreen(
         "This year, I really want to"
     )
 
-    var selectedIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    var selectedIndex by rememberSaveable { mutableIntStateOf(-1) }
     var selectedPrompt by rememberSaveable { mutableStateOf("") }
     var answer by rememberSaveable { mutableStateOf("") }
     val selectedPrompts = uiState.selectedTextPrompts
@@ -83,11 +80,13 @@ fun TextPromptScreen(
             )
             Button(
                 onClick = {
-                    addPrompt(selectedIndex!!, selectedPrompt, answer)
-                    toggleTextField()
-                    selectedIndex = null
-                    selectedPrompt = ""
-                    answer = ""
+                    if (selectedIndex != -1) {
+                        addPrompt(selectedIndex, selectedPrompt, answer)
+                        toggleTextField()
+                        selectedIndex = -1
+                        selectedPrompt = ""
+                        answer = ""
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onBackground,

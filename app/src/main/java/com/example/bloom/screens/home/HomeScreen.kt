@@ -78,7 +78,7 @@ fun HomeScreen(
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             composable<Explore> {
-                ExploreScreen()
+                MainScreen()
             }
             composable<LikedYou> {
                 LikedYouScreen()
