@@ -409,7 +409,8 @@ private fun ReportAndShareButtons() {
             onClick = {},
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .padding(bottom = 10.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFF4F1F1),

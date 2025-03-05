@@ -177,17 +177,6 @@ class MainActivity : ComponentActivity() {
                         composable<AdvancedInformation> {
                             AdvancedInformationScreen(
                                 navigateToNextScreen = {
-                                    navController.navigate(RegistrationComplete) {
-                                        launchSingleTop = true
-                                        popUpTo(0) { inclusive = true }
-                                    }
-                                }
-                            )
-                        }
-
-                        composable<RegistrationComplete> {
-                            RegistrationCompleteScreen(
-                                navigateToNextScreen = {
                                     navController.navigate(SuggestSubscription) {
                                         launchSingleTop = true
                                         popUpTo(0) { inclusive = true }
@@ -195,11 +184,20 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-
                         composable<SuggestSubscription> {
                             SuggestSubscriptionScreen(
                                 navigateToPayment = { /*TODO: Navigate To Payment Screen*/ },
                                 navigateToHome = {
+                                    navController.navigate(RegistrationComplete) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+                        composable<RegistrationComplete> {
+                            RegistrationCompleteScreen(
+                                navigateToNextScreen = {
                                     navController.navigate(Home) {
                                         launchSingleTop = true
                                         popUpTo(0) { inclusive = true }
@@ -207,6 +205,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
+
 
                         composable<Home> {
                             HomeScreen(
