@@ -6,15 +6,18 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.10.0"
+activityCompose = "1.10.1"
 composeBom = "2025.02.00"
-navigationCompose = "2.8.7"
+navigationCompose = "2.8.8"
 kotlinSerialization = "1.8.0"
 lifecycleRuntimeCompose = "2.8.7"
 materialIconsExtended = "1.7.8"
 uiTextGoogleFonts = "1.7.8"
-accompanistPermissions = "0.37.0"
+accompanistPermissions = "0.37.2"
 coilComposeVersion = "3.1.0"
+googleGmsGoogleServices = "4.4.2"
+firebaseMessaging = "24.1.0"
+firebaseFirestore = "25.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,9 +41,12 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilComposeVersion" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
