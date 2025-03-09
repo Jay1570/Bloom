@@ -45,7 +45,7 @@ fun EthnicitySelectionScreen(
             lineHeight = 36.sp,
         )
         Spacer(modifier = Modifier.height(16.dp))
-        LazyColumn {
+        LazyColumn(modifier = Modifier.fillMaxHeight(0.9f)) {
             items(region) { ethnicity ->
                 CheckBoxListItem(
                     label = ethnicity,

@@ -53,7 +53,7 @@ fun NameScreen(
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
         )
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -68,7 +68,7 @@ fun NameScreen(
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
         )
         Spacer(modifier = Modifier.height(8.dp))
 

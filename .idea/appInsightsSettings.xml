@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.bloom" />
+                  <option name="mobileSdkAppId" value="1:776455424186:android:ca8a411aee8ee5ed1e1a83" />
+                  <option name="projectId" value="bloom-b6a7d" />
+                  <option name="projectNumber" value="776455424186" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

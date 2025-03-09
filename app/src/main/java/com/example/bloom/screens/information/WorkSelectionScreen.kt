@@ -39,14 +39,14 @@ fun WorkplaceSelectionScreen(
             onValueChange = {
                 onWorkPlaceChange(it)
             },
-            label = { Text("Work Place ", fontSize = 20.sp, fontWeight = FontWeight.Medium) },
+            label = { Text("Work Place ", fontSize = 20.sp, fontWeight = FontWeight.Normal) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
         )
 
         Spacer(modifier = Modifier.height(16.dp))

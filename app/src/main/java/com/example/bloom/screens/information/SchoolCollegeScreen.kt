@@ -52,7 +52,7 @@ fun SchoolCollegeSelectionScreen(
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
         )
 
         Spacer(modifier = Modifier.height(16.dp))

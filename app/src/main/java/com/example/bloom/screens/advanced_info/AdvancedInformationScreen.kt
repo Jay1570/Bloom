@@ -30,7 +30,7 @@ fun AdvancedInformationScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val tabTitles = listOf(
         R.drawable.ac_2_images,
-        R.drawable.ac_2_voice,
+//        R.drawable.ac_2_voice,
         R.drawable.ac_2_location
     )
     Scaffold(
@@ -114,15 +114,15 @@ fun AdvancedInformationScreen(
                             onRemoveImage = viewModel::removeImage
                         )
 
-                        1 -> VoicePromptScreen(
-                            uiState = uiState,
-                            onStartRecording = viewModel::startRecording,
-                            onStopRecording = viewModel::stopRecording,
-                            onPlayRecording = viewModel::playRecording,
-                            onPromptChange = viewModel::updatePrompt
-                        )
+//                        1 -> VoicePromptScreen(
+//                            uiState = uiState,
+//                            onStartRecording = viewModel::startRecording,
+//                            onStopRecording = viewModel::stopRecording,
+//                            onPlayRecording = viewModel::playRecording,
+//                            onPromptChange = viewModel::updatePrompt
+//                        )
 
-                        2 -> TextPromptScreen(
+                        1 -> TextPromptScreen(
                             uiState = uiState,
                             togglePromptList = viewModel::toggleTextPromptList,
                             toggleTextField = viewModel::toggleTextField,

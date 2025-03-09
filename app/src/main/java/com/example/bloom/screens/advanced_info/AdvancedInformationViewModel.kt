@@ -1,11 +1,7 @@
 package com.example.bloom.screens.advanced_info
 
-import android.content.Context
-import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
@@ -15,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 
 class AdvancedInformationViewModel : ViewModel() {
 
@@ -36,11 +31,11 @@ class AdvancedInformationViewModel : ViewModel() {
         val promptCount = _uiState.value.selectedTextPrompts.count { it != null }
         when (currentTab) {
             0 -> if (imageCount == 6) incrementCurrentTab() else showSnackbar("Please select at least 6 images")
-            1 -> if (_uiState.value.recorderAudioUri != null) incrementCurrentTab() else showSnackbar(
-                "Please record audio"
-            )
+//            1 -> if (_uiState.value.recorderAudioUri != null) incrementCurrentTab() else showSnackbar(
+//                "Please record audio"
+//            )
 
-            2 -> if (promptCount == 3) navigateToNext() else showSnackbar("Please select at least 3 text prompts")
+            1 -> if (promptCount == 3) navigateToNext() else showSnackbar("Please select at least 3 text prompts")
         }
     }
 
@@ -58,67 +53,67 @@ class AdvancedInformationViewModel : ViewModel() {
         _uiState.update { it.copy(images = updatedImages) }
     }
 
-    fun updatePrompt(newPrompt: String) {
-        _uiState.update {
-            it.copy(selectedVoicePrompt = newPrompt)
-        }
-    }
-
-    fun startRecording(context: Context) {
-        if (_uiState.value.isRecording) return
-        try {
-            outputFile = File(context.filesDir, "voice_prompt.3gp")
-
-            mediaRecorder = MediaRecorder().apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-                setOutputFile(outputFile!!.absolutePath)
-                setMaxDuration(30000)
-                try {
-                    prepare()
-                    start()
-                    _uiState.update { it.copy(isRecording = true) }
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        if (_uiState.value.isRecording) stopRecording()
-                    }, 30000)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            showSnackbar(e.message.toString())
-        }
-    }
-
-    fun stopRecording() {
-        if (!_uiState.value.isRecording) return
-
-        mediaRecorder?.apply {
-            stop()
-            release()
-        }
-        mediaRecorder = null
-        val uri = outputFile?.let { Uri.fromFile(it) }
-        _uiState.update {
-            it.copy(
-                isRecording = false,
-                recorderAudioUri = uri
-            )
-        }
-    }
-
-    fun playRecording(context: Context) {
-        if (_uiState.value.recorderAudioUri != null) {
-            MediaPlayer().apply {
-                setDataSource(context, _uiState.value.recorderAudioUri!!)
-                prepare()
-                start()
-            }
-        } else {
-            showSnackbar("Recording is not available")
-        }
-    }
+//    fun updatePrompt(newPrompt: String) {
+//        _uiState.update {
+//            it.copy(selectedVoicePrompt = newPrompt)
+//        }
+//    }
+//
+//    fun startRecording(context: Context) {
+//        if (_uiState.value.isRecording) return
+//        try {
+//            outputFile = File(context.filesDir, "voice_prompt.3gp")
+//
+//            mediaRecorder = MediaRecorder().apply {
+//                setAudioSource(MediaRecorder.AudioSource.MIC)
+//                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+//                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+//                setOutputFile(outputFile!!.absolutePath)
+//                setMaxDuration(30000)
+//                try {
+//                    prepare()
+//                    start()
+//                    _uiState.update { it.copy(isRecording = true) }
+//                    Handler(Looper.getMainLooper()).postDelayed({
+//                        if (_uiState.value.isRecording) stopRecording()
+//                    }, 30000)
+//                } catch (e: IOException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        } catch (e: Exception) {
+//            showSnackbar(e.message.toString())
+//        }
+//    }
+//
+//    fun stopRecording() {
+//        if (!_uiState.value.isRecording) return
+//
+//        mediaRecorder?.apply {
+//            stop()
+//            release()
+//        }
+//        mediaRecorder = null
+//        val uri = outputFile?.let { Uri.fromFile(it) }
+//        _uiState.update {
+//            it.copy(
+//                isRecording = false,
+//                recorderAudioUri = uri
+//            )
+//        }
+//    }
+//
+//    fun playRecording(context: Context) {
+//        if (_uiState.value.recorderAudioUri != null) {
+//            MediaPlayer().apply {
+//                setDataSource(context, _uiState.value.recorderAudioUri!!)
+//                prepare()
+//                start()
+//            }
+//        } else {
+//            showSnackbar("Recording is not available")
+//        }
+//    }
 
     fun addTextPrompt(index: Int, prompt: String, answer: String) {
         val newList = _uiState.value.selectedTextPrompts.toMutableList().apply {
