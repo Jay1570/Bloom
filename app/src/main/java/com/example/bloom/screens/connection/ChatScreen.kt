@@ -50,12 +50,12 @@ fun ChatScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
                 .padding(innerPadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .imePadding()
                     .background(MaterialTheme.colorScheme.surface)
             ) {
                 LazyColumn(

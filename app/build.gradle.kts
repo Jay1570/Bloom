@@ -59,7 +59,6 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.accompanist.permissions)
     implementation(libs.coil.compose)
-    implementation(libs.firebase.messaging)
     implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
