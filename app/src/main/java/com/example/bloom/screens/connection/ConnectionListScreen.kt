@@ -45,7 +45,7 @@ fun ConnectionListPreview() {
 @Composable
 fun ConnectionListScreen(
     navigateToChat: (String, String) -> Unit,
-    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.factory)
+    viewModel: ConnectionListViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
     val connections by viewModel.connection.collectAsStateWithLifecycle()
     val currentUser by viewModel.currentUser.collectAsStateWithLifecycle()
