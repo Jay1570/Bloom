@@ -5,73 +5,112 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Videocam
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.bloom.ui.theme.BloomTheme
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bloom.AppViewModelProvider
+import com.example.bloom.model.Chat
 import com.example.bloom.ui.theme.orange
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
-    id: Int,
-    name: String,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    viewModel: ChatViewModel = viewModel(factory = AppViewModelProvider.factory)
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
+    LaunchedEffect(uiState.chats) {
+        viewModel.markAllAsRead()
+        if (uiState.chats.isNotEmpty()) {
+            listState.scrollToItem(uiState.chats.size - 1)
+        }
+    }
 
-    val chats = listOf(
-        Chat("Hey, wanna go on a hike sometime?", true),
-        Chat("I love hiking but I have an injury. Cant hike for 2 more weeks", false),
-        Chat("Hi", true)
-    )
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    AppBar(onNavigateBack = navigateBack, name = name)
+                    AppBar(onNavigateBack = navigateBack, name = uiState.receiverId)
                 }
             )
-        }
+        },
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
                 .padding(innerPadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .imePadding()
                     .background(MaterialTheme.colorScheme.surface)
             ) {
+                val groupedChats: Map<String, List<Chat>> = uiState.groupedChats()
                 LazyColumn(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    reverseLayout = true
+                    state = listState,
+                    reverseLayout = false
                 ) {
-                    items(chats) {
-                        ChatMessageItem(it, it.isFromMe)
+                    groupedChats.forEach { (date, chats) ->
+                        item {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = date,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.surfaceVariant,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 15.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
+                        items(chats) { chat ->
+                            ChatMessageItem(
+                                chat = chat,
+                                isFromMe = chat.senderId == uiState.currentUser
+                            )
+                        }
                     }
                 }
 
                 ChatInput(
-                    onValueChange = {},
-                    onSend = {},
+                    value = uiState.message,
+                    onValueChange = viewModel::onMessageChange,
+                    onSend = viewModel::onSend,
                 )
             }
         }
@@ -80,6 +119,7 @@ fun ChatScreen(
 
 @Composable
 fun ChatInput(
+    value: String,
     onValueChange: (String) -> Unit,
     onSend: () -> Unit
 ) {
@@ -90,7 +130,7 @@ fun ChatInput(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = "",
+            value = value,
             minLines = 1,
             maxLines = 3,
             onValueChange = onValueChange,
@@ -129,7 +169,6 @@ fun AppBar(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                ProfileImage(40.dp)
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = name,
@@ -148,9 +187,8 @@ fun AppBar(
                     .clickable(onClick = onNavigateBack)
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "",
-                    modifier = Modifier.rotate(180f)
                 )
             }
         },
@@ -162,7 +200,7 @@ fun AppBar(
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
-                Icon(Icons.Outlined.Videocam, contentDescription = "Video Call")
+                Icon(Icons.Outlined.MoreVert, contentDescription = "Video Call")
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
@@ -213,19 +251,5 @@ fun ChatMessageItem(chat: Chat, isFromMe: Boolean) {
                 text = chat.message,
             )
         }
-    }
-}
-
-//TODO remove this class
-data class Chat(
-    val message: String,
-    val isFromMe: Boolean,
-)
-
-@Preview
-@Composable
-fun ChatScreenPreview() {
-    BloomTheme {
-        ChatScreen(name = "Charlie", id = 0, navigateBack = {})
     }
 }

@@ -86,7 +86,7 @@ fun HomeScreen(
             composable<Connection> {
                 ConnectionsScreen(
                     onConnectionClick = { id, name ->
-                        navControllerMain.navigate(Chat(id, name)) {
+                        navControllerMain.navigate(ChatScreen(id, name)) {
                             restoreState = true
                         }
                     }

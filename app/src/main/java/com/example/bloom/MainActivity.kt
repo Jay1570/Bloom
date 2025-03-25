@@ -215,11 +215,10 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable<Chat> {
-                            val args = it.toRoute<Chat>()
+                        composable<ChatScreen> {
+                            val args = it.toRoute<ChatScreen>()
                             ChatScreen(
-                                name = args.name,
-                                id = args.connectionId,
+
                                 navigateBack = { navController.popBackStack() }
                             )
                         }

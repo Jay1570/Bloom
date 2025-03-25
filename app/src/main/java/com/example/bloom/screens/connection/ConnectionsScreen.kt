@@ -24,7 +24,7 @@ import com.example.bloom.ui.theme.BloomTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConnectionsScreen(
-    onConnectionClick: (Int, String) -> Unit
+    onConnectionClick: (String, String) -> Unit
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabTitles = listOf("Connections", "Pending")
@@ -84,7 +84,7 @@ fun ConnectionsScreen(
             }
             when (selectedTab) {
                 0 -> ConnectionListScreen(
-                    onConnectionClick = onConnectionClick
+                    navigateToChat = onConnectionClick
                 )
 
                 1 -> PendingListScreen()

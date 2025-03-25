@@ -55,9 +55,9 @@ data object Profile : Routes
 data object Connection : Routes
 
 @Serializable
-data class Chat(
-    val connectionId: Int,
-    val name: String
+data class ChatScreen(
+    val connectionId: String,
+    val receiverId: String
 ) : Routes
 
 @Serializable
