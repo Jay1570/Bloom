@@ -3,9 +3,12 @@ package com.example.bloom.screens.basic_information
 import android.Manifest
 import android.os.Build
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -26,8 +29,7 @@ fun NotificationScreen() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 16.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -35,23 +37,24 @@ fun NotificationScreen() {
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold
             ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 24.dp, top = 24.dp)
+            textAlign = TextAlign.Start,
+            modifier = Modifier.padding( top = 15.dp, bottom = 25.dp)
         )
 
         Button(
             onClick = { isNotificationEnabled = true },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isNotificationEnabled) Color(0xFFB2FF59) else Color(
+                containerColor = if (isNotificationEnabled) Color(0xFF007842) else Color(
                     0xFFE0E0E0
                 )
             ),
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxWidth().height(50.dp).padding(horizontal = 5.dp)
         ) {
             Text(text = "Enable notifications", color = Color.Black)
         }
+        Spacer(modifier = Modifier.height(10.dp))
 
         Button(
             onClick = { isNotificationEnabled = false },
@@ -60,9 +63,9 @@ fun NotificationScreen() {
                     0xFFE0E0E0
                 )
             ),
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxWidth().height(50.dp).padding(horizontal = 5.dp)
         ) {
             Text(text = "Disable notifications", color = Color.Black)
         }

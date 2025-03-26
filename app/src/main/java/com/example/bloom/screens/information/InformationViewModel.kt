@@ -18,7 +18,9 @@ class InformationViewModel : ViewModel() {
 
     fun goToNext(navigateToNext: () -> Unit) {
         when (currentTab) {
-            0 -> incrementTab()
+            0 -> if(_uiState.value.locality.isNotEmpty()) incrementTab() else showSnackbar(
+                "Please enter you current locality"
+            )
             1 -> if (_uiState.value.selectedPronouns.isNotEmpty()) incrementTab() else showSnackbar(
                 "Please select at least one pronoun"
             )
@@ -209,6 +211,10 @@ class InformationViewModel : ViewModel() {
         _uiState.update { it.copy(selectedDrugOption = drugOption) }
     }
 
+    fun onLocationChnage(newValue: String){
+        _uiState.update { it.copy(locality = newValue) }
+    }
+
     private fun showSnackbar(message: String) {
         viewModelScope.launch {
             SnackbarManager.sendEvent(SnackbarEvent(message))
@@ -217,6 +223,7 @@ class InformationViewModel : ViewModel() {
 }
 
 data class InformationUiState(
+    val locality: String="",
     val currentTab: Int = 0,
     val selectedPronouns: List<String> = emptyList(),
     val selectedGender: String = "",

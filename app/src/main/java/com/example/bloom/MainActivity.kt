@@ -77,12 +77,6 @@ class MainActivity : ComponentActivity() {
                                 IntroScreen(
                                     navigateToLogin = {
                                         navController.navigate(Login)
-                                    },
-                                    navigateToHome = {
-                                        navController.navigate(Home) {
-                                            launchSingleTop = true
-                                            popUpTo(0) { inclusive = true }
-                                        }
                                     }
                                 )
                             }
@@ -90,10 +84,10 @@ class MainActivity : ComponentActivity() {
                             composable<Login> {
                                 LoginScreen(
                                     navigateToVerification = {
-                                        navController.navigate(EmailVerification("login"))
-                                    },
-                                    navigateToRegister = {
-                                        navController.navigate(Registration)
+                                        navController.navigate(EmailVerification("login")) {
+                                            launchSingleTop = true
+                                            popUpTo(0) { inclusive = true }
+                                        }
                                     }
                                 )
                             }
@@ -116,7 +110,11 @@ class MainActivity : ComponentActivity() {
                             val navigateToNext: () -> Unit = {
                                 when (origin) {
                                     "login" -> {
-                                        navController.navigate(Home) {
+                                        //navController.navigate(Home) {
+                                          //  launchSingleTop = true
+                                            //popUpTo(0) { inclusive = true }
+                                        //}
+                                        navController.navigate(BasicInformation) {
                                             launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
@@ -135,9 +133,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                             EmailVerificationScreen(
-                                navigateBack = {
-                                    navController.popBackStack()
-                                },
                                 navigateToNextScreen = navigateToNext
                             )
                         }
@@ -145,7 +140,10 @@ class MainActivity : ComponentActivity() {
                         composable<BasicInformation> {
                             BasicInformationScreen(
                                 navigateToNextScreen = {
-                                    navController.navigate(Intermediate1)
+                                    navController.navigate(Intermediate1) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 }
                             )
                         }
@@ -153,7 +151,10 @@ class MainActivity : ComponentActivity() {
                         composable<Intermediate1> {
                             IntermediateScreen1(
                                 navigateToNextScreen = {
-                                    navController.navigate(Information)
+                                    navController.navigate(Information) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 }
                             )
                         }
@@ -161,7 +162,10 @@ class MainActivity : ComponentActivity() {
                         composable<Intermediate2> {
                             IntermediateScreen2(
                                 navigateToNextScreen = {
-                                    navController.navigate(AdvancedInformation)
+                                    navController.navigate(AdvancedInformation) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 }
                             )
                         }
@@ -169,7 +173,10 @@ class MainActivity : ComponentActivity() {
                         composable<Information> {
                             InformationScreen(
                                 navigateToNextScreen = {
-                                    navController.navigate(Intermediate2)
+                                    navController.navigate(Intermediate2) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
                                 }
                             )
                         }
@@ -177,7 +184,7 @@ class MainActivity : ComponentActivity() {
                         composable<AdvancedInformation> {
                             AdvancedInformationScreen(
                                 navigateToNextScreen = {
-                                    navController.navigate(SuggestSubscription) {
+                                    navController.navigate(RegistrationComplete) {
                                         launchSingleTop = true
                                         popUpTo(0) { inclusive = true }
                                     }

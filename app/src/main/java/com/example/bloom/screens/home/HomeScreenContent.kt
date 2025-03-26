@@ -1,14 +1,19 @@
 package com.example.bloom.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -22,108 +27,196 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bloom.R
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import com.example.bloom.UserPreference
+import com.example.bloom.model.Connections
 import com.example.bloom.ui.theme.BloomTheme
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun MainScreen() {
-    Scaffold(
-        floatingActionButton = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CircleButton(size = 50.dp, 0.4f, iconResId = R.drawable.cross)
-                CircleButton(size = 70.dp, 0.8f, iconResId = R.drawable.staricon)
-                CircleButton(size = 50.dp, 0.5f, iconResId = R.drawable.heart)
-            }
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            UserCardView(
-                userName = "Charlie, 29",
-                imageResId = R.drawable.horse_rider,
-                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
-                location = "SURAT, INDIA"
-            )
 
-            UserInformationCard(
-                title = "WHO AM I?",
-                attributes = listOf(
+    val showMatchScreen = remember { mutableStateOf(false) }
+    val userProfiles = remember {
+        mutableStateListOf( UserProfile(
+            userID = "1234567890",
+            name = "Charlie, 29",
+            imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
+            activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
+            location = "SURAT, INDIA",
+            details = listOf(
+                R.drawable.ac_1_date to "22",
+                R.drawable.ac_2_heightscale to "6'2 ft",
+                R.drawable.ac_2_sexuality to "Straight",
+                R.drawable.ac_2_pronoun_person to "Male",
+                R.drawable.ac_2_location to "Surat, India",
+                R.drawable.ac_2_work to "Android Developer",
+                R.drawable.ac_2_studylevel to "BCA"
+            ),
+            aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
+        ),
+            UserProfile(
+                userID = "9408335005",
+                name = "Ethan, 25",
+                imageResId = listOf(R.drawable.man,R.drawable.horse_rider2,R.drawable.horse_rider3),
+                activeStatus = "ACTIVE FROM 3PM TO 10PM IST",
+                location = "MUMBAI, INDIA",
+                details = listOf(
+                    R.drawable.ac_1_date to "25",
+                    R.drawable.ac_2_heightscale to "5'11 ft",
+                    R.drawable.ac_2_sexuality to "Straight",
+                    R.drawable.ac_2_pronoun_person to "Male",
+                    R.drawable.ac_2_location to "Mumbai, India",
+                    R.drawable.ac_2_work to "Software Engineer",
+                    R.drawable.ac_2_studylevel to "MCA"
+                ),
+                aboutMe = "Tech enthusiast who loves coding, traveling, and gaming."
+            ),
+
+            UserProfile(
+                userID = "9876543210",
+                name = "Charlie, 29",
+                imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
+                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
+                location = "SURAT, INDIA",
+                details = listOf(
                     R.drawable.ac_1_date to "22",
                     R.drawable.ac_2_heightscale to "6'2 ft",
                     R.drawable.ac_2_sexuality to "Straight",
                     R.drawable.ac_2_pronoun_person to "Male",
-                    R.drawable.ac_2_location to "Surat,India",
+                    R.drawable.ac_2_location to "Surat, India",
                     R.drawable.ac_2_work to "Android Developer",
-                    R.drawable.ac_2_studylevel to "BCA",
+                    R.drawable.ac_2_studylevel to "BCA"
                 ),
-                description = "I love exploring new places, trying out different cuisines, and spending time with animals."
-            )
-
-            UserCardView(
-                userName = "",
-                imageResId = R.drawable.man,
-                activeStatus = "",
-                location = ""
-            )
-
-            CompatibilityCard()
-
-            UserInformationCard(
-                title = "WHAT I WANT?",
-                attributes = listOf(),
-                description = "❤\uFE0F Long Time Relationship"
-            )
-
-            UserCardView(
-                userName = "",
-                imageResId = R.drawable.horse_rider2,
-                activeStatus = "",
-                location = ""
-            )
-
-            UserInformationCard(
-                title = "LIFESTYLE",
-                attributes = listOf(
-                    R.drawable.ac_2_drink to "Sometimes",
-                    R.drawable.ac_2_weed to "Nope",
-                    R.drawable.ac_2_somoke to "Sometimes",
-                    R.drawable.gym_svgrepo_com to "Exercise",
-                    R.drawable.language_svgrepo_com to "English, Hindi, Gujarati",
+                aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
+            ),
+            UserProfile(
+                userID = "9537920140",
+                name = "Doe, 29",
+                imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
+                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
+                location = "PUNE, INDIA",
+                details = listOf(
+                    R.drawable.ac_1_date to "22",
+                    R.drawable.ac_2_heightscale to "4'11 ft",
+                    R.drawable.ac_2_sexuality to "Straight",
+                    R.drawable.ac_2_pronoun_person to "Male",
+                    R.drawable.ac_2_location to "Surat, India",
+                    R.drawable.ac_2_work to "Android Developer",
+                    R.drawable.ac_2_studylevel to "BCA"
                 ),
-                description = ""
-            )
-
-            UserInformationCard(
-                title = "MY INTEREST",
-                attributes = listOf(
-                    R.drawable.hiking_svgrepo_com to "Hiking",
-                    R.drawable.travel_svgrepo_com to "Travelling",
-                    R.drawable.swimming_svgrepo_com to "Swimming",
-                    R.drawable.design_education_painting_svgrepo_com to "Fine Art",
-                    R.drawable.stand_up_horse_with_jockey_svgrepo_com to "Horse Riding",
-                    R.drawable.gamepad_svgrepo_com to "Gamer",
+                aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
+            ),
+            UserProfile(
+                userID = "9824384947",
+                name = "John, 22",
+                imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
+                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
+                location = "NAVSARI, INDIA",
+                details = listOf(
+                    R.drawable.ac_1_date to "02",
+                    R.drawable.ac_2_heightscale to "6'0 ft",
+                    R.drawable.ac_2_sexuality to "Straight",
+                    R.drawable.ac_2_pronoun_person to "Male",
+                    R.drawable.ac_2_location to "Surat, India",
+                    R.drawable.ac_2_work to "Android Developer",
+                    R.drawable.ac_2_studylevel to "BCA"
                 ),
-                description = ""
+                aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
             )
-
-            UserCardView(
-                userName = "",
-                imageResId = R.drawable.horse_rider3,
-                activeStatus = "",
-                location = ""
+        )
+    }
+    val currentIndex = remember { mutableStateOf(0) }
+    Scaffold(
+        floatingActionButton = {
+            ActionButtons(
+                onNext = {
+                    currentIndex.value = (currentIndex.value + 1) % userProfiles.size
+                },
+                onLike = {
+                    if (userProfiles.isNotEmpty()) {
+                        userProfiles.removeAt(currentIndex.value)
+                        showMatchScreen.value = true
+                    }
+                },
+                showMatchScreen.value
             )
+        }
+    ){
+        paddingValues ->
+        val profile = userProfiles[currentIndex.value]
+        if (showMatchScreen.value) {
+            MatchScreen(onDismiss = { showMatchScreen.value = false }, userID = profile.userID)
+        }else if (userProfiles.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                UserCardView(
+                    userName = profile.name,
+                    imageResId = profile.imageResId.get(0),
+                    activeStatus = profile.activeStatus,
+                    location = profile.location
+                )
 
-            ReportAndShareButtons()
+                UserInformationCard(
+                    title = "WHO AM I?",
+                    attributes = profile.details,
+                    description = profile.aboutMe
+                )
+                UserCardView(
+                    userName = "",
+                    imageResId = profile.imageResId.get(1),
+                    activeStatus = "",
+                    location = ""
+                )
+
+                CompatibilityCard()
+
+                UserInformationCard(
+                    title = "WHAT I WANT?",
+                    attributes = listOf(),
+                    description = "❤ Long Time Relationship"
+                )
+
+                UserInformationCard(
+                    title = "LIFESTYLE",
+                    attributes = listOf(
+                        R.drawable.ac_2_drink to "Sometimes",
+                        R.drawable.ac_2_weed to "Nope",
+                        R.drawable.ac_2_somoke to "Sometimes",
+                        R.drawable.gym_svgrepo_com to "Exercise",
+                        R.drawable.language_svgrepo_com to "English, Hindi, Gujarati",
+                    ),
+                    description = ""
+                )
+
+                UserInformationCard(
+                    title = "MY INTEREST",
+                    attributes = listOf(
+                        R.drawable.hiking_svgrepo_com to "Hiking",
+                        R.drawable.travel_svgrepo_com to "Travelling",
+                        R.drawable.swimming_svgrepo_com to "Swimming",
+                        R.drawable.design_education_painting_svgrepo_com to "Fine Art",
+                        R.drawable.stand_up_horse_with_jockey_svgrepo_com to "Horse Riding",
+                        R.drawable.gamepad_svgrepo_com to "Gamer",
+                    ),
+                    description = ""
+                )
+
+                UserCardView(
+                    userName = "",
+                    imageResId = profile.imageResId.get(2),
+                    activeStatus = "",
+                    location = ""
+                )
+            }
+        }else {
+            EmptyStateScreen()
         }
     }
 }
@@ -166,7 +259,7 @@ private fun UserCardView(
                             text = userName,
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.background,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                         )
                     }
 
@@ -206,24 +299,6 @@ private fun InfoCard(text: String) {
                 style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.background)
             )
         }
-    }
-}
-
-@Composable
-private fun CircleButton(size: Dp, iconSize: Float, iconResId: Int) {
-    IconButton(
-        onClick = {},
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(id = iconResId),
-            tint = Color.Unspecified,
-            modifier = Modifier.size(size * iconSize),
-            contentDescription = null
-        )
     }
 }
 
@@ -379,58 +454,59 @@ private fun CompatibilityCard() {
 }
 
 @Composable
-private fun ReportAndShareButtons() {
-    Column(
+fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit,showMatchScreen: Boolean) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 100.dp, start = 16.dp, end = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF4F1F1),
-                contentColor = Color.Black
-            ),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
-        ) {
-            Text(
-                text = "Report or Block",
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .padding(bottom = 10.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF4F1F1),
-                contentColor = Color.Black
-            ),
-            elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
-        ) {
-            Text(
-                text = "Share Profile",
-                style = MaterialTheme.typography.bodyLarge
-            )
+        if(showMatchScreen == false){
+            Spacer(modifier = Modifier.width(20.dp))
+            Button(
+                modifier = Modifier.size(70.dp).clip(CircleShape),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground
+                ),
+                onClick = onNext
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.cross),
+                    contentDescription = "Next",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(25.dp))
+            Button(
+                modifier = Modifier.size(70.dp).clip(CircleShape),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground
+                ),
+                onClick = onLike
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.heart),
+                    contentDescription = "Like",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         }
     }
 }
 
-data class User(
+data class UserProfile(
+    val userID: String,
     val name: String,
-    val imageResId: Int,
+    val imageResId: List<Int>,
     val activeStatus: String,
-    val location: String
+    val location: String,
+    val details: List<Pair<Int, String>>, // List of icons and corresponding text
+    val aboutMe: String
 )
 
 @Preview(showBackground = true)
@@ -440,6 +516,51 @@ fun HomeContentPreview() {
         MainScreen()
     }
 }
+
+@Composable
+fun EmptyStateScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "No more profiles available.",
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            color = Color.Gray
+        )
+    }
+}
+
+
+@Composable
+fun MatchScreen(onDismiss: () -> Unit,userID: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
+    ) {
+        val userPreference=UserPreference(LocalContext.current)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("It's a Match!", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick= {
+                val firestore = FirebaseFirestore.getInstance()
+                firestore.collection("connections").add(
+                    Connections(
+                user1Id = userPreference.user.value,//current userid
+                user2Id = userID//userid of connection
+                )
+                ).addOnSuccessListener {onDismiss()} //else use this two functions
+                    .addOnFailureListener{e ->
+                    Log.d("firebase_error",e.message.toString())}
+            }) {
+                Text("Continue")
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

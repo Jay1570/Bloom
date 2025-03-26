@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -145,7 +146,8 @@ fun TextPromptScreen(
             Text(
                 text = selectedPrompt,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                modifier = Modifier.padding(bottom = 10.dp)
+
             )
             OutlinedTextField(
                 value = answer,
@@ -169,7 +171,8 @@ fun TextPromptScreen(
                     containerColor = MaterialTheme.colorScheme.onBackground,
                     contentColor = MaterialTheme.colorScheme.background
                 ),
-                modifier = Modifier.fillMaxWidth()
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier.fillMaxWidth().height(50.dp)
             ) {
                 Text("Done")
             }
@@ -251,7 +254,7 @@ private fun PromptItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 12.dp),
+            .padding(vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

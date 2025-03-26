@@ -31,7 +31,6 @@ fun NameScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 16.dp)
     ) {
         Text(
             text = "What's your name?",
@@ -41,7 +40,7 @@ fun NameScreen(
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 30.dp)
+                .padding(bottom = 15.dp)
         )
         OutlinedTextField(
             value = uiState.firstName,
@@ -70,60 +69,14 @@ fun NameScreen(
             shape = RoundedCornerShape(12.dp),
             textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         Text(
-            text = "Last name is optional, and only shared with",
+            text = "Last name is optional, and only shared with matches",
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "matches.",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "Why?",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF68275F)
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Card(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        isVisibleOnProfile = !isVisibleOnProfile
-                    }
-                )
-            ) {
-                Row(
-                    modifier = Modifier.wrapContentWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = isVisibleOnProfile,
-                        onCheckedChange = { isVisibleOnProfile = it }
-                    )
-                    Text(
-                        text = "Visible on profile",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
-                }
-            }
-        }
     }
 }
 

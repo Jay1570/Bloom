@@ -1,11 +1,14 @@
 package com.example.bloom.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
@@ -53,13 +56,14 @@ fun RationaleDialog(title: String, onRequestPermission: () -> Unit) {
                         showWarningDialog = false
                         onRequestPermission()
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.background
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp, 8.dp, 16.dp, 0.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = orange,
-                        contentColor = Color.White
-                    )
+                        .padding(5.dp, 5.dp, 5.dp, 0.dp).height(50.dp),
+                    shape =RoundedCornerShape(10.dp)
                 ) { Text(text = "ok") }
             },
             onDismissRequest = { showWarningDialog = false }
@@ -83,13 +87,14 @@ fun PermissionDialog(title: String, onRequestPermission: () -> Unit) {
                         showWarningDialog = false
                         onRequestPermission()
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.background
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp, 8.dp, 16.dp, 0.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = orange,
-                        contentColor = Color.White
-                    )
+                        .padding(5.dp, 5.dp, 5.dp, 0.dp).height(50.dp),
+                    shape =RoundedCornerShape(10.dp)
                 ) { Text(text = "ok") }
             },
             onDismissRequest = { showWarningDialog = false }

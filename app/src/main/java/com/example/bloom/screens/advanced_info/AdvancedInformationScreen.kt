@@ -60,6 +60,7 @@ fun AdvancedInformationScreen(
                         contentDescription = ""
                     )
                 }
+                Spacer(modifier = Modifier.width(10.dp))
             }
         }
     ) { innerPadding ->

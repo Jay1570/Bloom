@@ -120,7 +120,7 @@ fun ImageSelectionScreen(
         }
 
         Text(
-            text = "Click on the Image to Remove it\n6 required",
+            text = "Click on the Image to Remove it\n1 required compulsory",
             fontSize = 14.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center,

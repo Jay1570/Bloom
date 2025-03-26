@@ -1,5 +1,6 @@
 package com.example.bloom.screens.basic_information
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,7 @@ fun BasicInformationScreen(
     navigateToNextScreen: () -> Unit,
     viewModel: BasicInformationViewModel = viewModel()
 ) {
+    BackHandler(enabled = true) {}
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val tabTitles = listOf(
         R.drawable.ac_1_name,
@@ -66,6 +69,7 @@ fun BasicInformationScreen(
                         contentDescription = ""
                     )
                 }
+                Spacer(modifier = Modifier.width(5.dp))
             }
         }
     )
@@ -74,7 +78,7 @@ fun BasicInformationScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .imePadding()
+                .imePadding().padding(top = 80.dp)
         ) {
             Column(
                 modifier = Modifier

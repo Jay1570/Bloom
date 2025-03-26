@@ -193,15 +193,6 @@ fun AppBar(
             }
         },
         actions = {
-            IconButton(
-                onClick = {},
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
-            ) {
-                Icon(Icons.Outlined.MoreVert, contentDescription = "Video Call")
-            }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 onClick = {},

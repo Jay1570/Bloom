@@ -29,10 +29,6 @@ fun InformationScreen(
     navigateToNextScreen: () -> Unit,
     viewModel: InformationViewModel = viewModel()
 ) {
-    RequestPermissionDialog(
-        title = "give location permission",
-        permission = Manifest.permission.ACCESS_FINE_LOCATION
-    )
     InformationContent(
         navigateToNextScreen = navigateToNextScreen,
         viewModel = viewModel
@@ -97,6 +93,7 @@ fun InformationContent(
                         contentDescription = ""
                     )
                 }
+                Spacer(modifier = Modifier.width(10.dp))
             }
         }
     ) { innerPadding ->
@@ -104,7 +101,7 @@ fun InformationContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .imePadding()
+                .imePadding().padding(top=60.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -147,10 +144,10 @@ fun InformationContent(
                     }
                 ) { targetTab ->
                     when (targetTab) {
-                        /*0 -> CurrentLocationScreen(
+                        0 -> CurrentLocationScreen(
                             uiState = uiState,
-                            onLocationChange = viewModel::onLocationChange
-                        )*/
+                            onLocationChange = viewModel::onLocationChnage
+                        )
                         1 -> PronounsSelectionScreen(
                             uiState = uiState,
                             addOrRemovePronoun = viewModel::addOrRemovePronoun

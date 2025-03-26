@@ -2,46 +2,43 @@ package com.example.bloom.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.example.bloom.SnackbarEvent
+import com.example.bloom.SnackbarManager
+import com.example.bloom.UserPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(val userPreference: UserPreference) : ViewModel() {
+
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val username get() = uiState.value.username
-    private val password get() = uiState.value.password
-    private val isPasswordVisible get() = uiState.value.isPasswordVisible
-
-    fun onUsernameChange(newValue: String) {
-        _uiState.value = _uiState.value.copy(username = newValue)
-    }
-
-    fun onPasswordChange(newValue: String) {
-        _uiState.value = _uiState.value.copy(password = newValue)
-    }
-
-    fun onVisibilityChange() {
-        _uiState.value = _uiState.value.copy(isPasswordVisible = !isPasswordVisible)
+    fun onUsernameChange(username: String) {
+        _uiState.update { it.copy(username = username) }
     }
 
     fun onLoginClick(navigateTo: () -> Unit) {
-        _uiState.value = _uiState.value.copy(inProcess = true)
-        viewModelScope.launch {
-            delay(2000)
-        }.invokeOnCompletion {
-            _uiState.value = _uiState.value.copy(inProcess = false)
+        if (uiState.value.username.length == 10) { // Ensure 10-digit phone number
+            userPreference.setUserId(uiState.value.username)
+
             navigateTo()
+        } else {
+            showSnackbar("Please enter a valid 10-digit phone number.")
+        }
+    }
+
+    private fun showSnackbar(message: String) {
+        viewModelScope.launch {
+            // Assuming you have a SnackbarManager in your app
+            SnackbarManager.sendEvent(SnackbarEvent(message))
         }
     }
 }
 
 data class LoginUiState(
     val username: String = "",
-    val password: String = "",
-    val isPasswordVisible: Boolean = false,
     val inProcess: Boolean = false
 )

@@ -33,7 +33,7 @@ fun WorkplaceSelectionScreen(
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
         )
-        Spacer(modifier = Modifier.height(60.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
             value = uiState.workPlace,
             onValueChange = {
@@ -50,21 +50,6 @@ fun WorkplaceSelectionScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Column(verticalArrangement = Arrangement.Bottom) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { isChecked = !isChecked }
-            ) {
-                Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { isChecked = it },
-                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.onBackground)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "Visible on profile")
-            }
-        }
-
     }
 }
 

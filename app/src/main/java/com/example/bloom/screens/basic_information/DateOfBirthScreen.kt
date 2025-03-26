@@ -32,8 +32,7 @@ fun DateOfBirthScreen(
     val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -117,18 +116,7 @@ fun DateOfBirthScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-                onConfirmClick()
-            },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "Confirm Age")
-        }
+        Spacer(modifier = Modifier.height(20.dp))
 
         if (uiState.isDialogVisible) {
             AgeVerificationDialog(

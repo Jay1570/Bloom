@@ -24,7 +24,7 @@ fun DatingIntentionScreen(
     changeIntention: (String) -> Unit
 ) {
     val options = listOf(
-        "Life pater",
+        "Life partner",
         "Long-term relationship, open to short",
         "Short-term relationship, open to long",
         "Short-term relationship",
@@ -57,28 +57,6 @@ fun DatingIntentionScreen(
             }
         }
         Spacer(Modifier.weight(1f))
-        Card(
-            modifier = Modifier.clickable(
-                onClick = {
-                    isVisibleOnProfile = !isVisibleOnProfile
-                }
-            )
-        ) {
-            Row(
-                modifier = Modifier.wrapContentWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = isVisibleOnProfile,
-                    onCheckedChange = { isVisibleOnProfile = it }
-                )
-                Text(
-                    text = "Visible on profile",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
-        }
     }
 }
 

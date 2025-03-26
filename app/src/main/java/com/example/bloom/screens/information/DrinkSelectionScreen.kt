@@ -51,28 +51,7 @@ fun DrinkSelectionScreen(
             }
         }
         Spacer(Modifier.height(16.dp))
-        Card(
-            modifier = Modifier.clickable(
-                onClick = {
-                    isVisibleOnProfile = !isVisibleOnProfile
-                }
-            )
-        ) {
-            Row(
-                modifier = Modifier.wrapContentWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = isVisibleOnProfile,
-                    onCheckedChange = { isVisibleOnProfile = it }
-                )
-                Text(
-                    text = "Visible on profile",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
-        }
+
     }
 }
 

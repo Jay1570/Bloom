@@ -60,7 +60,7 @@ fun PronounsSelectionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 items(uiState.selectedPronouns) { pronoun ->
                     Chip(
@@ -82,8 +82,8 @@ fun PronounsSelectionScreen(
                 .fillMaxWidth(1f)
                 .padding(vertical = 16.dp)
                 .wrapContentHeight(align = Alignment.Top),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             itemCount = pronouns.size
         ) { index ->
             Card(
@@ -115,30 +115,8 @@ fun PronounsSelectionScreen(
             }
         }
         Spacer(Modifier.weight(1f))
-        Card(
-            modifier = Modifier.clickable(
-                onClick = {
-                    isVisibleOnProfile = !isVisibleOnProfile
-                }
-            )
-        ) {
-            Row(
-                modifier = Modifier.wrapContentWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = isVisibleOnProfile,
-                    onCheckedChange = { isVisibleOnProfile = it }
-                )
-                Text(
-                    text = "Visible on profile",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
         }
     }
-}
 
 @Composable
 fun Chip(text: String, onClose: () -> Unit) {

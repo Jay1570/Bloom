@@ -51,23 +51,6 @@ fun StudySelectionScreen(
             }
         }
         Spacer(Modifier.weight(1f))
-        Card {
-            Row(
-                modifier = Modifier.wrapContentWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.VisibilityOff,
-                    contentDescription = "",
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
-                )
-                Text(
-                    text = "Hidden on profile",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-            }
-        }
     }
 }
 
