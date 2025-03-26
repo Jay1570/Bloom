@@ -6,14 +6,14 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bloom.screens.connection.ChatViewModel
-import com.example.bloom.screens.connection.HomeViewModel
+import com.example.bloom.screens.connection.ConnectionListViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
 
 
         initializer {
-            HomeViewModel(myApp().userPreference)
+            ConnectionListViewModel(myApp().userPreference)
         }
 
         initializer {

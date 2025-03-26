@@ -11,7 +11,7 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class HomeViewModel(private val userPreference: UserPreference) : ViewModel() {
+class ConnectionListViewModel(private val userPreference: UserPreference) : ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
     private var listenerRegistration: ListenerRegistration? = null
