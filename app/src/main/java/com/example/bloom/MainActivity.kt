@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                             composable<Login> {
                                 LoginScreen(
                                     navigateToVerification = {
-                                        navController.navigate(EmailVerification("login")) {
+                                        navController.navigate(EmailVerification("login",it)) {
                                             launchSingleTop = true
                                             popUpTo(0) { inclusive = true }
                                         }
@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity() {
                                         navController.popBackStack()
                                     },
                                     navigateToVerification = {
-                                        navController.navigate(EmailVerification("register"))
+                                        navController.navigate(EmailVerification("register",""))
                                     }
                                 )
                             }
@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
 
                             val navigateToNext: () -> Unit = {
                                 when (origin) {
-                                    "login" -> {
+                                    "login"-> {
                                         //navController.navigate(Home) {
                                           //  launchSingleTop = true
                                             //popUpTo(0) { inclusive = true }

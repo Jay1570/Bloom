@@ -1,5 +1,6 @@
 package com.example.bloom
 
+import android.R
 import kotlinx.serialization.Serializable
 
 sealed interface Routes
@@ -18,7 +19,8 @@ data object Registration : Routes
 
 @Serializable
 data class EmailVerification(
-    val origin: String
+    val origin: String,
+    val verificationID: String
 ) : Routes
 
 @Serializable

@@ -63,18 +63,16 @@ fun IntermediateScreen1(navigateToNextScreen: () -> Unit) {
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
                 )
                 Spacer(modifier = Modifier.weight(2.2f))
-                Button(
-                    onClick = { navigateToNextScreen() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(10.dp),
+                Button(onClick = {navigateToNextScreen()},
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.onBackground,
                         contentColor = MaterialTheme.colorScheme.background
-                    )
+                    ),
+                    shape = MaterialTheme.shapes.medium
                 ) {
-                    Text(text = "Fill out your profile", color = Color.White)
+                    Text(text = "Fill out more details",
+                        style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

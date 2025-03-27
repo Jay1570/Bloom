@@ -39,7 +39,7 @@ import com.example.bloom.ui.theme.outlineLight
 
 @Composable
 fun LoginScreen(
-    navigateToVerification: () -> Unit,
+    navigateToVerification: (String) -> Unit,
     viewModel: LoginViewModel =  viewModel(factory = AppViewModelProvider .factory)
 ) {
 
@@ -120,7 +120,7 @@ fun LoginScreenContent(
                 ),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text(text = "Sned OTP",
+                Text(text = "Send OTP",
                     style = MaterialTheme.typography.bodyMedium)
             }
 

@@ -25,7 +25,8 @@ fun IntermediateScreen2(navigateToNextScreen: () -> Unit) {
                 .padding(it)
         ) {
             Column(
-                modifier = Modifier.padding(20.dp)
+                modifier = Modifier
+                    .padding(20.dp)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,7 +40,9 @@ fun IntermediateScreen2(navigateToNextScreen: () -> Unit) {
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
                 )
                 Spacer(modifier= Modifier.height(5.dp))
                 Text(
@@ -49,7 +52,9 @@ fun IntermediateScreen2(navigateToNextScreen: () -> Unit) {
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
                 )
                 Spacer(modifier= Modifier.height(5.dp))
                 Text(
@@ -59,21 +64,23 @@ fun IntermediateScreen2(navigateToNextScreen: () -> Unit) {
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
                 )
                 Spacer(modifier = Modifier.weight(2.2f))
-                Button(
-                    onClick = { navigateToNextScreen() },
+                Button(onClick = { navigateToNextScreen() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.onBackground,
                         contentColor = MaterialTheme.colorScheme.background
-                    )
+                    ),
+                    shape = MaterialTheme.shapes.medium
                 ) {
-                    Text(text = "Add more details", color = Color.White)
+                    Text(text = "Add pictures and promts",
+                        style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

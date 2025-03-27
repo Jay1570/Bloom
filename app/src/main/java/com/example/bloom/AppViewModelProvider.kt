@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bloom.screens.auth.LoginViewModel
+import com.example.bloom.screens.auth.VerificationViewModel
 import com.example.bloom.screens.connection.ChatViewModel
 import com.example.bloom.screens.connection.ConnectionListViewModel
 
@@ -22,6 +23,9 @@ object AppViewModelProvider {
         }
         initializer {
             LoginViewModel(myApp().userPreference)
+        }
+        initializer {
+            VerificationViewModel(this.createSavedStateHandle())
         }
     }
 }

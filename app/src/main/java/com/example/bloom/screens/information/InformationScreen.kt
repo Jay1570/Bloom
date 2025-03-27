@@ -101,7 +101,7 @@ fun InformationContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .imePadding().padding(top=60.dp)
+                .imePadding().padding(top=80.dp)
         ) {
             Column(
                 modifier = Modifier
