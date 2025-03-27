@@ -1,16 +1,18 @@
 package com.example.bloom.screens.basic_information
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
+import com.example.bloom.UserPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-class BasicInformationViewModel : ViewModel() {
+class BasicInformationViewModel(private val userPreference: UserPreference) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BasicInformationUiState())
     val uiState get() = _uiState.asStateFlow()
@@ -51,7 +53,9 @@ class BasicInformationViewModel : ViewModel() {
                 "Every Field is mandatory"
             )
 
-            2 -> incrementCurrentTab()
+            2 -> {
+                incrementCurrentTab()
+            }
         }
     }
 
@@ -85,6 +89,7 @@ class BasicInformationViewModel : ViewModel() {
             _uiState.value = _uiState.value.copy(age = age)
             if (age >= 18) {
                 onDialogVisibilityChange()
+                Log.d("info", "${userPreference.user.value} ${_uiState.value.firstName} ${_uiState.value.age}")
             } else {
                 showSnackbar("Your age has to be greater than 18")
             }

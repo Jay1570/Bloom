@@ -2,6 +2,7 @@ package com.example.bloom.screens.advanced_info
 
 import android.media.MediaRecorder
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
@@ -30,18 +31,19 @@ class AdvancedInformationViewModel : ViewModel() {
         val imageCount = _uiState.value.images.count { it != Uri.EMPTY }
         val promptCount = _uiState.value.selectedTextPrompts.count { it != null }
         when (currentTab) {
-            0 -> if (imageCount == 1) incrementCurrentTab() else showSnackbar("Please select at least 6 images")
+            0 -> if (imageCount >= 1) incrementCurrentTab() else showSnackbar("Please select at least 1 images")
 //            1 -> if (_uiState.value.recorderAudioUri != null) incrementCurrentTab() else showSnackbar(
 //                "Please record audio"
 //            )
 
-            1 -> if (promptCount == 1) navigateToNext() else showSnackbar("Please select at least 3 text prompts")
+            1 -> if (promptCount >= 1) navigateToNext() else showSnackbar("Please select at least 1 text prompts")
         }
     }
 
     fun addImage(index: Int, imageUri: Uri) {
         val updatedImages = _uiState.value.images.toMutableList().apply {
             this[index] = imageUri
+            Log.d("images",imageUri.toString())
         }
         _uiState.update { it.copy(images = updatedImages) }
     }
@@ -118,6 +120,7 @@ class AdvancedInformationViewModel : ViewModel() {
     fun addTextPrompt(index: Int, prompt: String, answer: String) {
         val newList = _uiState.value.selectedTextPrompts.toMutableList().apply {
             this[index] = Pair(prompt, answer)
+            Log.d("prompts","$prompt | $answer")
         }
         _uiState.update { it.copy(selectedTextPrompts = newList) }
     }

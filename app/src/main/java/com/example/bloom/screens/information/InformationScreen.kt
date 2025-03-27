@@ -21,13 +21,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
 import com.example.bloom.screens.RequestPermissionDialog
 
 @Composable
 fun InformationScreen(
     navigateToNextScreen: () -> Unit,
-    viewModel: InformationViewModel = viewModel()
+    viewModel: InformationViewModel = viewModel(factory = AppViewModelProvider .factory)
 ) {
     InformationContent(
         navigateToNextScreen = navigateToNextScreen,

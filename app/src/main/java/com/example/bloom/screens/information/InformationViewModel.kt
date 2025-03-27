@@ -1,15 +1,17 @@
 package com.example.bloom.screens.information
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
+import com.example.bloom.UserPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class InformationViewModel : ViewModel() {
+class InformationViewModel(private val userPreference: UserPreference) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InformationUiState())
     val uiState get() = _uiState.asStateFlow()
@@ -85,7 +87,8 @@ class InformationViewModel : ViewModel() {
                 "Please select a weed option"
             )
 
-            20 -> if (_uiState.value.selectedDrugOption.isNotEmpty()) navigateToNext() else showSnackbar(
+            20 -> if (_uiState.value.selectedDrugOption.isNotEmpty()){
+                navigateToNext()} else showSnackbar(
                 "Please select a drug option"
             )
         }
@@ -208,7 +211,10 @@ class InformationViewModel : ViewModel() {
     }
 
     fun changeSelectedDrugOption(drugOption: String) {
-        _uiState.update { it.copy(selectedDrugOption = drugOption) }
+
+        _uiState.update { it.copy(selectedDrugOption = drugOption)
+        }
+        Log.d("infromation","${userPreference.user.value}${_uiState.value.selectedDrugOption} ${_uiState.value.selectedWeedOption} ${_uiState.value.selectedTobaccoOption} ${_uiState.value.selectedDrinkOption}")
     }
 
     fun onLocationChnage(newValue: String){

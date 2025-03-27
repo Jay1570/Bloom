@@ -25,13 +25,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
 import com.example.bloom.ui.theme.BloomTheme
 
 @Composable
 fun BasicInformationScreen(
     navigateToNextScreen: () -> Unit,
-    viewModel: BasicInformationViewModel = viewModel()
+    viewModel: BasicInformationViewModel = viewModel(factory = AppViewModelProvider .factory)
 ) {
     BackHandler(enabled = true) {}
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
