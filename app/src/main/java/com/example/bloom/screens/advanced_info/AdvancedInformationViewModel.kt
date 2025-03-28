@@ -2,6 +2,7 @@ package com.example.bloom.screens.advanced_info
 
 import android.provider.OpenableColumns
 import android.content.Context
+import android.database.Cursor
 import android.media.MediaRecorder
 import android.net.Uri
 import android.util.Base64
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
+import com.example.bloom.model.User_photo
 import com.example.bloom.model.User_prompt
 import com.example.bloom.model.insertinfo
 import com.example.bloom.model.insertinformation
@@ -34,6 +36,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -49,6 +52,7 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
 
     private var mediaRecorder: MediaRecorder? = null
     private var outputFile: File? = null
+    private var URL:String = ""
 
     private  val userid=userPreference.user.value
     private val currentTab: Int get() = _uiState.value.currentTab
@@ -73,8 +77,16 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
     fun addImage(index: Int, imageUri: Uri) {
         val updatedImages = _uiState.value.images.toMutableList().apply {
             this[index] = imageUri
-            Log.d("images",imageUri.toString())
+            Log.d("images", imageUri.toString())
 
+            val file = uriToFile(context, imageUri)
+            if (file != null) {
+                uploadImageToCloudinary(file, index.toString()) { imageUrl ->
+                    sendData(index.toString(), imageUrl) // ✅ Now it's called after upload
+                }
+            } else {
+                Log.d("uploaded", "Failed")
+            }
         }
         _uiState.update { it.copy(images = updatedImages) }
     }
@@ -208,7 +220,102 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
         }
     }
 
-}
+    fun uploadImageToCloudinary(imageFile: File, photoid: String, onSuccess: (String) -> Unit) {
+        val cloudName = "dfhfzeb8x"
+        val uploadPreset = "images" // Set this in Cloudinary console
+
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart(
+                "file", imageFile.name,
+                imageFile.asRequestBody("image/*".toMediaTypeOrNull()) // ✅ Use `asRequestBody`
+            )
+            .addFormDataPart("upload_preset", uploadPreset)
+            .build()
+
+        val request = Request.Builder()
+            .url("https://api.cloudinary.com/v1_1/$cloudName/image/upload")
+            .post(requestBody)
+            .build()
+
+        val client = OkHttpClient()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("CloudinaryUpload", "Upload failed: ${e.message}")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { responseBody ->
+                    val jsonObject = JSONObject(responseBody)
+                    val url = jsonObject.getString("secure_url") // ✅ Get URL from response
+                    Log.d("CloudinaryUpload", "Upload successful: $url")
+                    onSuccess(url) // ✅ Call the success callback
+                }
+            }
+        })
+    }
+
+    fun uriToFile(context: Context, uri: Uri): File? {
+        val fileName = getFileName(context, uri)
+        val file = File(context.cacheDir, fileName)
+
+        try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+            return file
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    fun getFileName(context: Context, uri: Uri): String {
+        var fileName = "temp_file"
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    fileName = it.getString(nameIndex)
+                }
+            }
+        }
+        return fileName
+    }
+
+    private fun sendData(photoID: String,url: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val userData= User_photo(userID = userid, photoID = photoID, url = url )
+            val client = OkHttpClient()
+            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+            val jsonBody = Json.encodeToString(userData)
+            Log.d("userdata",jsonBody)
+
+            val requestBody = jsonBody.toRequestBody(jsonMediaType)
+            val request = Request.Builder()
+                .url("http://192.168.0.131:8200/insert")
+                .addHeader("Content-Type", "application/json")
+                .post(requestBody)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e("failure", "Network error: ${e.message}")
+                }
+                override fun onResponse(call: Call, response: Response) {
+                    val responseBody = response.body?.string()
+                    Log.d("SERVER_RESPONSE", "Response Code: ${response.code}, Body: $responseBody")
+                }
+            })
+
+        }
+
+    }
+
+    }
 
 
 
