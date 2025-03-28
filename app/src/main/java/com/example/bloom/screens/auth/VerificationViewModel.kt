@@ -5,27 +5,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.bloom.BasicInformation
-import com.example.bloom.EmailVerification
-import com.example.bloom.Home
-import com.example.bloom.Routes
-import com.example.bloom.SnackbarEvent
-import com.example.bloom.SnackbarManager
-import com.example.bloom.UserPreference
-import com.squareup.okhttp.OkHttpClient
-import okhttp3.Request
-import kotlinx.coroutines.CoroutineScope
+import com.example.bloom.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttp
-import okhttp3.RequestBody
-import okhttp3.Response
+import okhttp3.Request
 import org.json.JSONObject
 
 class VerificationViewModel(val userPreference: UserPreference ,val savedStateHandle: SavedStateHandle) : ViewModel() {
