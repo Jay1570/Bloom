@@ -88,7 +88,7 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun changeDoYouHaveChildren(value: String) {
-        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(value)) }
+        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(doYouHaveChildren = value)) }
     }
 
     fun changeFamilyPlan(plan: String) {
