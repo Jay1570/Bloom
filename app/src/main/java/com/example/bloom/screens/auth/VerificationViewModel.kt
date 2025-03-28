@@ -41,8 +41,8 @@ class VerificationViewModel(val userPreference: UserPreference ,val savedStateHa
     }
 
     fun verifyEmail(navigateTo: (Routes) -> Unit, ) {
-        _uiState.value = _uiState.value.copy(inProcess = true)
         if(_uiState.value.code.trim().isNotEmpty()){
+            _uiState.value = _uiState.value.copy(inProcess = true)
             var userExists=false
             viewModelScope.launch {
                 _uiState.update { it.copy(inProcess = true) }

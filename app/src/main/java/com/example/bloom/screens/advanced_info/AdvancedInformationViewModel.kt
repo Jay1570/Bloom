@@ -1,5 +1,6 @@
 package com.example.bloom.screens.advanced_info
 
+import android.provider.OpenableColumns
 import android.content.Context
 import android.media.MediaRecorder
 import android.net.Uri
@@ -10,25 +11,36 @@ import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
+import com.example.bloom.model.User_prompt
 import com.example.bloom.model.insertinfo
+import com.example.bloom.model.insertinformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.Callback
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class AdvancedInformationViewModel(val userPreference: UserPreference,val context: Context) : ViewModel() {
 
@@ -38,6 +50,7 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
     private var mediaRecorder: MediaRecorder? = null
     private var outputFile: File? = null
 
+    private  val userid=userPreference.user.value
     private val currentTab: Int get() = _uiState.value.currentTab
 
     fun goToPrevious() {
@@ -61,6 +74,7 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
         val updatedImages = _uiState.value.images.toMutableList().apply {
             this[index] = imageUri
             Log.d("images",imageUri.toString())
+
         }
         _uiState.update { it.copy(images = updatedImages) }
     }
@@ -138,6 +152,7 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
         val newList = _uiState.value.selectedTextPrompts.toMutableList().apply {
             this[index] = Pair(prompt, answer)
             Log.d("prompts","$prompt | $answer")
+            senddata(index.toString(),prompt,answer)
         }
         _uiState.update { it.copy(selectedTextPrompts = newList) }
     }
@@ -167,26 +182,36 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
         }
     }
 
-    fun uriToBase64(context: Context, uri: Uri): String? {
-        return try {
-            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            val buffer = ByteArray(1024)
-            var bytesRead: Int
+    private fun senddata(promptid: String,prompt: String,answer: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val userData= User_prompt(userID = userid, promptID = promptid, prompt = prompt, answer = answer)
+            Log.d("userdata",userData.toString())
+            val client = OkHttpClient()
+            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+            val jsonBody = Json.encodeToString(userData)
 
-            while (inputStream?.read(buffer).also { bytesRead = it ?: -1 } != -1) {
-                byteArrayOutputStream.write(buffer, 0, bytesRead)
-            }
+            val requestBody = jsonBody.toRequestBody(jsonMediaType)
+            val request = Request.Builder()
+                .url("http://192.168.0.131:8100/insert")
+                .post(requestBody)
+                .build()
 
-            val byteArray = byteArrayOutputStream.toByteArray()
-            Base64.encodeToString(byteArray, Base64.DEFAULT)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("failure","Error: ${e.message}")
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("success",response.body?.string() ?: "No response")
+                }
+            })
         }
     }
 
 }
+
+
+
 
 data class AdvancedInformationUiState(
     val currentTab: Int = 0,
