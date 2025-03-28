@@ -19,6 +19,9 @@ class ProfileViewModel : ViewModel() {
     private val _visibilityState = MutableStateFlow(VisibilityState())
     val visibilityState get() = _visibilityState.asStateFlow()
 
+    fun onEditClick() {
+        //call api
+    }
 
     fun addOrRemovePronoun(pronoun: String) {
         _uiState.update {

@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -22,13 +21,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.bloom.screens.TopBar
+import com.example.bloom.screens.information.ChildrenScreen
+import com.example.bloom.screens.information.CurrentLocationScreen
+import com.example.bloom.screens.information.DatingIntentionScreen
+import com.example.bloom.screens.information.DatingPreferenceScreen
+import com.example.bloom.screens.information.DrinkSelectionScreen
+import com.example.bloom.screens.information.DrugsSelectionScreen
+import com.example.bloom.screens.information.EthnicitySelectionScreen
+import com.example.bloom.screens.information.FamilyPlanScreen
+import com.example.bloom.screens.information.GenderSelectionScreen
+import com.example.bloom.screens.information.HeightSelectionScreen
+import com.example.bloom.screens.information.HomeTownScreen
 import com.example.bloom.screens.information.InformationUiState
+import com.example.bloom.screens.information.PoliticalBeliefsScreen
 import com.example.bloom.screens.information.PronounsSelectionScreen
+import com.example.bloom.screens.information.RelationshipTypeScreen
+import com.example.bloom.screens.information.ReligiousBeliefsScreen
+import com.example.bloom.screens.information.SchoolCollegeSelectionScreen
+import com.example.bloom.screens.information.SexualitySelectionScreen
+import com.example.bloom.screens.information.StudySelectionScreen
+import com.example.bloom.screens.information.TobaccoSelectionScreen
+import com.example.bloom.screens.information.WeedSelectionScreen
 import com.example.bloom.screens.information.WorkplaceSelectionScreen
 import com.example.bloom.ui.theme.BloomTheme
 
@@ -78,6 +95,70 @@ fun ProfileScreen(
                 BackHandler {
                     viewModel.toggleSelectedPronouns()
                 }
+            } else if (visibilityState.selectedGender) {
+                GenderSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedGender = { viewModel.changeSelectedGender(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedGender()
+                }
+            } else if (visibilityState.selectedSexuality) {
+                SexualitySelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedSexuality = { viewModel.changeSelectedSexuality(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedSexuality()
+                }
+            } else if (visibilityState.selectedDatingPreferences) {
+                DatingPreferenceScreen (
+                    uiState = uiState.informationUiState,
+                    addOrRemoveDatingPreference = { viewModel.addOrRemoveDatingPreference(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedDatingPreferences()
+                }
+            } else if (visibilityState.selectedHeightInCm) {
+                HeightSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedHeightInCm = { viewModel.changeSelectedHeightInCm(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedHeightInCm()
+                }
+            } else if (visibilityState.selectedEthnicity) {
+                EthnicitySelectionScreen(
+                    uiState = uiState.informationUiState,
+                    addOrRemoveEthnicity = { viewModel.addOrRemoveEthnicity(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedEthnicity()
+                }
+            } else if (visibilityState.doYouHaveChildren) {
+                ChildrenScreen (
+                    uiState = uiState.informationUiState,
+                    changeValue = { viewModel.changeDoYouHaveChildren(it) }
+                )
+                BackHandler {
+                    viewModel.toggleDoYouHaveChildren()
+                }
+            } else if (visibilityState.selectedFamilyPlan) {
+                FamilyPlanScreen (
+                    uiState = uiState.informationUiState,
+                    changeFamilyPlan = { viewModel.changeFamilyPlan(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedFamilyPlan()
+                }
+            } else if (visibilityState.locality) {
+                CurrentLocationScreen(
+                    uiState = uiState.informationUiState,
+                    onLocationChange = { viewModel.onLocationChnage(it) }
+                )
+                BackHandler {
+                    viewModel.toggleLocality()
+                }
             } else if (visibilityState.workPlace) {
                 WorkplaceSelectionScreen(
                     uiState = uiState.informationUiState,
@@ -86,7 +167,96 @@ fun ProfileScreen(
                 BackHandler {
                     viewModel.toggleWorkPlace()
                 }
-            } else {
+            } else if (visibilityState.schoolOrCollege) {
+                SchoolCollegeSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    onSchoolOrCollegeChange = { viewModel.onSchoolOrCollegeChange(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSchoolOrCollege()
+                }
+            } else if (visibilityState.selectedEducation) {
+                StudySelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedEducation = { viewModel.changeSelectedEducation(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedEducation()
+                }
+            } else if (visibilityState.selectedReligiousBelief) {
+                ReligiousBeliefsScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedReligiousBelief = { viewModel.changeSelectedReligiousBelief(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedReligiousBelief()
+                }
+            } else if (visibilityState.homeTown) {
+                HomeTownScreen(
+                    uiState = uiState.informationUiState,
+                    onHomeTownChange = { viewModel.onHomeTownChange(it) }
+                )
+                BackHandler {
+                    viewModel.toggleHomeTown()
+                }
+            } else if (visibilityState.selectedPoliticalBelief) {
+                PoliticalBeliefsScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedPoliticalBelief = { viewModel.changeSelectedPoliticalBelief(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedPoliticalBelief()
+                }
+            } else if (visibilityState.selectedDatingIntention) {
+                DatingIntentionScreen(
+                    uiState = uiState.informationUiState,
+                    changeIntention = { viewModel.changeDatingIntention(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedDatingIntention()
+                }
+            } else if (visibilityState.selectedRelationshipType) {
+                RelationshipTypeScreen(
+                    uiState = uiState.informationUiState,
+                    addOrRemoveRelationshipType = { viewModel.addOrRemoveRelationshipType(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedRelationshipType()
+                }
+            } else if (visibilityState.selectedDrinkOption) {
+                DrinkSelectionScreen (
+                    uiState = uiState.informationUiState,
+                    changeSelectedDrinkOption = { viewModel.changeSelectedDrinkOption(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedDrinkOption()
+                }
+            } else if (visibilityState.selectedTobaccoOption) {
+                TobaccoSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedTobaccoOption = { viewModel.changeSelectedTobaccoOption(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedTobaccoOption()
+                }
+            } else if (visibilityState.selectedDrugOption) {
+                DrugsSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedDrugOption = { viewModel.changeSelectedDrugOption(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedDrugOption()
+                }
+            } else if (visibilityState.selectedWeedOption) {
+                WeedSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    changeSelectedWeedOption = { viewModel.changeSelectedWeedOption(it) }
+                )
+                BackHandler {
+                    viewModel.toggleSelectedWeedOption()
+                }
+            }
+            else {
                 Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
 
                     ImageSelection(
@@ -133,6 +303,14 @@ fun ProfileScreen(
                         onDrugClick = { viewModel.toggleSelectedDrugOption() },
                         onWeedClick = { viewModel.toggleSelectedWeedOption() },
                     )
+                    Spacer(Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            viewModel.onEditClick()
+                        }
+                    ) {
+                        Text(text = "Edit")
+                    }
                 }
             }
         }
@@ -157,22 +335,22 @@ fun ImageSelection(
             ) {
                 repeat(3) { columnIndex ->
                     val index = rowIndex * 3 + columnIndex
-                    Box(
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .padding(4.dp)
-                            .weight(1f)
-                            .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-                            .clickable {
-                                if (images[index].isEmpty()) {
-                                    onRemove(index)
-                                } else {
-                                    onAdd(index)
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (images[index].isEmpty()) {
+                    if (images[index].isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .padding(4.dp)
+                                .weight(1f)
+                                .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
+                                .clickable {
+                                    if (images[index].isEmpty()) {
+                                        onRemove(index)
+                                    } else {
+                                        onAdd(index)
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
                             AsyncImage(
                                 model = images[index],
                                 contentDescription = "Selected Image",
@@ -199,28 +377,28 @@ fun TextPrompts(
     selectedPrompts: List<Pair<String, String>?>,
 ) {
     selectedPrompts.forEachIndexed { index, selectedPrompt ->
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(min = 70.dp)
-                .border(
-                    1.dp,
-                    color = MaterialTheme.colorScheme.outline,
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .padding(8.dp)
-        ) {
-            if (selectedPrompt != null) {
-                Column(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = selectedPrompt.first,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+        if(selectedPrompt != null && selectedPrompt.first.isNotEmpty()) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 70.dp)
+                    .border(
+                        1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(8.dp)
                     )
-                    Text(
-                        text = selectedPrompt.second,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    .padding(8.dp)
+            ) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = selectedPrompt.first,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = selectedPrompt.second,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                 }
             }
         }
