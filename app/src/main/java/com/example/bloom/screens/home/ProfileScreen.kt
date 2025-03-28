@@ -1,8 +1,13 @@
 package com.example.bloom.screens.home
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,24 +24,36 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.bloom.R
 import com.example.bloom.screens.TopBar
+import com.example.bloom.screens.advanced_info.TextPromptScreen
+import com.example.bloom.screens.advanced_info.deleteFile
+import com.example.bloom.screens.information.PronounsSelectionScreen
+import com.example.bloom.screens.information.WorkplaceSelectionScreen
 import com.example.bloom.ui.theme.BloomTheme
 import com.example.bloom.ui.theme.orange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navigateToSettings: () -> Unit
+    navigateToSettings: () -> Unit,
+    viewModel: ProfileViewModel = viewModel()
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var isBottomSheetVisible by remember { mutableStateOf(false) }
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val visibilityState by viewModel.visibilityState.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
             TopBar(
@@ -64,236 +81,108 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
+                .nestedScroll(rememberNestedScrollInteropConnection()),
+            horizontalAlignment = Alignment.Start
         ) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(16.dp)) {
-                CircularProgressIndicator(
-                    progress = {
-                        0.75f
-                    },
-                    strokeWidth = 8.dp,
-                    color = orange,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .rotate(90f)
+            if (visibilityState.selectedPronouns) {
+                PronounsSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    addOrRemovePronoun = { viewModel.addOrRemovePronoun(it) }
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
+            } else if(visibilityState.workPlace) {
+                WorkplaceSelectionScreen(
+                    uiState = uiState.informationUiState,
+                    onWorkPlaceChange = { viewModel.onWorkPlaceChange(it) }
                 )
-                Card(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                ) {
-                    IconButton(
-                        onClick = { isBottomSheetVisible = true },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit",
-                            tint = orange
-                        )
+            } else {
+                HeadingText("Images")
+
+                HeadingText("Written Prompts")
+                TextPrompts(
+                    selectedPrompts = uiState.selectedTextPrompts,
+                    isTextPromptListVisible = visibilityState.textPromptList,
+                    isTextFieldVisible = visibilityState.textPromptTextField,
+                    togglePromptList = { viewModel.toggleTextPromptList() },
+                    toggleTextField = { viewModel.toggleTextField() },
+                    removePrompt = { viewModel.removeTextPrompt(it) },
+                )
+            }
+
+        }
+    }
+}
+
+@Composable
+fun ImageSelection(
+    images: List<String>,
+    onClick: (Int)
+) {
+
+}
+
+@Composable
+fun TextPrompts(
+    selectedPrompts: List<Pair<String, String>?>,
+    isTextPromptListVisible: Boolean,
+    isTextFieldVisible: Boolean,
+    removePrompt: (Int) -> Unit,
+    togglePromptList: () -> Unit,
+    toggleTextField: () -> Unit
+) {
+    selectedPrompts.forEachIndexed { index, selectedPrompt ->
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 70.dp)
+                .border(
+                    1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .clickable {
+                    if (selectedPrompt == null) {
+                        togglePromptList()
+                    } else {
+                        removePrompt(index)
                     }
                 }
-            }
-
-            Text(
-                text = "CATHERINE, 25",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Left: 1",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                FeatureCard(icon = Icons.Default.Star, label = "03", subLabel = "SUPERLIKES")
-                FeatureCard(
-                    icon = Icons.AutoMirrored.Filled.Chat,
-                    label = "04",
-                    subLabel = "REACHOUTS"
-                )
-                FeatureCard(icon = Icons.Default.Bolt, label = "12", subLabel = "AI PROMPTS")
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color(0xFFFFE0B2), shape = RoundedCornerShape(8.dp))
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+                .padding(8.dp)
+        ) {
+            if (selectedPrompt == null) {
                 Text(
-                    text = "Bloom Premium",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    text = "Select a Prompt and Write your own answer",
+                    color = MaterialTheme.colorScheme.outline,
+                    style = MaterialTheme.typography.titleLarge
                 )
-                Text(
-                    text = "Get the complete experience of Bloom and make more meaningful connections",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-                Button(
-                    onClick = { /* Handle premium subscription */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = orange)
-                ) {
-                    Text(text = "Get it for only 100\u20B9/month", color = Color.Black)
+            } else {
+                Column(Modifier.fillMaxWidth()) {
+                    Text(
+                        text = selectedPrompt.first,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = selectedPrompt.second,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }
-        if (isBottomSheetVisible) {
-            ModalBottomSheet(
-                onDismissRequest = { isBottomSheetVisible = false },
-                sheetState = sheetState
-            ) {
-                BottomSheetContent(
-                    onEditClick = { /* TODO: Handle Edit */ },
-                    onConfirmClick = { isBottomSheetVisible = false },
-                )
-            }
-        }
+        Spacer(Modifier.height(20.dp))
     }
 }
 
 @Composable
-fun FeatureCard(icon: ImageVector, label: String, subLabel: String) {
-    Card(
-        modifier = Modifier
-            .size(width = 100.dp, height = 150.dp)
-            .padding(8.dp),
-
-        ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(MaterialTheme.colorScheme.surface, shape = CircleShape)
-                    .align(Alignment.CenterHorizontally)
-            ) {
-                Icon(imageVector = icon, contentDescription = null)
-            }
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-            Text(
-                text = subLabel,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-fun BottomSheetContent(onEditClick: () -> Unit, onConfirmClick: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Does this all look right?",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Make sure all of your vitals match your identity and preferences.",
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
-                .padding(16.dp)
-        ) {
-            InfoRow(icon = Icons.Default.Person, label = "he/his/him", visibility = "Visible")
-            InfoRow(icon = Icons.Default.Person, label = "Man", visibility = "Visible")
-            InfoRow(icon = Icons.Default.Favorite, label = "Straight", visibility = "Visible")
-            InfoRow(
-                icon = Icons.Default.FavoriteBorder,
-                label = "Interested in: Women",
-                visibility = "Hidden"
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = onEditClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = orange,
-                contentColor = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Edit my vitals", color = Color.White)
-        }
-
-        TextButton(onClick = onConfirmClick) {
-            Text(text = "Looks right", color = MaterialTheme.colorScheme.primary)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
-@Composable
-fun InfoRow(icon: ImageVector, label: String, visibility: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = label, style = MaterialTheme.typography.bodyMedium)
-        }
-        Text(text = visibility, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-    }
+fun HeadingText(text: String) {
+    Text(
+        text = text,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = Modifier.padding(top = 15.dp, bottom = 10.dp)
+    )
 }
 
 @Preview(showBackground = true)
