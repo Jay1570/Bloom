@@ -6,10 +6,22 @@ import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
+import com.example.bloom.model.insertinfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import java.io.IOException
 import java.util.Calendar
 
 class BasicInformationViewModel(private val userPreference: UserPreference) : ViewModel() {
@@ -89,7 +101,9 @@ class BasicInformationViewModel(private val userPreference: UserPreference) : Vi
             _uiState.value = _uiState.value.copy(age = age)
             if (age >= 18) {
                 onDialogVisibilityChange()
-                Log.d("info", "${userPreference.user.value} ${_uiState.value.firstName} ${_uiState.value.age}")
+                //Log.d("info", "${userPreference.user.value} ${_uiState.value.firstName} ${_uiState.value.age}")
+                senddata()
+
             } else {
                 showSnackbar("Your age has to be greater than 18")
             }
@@ -103,7 +117,36 @@ class BasicInformationViewModel(private val userPreference: UserPreference) : Vi
             SnackbarManager.sendEvent(SnackbarEvent(message))
         }
     }
+
+    private fun senddata(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val userData= insertinfo(userID = userPreference.user.value,
+                firstname = _uiState.value.firstName,
+                lastname = _uiState.value.lastName,
+                age = _uiState.value.age.toString())
+            val client = OkHttpClient()
+            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+            val jsonBody = Json.encodeToString(userData)
+
+            val requestBody = jsonBody.toRequestBody(jsonMediaType)
+            val request = Request.Builder()
+                .url("http://192.168.0.131:8080/insert")
+                .post(requestBody)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("failure","Error: ${e.message}")
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("success",response.body?.string() ?: "No response")
+                }
+            })
+        }
+    }
 }
+
 
 data class BasicInformationUiState(
     val firstName: String = "",

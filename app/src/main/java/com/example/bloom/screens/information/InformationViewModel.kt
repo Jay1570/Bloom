@@ -6,10 +6,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
+import com.example.bloom.model.insertinfo
+import com.example.bloom.model.insertinformation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import java.io.IOException
 
 class InformationViewModel(private val userPreference: UserPreference) : ViewModel() {
 
@@ -214,7 +227,8 @@ class InformationViewModel(private val userPreference: UserPreference) : ViewMod
 
         _uiState.update { it.copy(selectedDrugOption = drugOption)
         }
-        Log.d("infromation","${userPreference.user.value}${_uiState.value.selectedDrugOption} ${_uiState.value.selectedWeedOption} ${_uiState.value.selectedTobaccoOption} ${_uiState.value.selectedDrinkOption}")
+        //Log.d("infromation","${userPreference.user.value}${_uiState.value.selectedDrugOption} ${_uiState.value.selectedWeedOption} ${_uiState.value.selectedTobaccoOption} ${_uiState.value.selectedDrinkOption}")
+        senddata()
     }
 
     fun onLocationChnage(newValue: String){
@@ -224,6 +238,52 @@ class InformationViewModel(private val userPreference: UserPreference) : ViewMod
     private fun showSnackbar(message: String) {
         viewModelScope.launch {
             SnackbarManager.sendEvent(SnackbarEvent(message))
+        }
+    }
+
+    private fun senddata(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val userData= insertinformation(userID = userPreference.user.value,
+                locality = _uiState.value.locality,
+                pronouns = _uiState.value.selectedPronouns.get(0),
+                gender = _uiState.value.selectedGender,
+                sexuality = _uiState.value.selectedSexuality,
+                datePrefrence = _uiState.value.selectedDatingPreferences.get(0),
+                datingintentions = _uiState.value.selectedDatingIntention,
+                relationshiptype = _uiState.value.selectedRelationshipType.get(0),
+                height = _uiState.value.selectedHeightInCm.toString(),
+                ethnicity = _uiState.value.selectedEthnicity.get(0),
+                haveChildren = _uiState.value.doYouHaveChildren,
+                familyplan = _uiState.value.selectedFamilyPlan,
+                hometown = _uiState.value.homeTown,
+                school = _uiState.value.schoolOrCollege,
+                work = _uiState.value.workPlace,
+                educationlevel = _uiState.value.selectedEducation,
+                religiousbelief = _uiState.value.selectedReligiousBelief,
+                politicalbelief = _uiState.value.selectedPoliticalBelief,
+                drink = _uiState.value.selectedDrinkOption,
+                smoke = _uiState.value.selectedTobaccoOption,
+                weed = _uiState.value.selectedWeedOption,
+                drugs = _uiState.value.selectedDrugOption)
+            val client = OkHttpClient()
+            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+            val jsonBody = Json.encodeToString(userData)
+
+            val requestBody = jsonBody.toRequestBody(jsonMediaType)
+            val request = Request.Builder()
+                .url("http://192.168.0.131:8000/insert")
+                .post(requestBody)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("failure","Error: ${e.message}")
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("success",response.body?.string() ?: "No response")
+                }
+            })
         }
     }
 }

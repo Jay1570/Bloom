@@ -21,12 +21,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
+import com.example.bloom.Routes
 import com.example.bloom.ui.theme.BloomTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailVerificationScreen(
-    navigateToNextScreen: () -> Unit,
+    navigateToNextScreen: (Routes) -> Unit,
     viewModel: VerificationViewModel = viewModel(factory = AppViewModelProvider .factory)
 ) {
 

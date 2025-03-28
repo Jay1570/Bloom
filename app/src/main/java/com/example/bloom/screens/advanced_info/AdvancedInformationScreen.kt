@@ -20,12 +20,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
 
 @Composable
 fun AdvancedInformationScreen(
     navigateToNextScreen: () -> Unit,
-    viewModel: AdvancedInformationViewModel = viewModel()
+    viewModel: AdvancedInformationViewModel = viewModel(factory = AppViewModelProvider .factory)
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val tabTitles = listOf(

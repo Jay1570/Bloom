@@ -5,11 +5,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.example.bloom.BasicInformation
 import com.example.bloom.EmailVerification
+import com.example.bloom.Home
+import com.example.bloom.Routes
+import com.example.bloom.SnackbarEvent
+import com.example.bloom.SnackbarManager
+import com.example.bloom.UserPreference
 import com.squareup.okhttp.OkHttpClient
 import okhttp3.Request
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,8 +26,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttp
 import okhttp3.RequestBody
 import okhttp3.Response
+import org.json.JSONObject
 
-class VerificationViewModel(val savedStateHandle: SavedStateHandle) : ViewModel() {
+class VerificationViewModel(val userPreference: UserPreference ,val savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val verificationId=savedStateHandle.toRoute<EmailVerification>().verificationID
     private val _uiState = MutableStateFlow(VerificationUiState())
@@ -32,16 +40,36 @@ class VerificationViewModel(val savedStateHandle: SavedStateHandle) : ViewModel(
         }
     }
 
-    fun verifyEmail(navigateTo: () -> Unit, ) {
+    fun verifyEmail(navigateTo: (Routes) -> Unit, ) {
         _uiState.value = _uiState.value.copy(inProcess = true)
-        viewModelScope.launch {
-            _uiState.update { it.copy(inProcess = true) }
-            Log.d("verification",verificationId)
+        if(_uiState.value.code.trim().isNotEmpty()){
+            var userExists=false
+            viewModelScope.launch {
+                _uiState.update { it.copy(inProcess = true) }
+                Log.d("verification",verificationId)
 //            if(verifyOtp(_uiState.value.code,verificationId)){
 //                _uiState.update { it.copy(inProcess = false) } }
 //                Log.d("otp","success")
+                userExists=verifyUser(userPreference.user.value)
             }.invokeOnCompletion {
-            navigateTo()
+                if (userExists) {
+                    Log.d("User Verification", "User exists, navigating to Home")
+                    navigateTo(Home)
+                } else {
+                    Log.d("User Verification", "User not found, navigating to BasicInformation")
+                    navigateTo(BasicInformation)
+                }
+
+            }
+        }
+        else{
+            showSnackbar("Please enter verification code")
+        }
+    }
+
+    private fun showSnackbar(message: String) {
+        viewModelScope.launch {
+            SnackbarManager.sendEvent(SnackbarEvent(message))
         }
     }
 
@@ -49,6 +77,30 @@ class VerificationViewModel(val savedStateHandle: SavedStateHandle) : ViewModel(
         val code: String = "",
         val inProcess: Boolean = false
     )
+
+    suspend fun verifyUser(userid: String): Boolean{
+        return withContext (Dispatchers.IO){
+            try {
+                val client= okhttp3.OkHttpClient()
+                val request=Request.Builder()
+                    .url("http://192.168.0.131:8080/checkuser/$userid").get()
+                    .build()
+                val response = client.newCall(request).execute()
+
+                val responseBody = response.body?.string() ?: ""
+                if(response.isSuccessful){
+                    val JSONObject= JSONObject(responseBody)
+                    val data=JSONObject.getBoolean("success")
+                    data
+                }else{
+                    false
+                }
+            }catch (e:Exception) {
+                e.printStackTrace()
+                false
+            }
+        }
+    }
 
     suspend fun verifyOtp(code: String, verificationId: String): Boolean {
         return withContext(Dispatchers.IO) { // Ensures it runs on background thread

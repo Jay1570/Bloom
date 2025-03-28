@@ -5,6 +5,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.bloom.screens.advanced_info.AdvancedInformationViewModel
 import com.example.bloom.screens.auth.LoginViewModel
 import com.example.bloom.screens.auth.VerificationViewModel
 import com.example.bloom.screens.basic_information.BasicInformationViewModel
@@ -33,7 +34,10 @@ object AppViewModelProvider {
             InformationViewModel(myApp().userPreference)
         }
         initializer {
-            VerificationViewModel(this.createSavedStateHandle())
+            VerificationViewModel(myApp().userPreference,this.createSavedStateHandle())
+        }
+        initializer {
+            AdvancedInformationViewModel(myApp().userPreference,myApp().applicationContext)
         }
     }
 }

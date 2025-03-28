@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Contrast
@@ -90,9 +91,10 @@ fun SettingsScreenContent(
         }
         Button(
             onClick = onSignOutClick,
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp, 8.dp)
+                .padding(16.dp, 8.dp).height(50.dp)
         ) {
             Text(text = "Sign Out")
         }
@@ -118,7 +120,7 @@ fun SettingsItemCard(
         Icon(
             imageVector = icon,
             contentDescription = title,
-            modifier = Modifier.size(30.dp)
+            modifier = Modifier.size(25.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {

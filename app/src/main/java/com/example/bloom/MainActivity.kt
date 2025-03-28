@@ -105,35 +105,13 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable<EmailVerification> {
-                            val origin = it.toRoute<EmailVerification>().origin
-
-                            val navigateToNext: () -> Unit = {
-                                when (origin) {
-                                    "login"-> {
-                                        //navController.navigate(Home) {
-                                          //  launchSingleTop = true
-                                            //popUpTo(0) { inclusive = true }
-                                        //}
-                                        navController.navigate(BasicInformation) {
-                                            launchSingleTop = true
-                                            popUpTo(0) { inclusive = true }
-                                        }
-                                    }
-
-                                    "change" -> {
-                                        navController.popBackStack(
-                                            route = Settings,
-                                            inclusive = false
-                                        )
-                                    }
-
-                                    else -> {
-                                        navController.navigate(BasicInformation)
-                                    }
-                                }
-                            }
                             EmailVerificationScreen(
-                                navigateToNextScreen = navigateToNext
+                                navigateToNextScreen = {
+                                    navController.navigate(it){
+                                    launchSingleTop = true
+                                    popUpTo(0) { inclusive = true
+                                    }
+                                } }
                             )
                         }
 
