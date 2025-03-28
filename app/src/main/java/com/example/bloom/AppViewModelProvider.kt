@@ -11,6 +11,8 @@ import com.example.bloom.screens.auth.VerificationViewModel
 import com.example.bloom.screens.basic_information.BasicInformationViewModel
 import com.example.bloom.screens.connection.ChatViewModel
 import com.example.bloom.screens.connection.ConnectionListViewModel
+import com.example.bloom.screens.home.ProfileViewModel
+import com.example.bloom.screens.home.homeScreenviewmodel
 import com.example.bloom.screens.information.InformationViewModel
 
 object AppViewModelProvider {
@@ -32,6 +34,12 @@ object AppViewModelProvider {
         }
         initializer {
             InformationViewModel(myApp().userPreference)
+        }
+        initializer {
+            homeScreenviewmodel(myApp().userPreference)
+        }
+        initializer {
+            ProfileViewModel(myApp().userPreference)
         }
         initializer {
             VerificationViewModel(myApp().userPreference,this.createSavedStateHandle())

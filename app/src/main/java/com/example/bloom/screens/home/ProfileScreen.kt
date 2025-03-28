@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.example.bloom.AppViewModelProvider
 import com.example.bloom.screens.TopBar
 import com.example.bloom.screens.information.ChildrenScreen
 import com.example.bloom.screens.information.CurrentLocationScreen
@@ -53,10 +55,27 @@ import com.example.bloom.ui.theme.BloomTheme
 @Composable
 fun ProfileScreen(
     navigateToSettings: () -> Unit,
-    viewModel: ProfileViewModel = viewModel()
+    viewModel: ProfileViewModel = viewModel(factory = AppViewModelProvider .factory)
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val visibilityState by viewModel.visibilityState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        // This will only trigger once when the screen is first composed
+        viewModel.fetchUsers(viewModel.userPreference.user.value) { result ->
+            viewModel.user_baisc = result
+        }
+        viewModel.fetchUsers_info(viewModel.userPreference.user.value) { result ->
+            viewModel.info = result
+        }
+        viewModel.fetch_prompt(viewModel.userPreference.user.value) { result ->
+            viewModel.prompt = result
+        }
+        viewModel.fetch_url(viewModel.userPreference.user.value) { result ->
+            viewModel.photo = result
+        }
+    }
+
     Scaffold(
         topBar = {
             TopBar(
@@ -305,6 +324,8 @@ fun ProfileScreen(
                     )
                     Spacer(Modifier.height(20.dp))
                     Button(
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        shape = RoundedCornerShape(10.dp),
                         onClick = {
                             viewModel.onEditClick()
                         }

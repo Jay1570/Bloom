@@ -101,6 +101,8 @@ class BasicInformationViewModel(private val userPreference: UserPreference) : Vi
             _uiState.value = _uiState.value.copy(age = age)
             if (age >= 18) {
                 onDialogVisibilityChange()
+                userPreference.setUserAge(age)
+                Log.d("age",age.toString())
                 //Log.d("info", "${userPreference.user.value} ${_uiState.value.firstName} ${_uiState.value.age}")
                 senddata()
 

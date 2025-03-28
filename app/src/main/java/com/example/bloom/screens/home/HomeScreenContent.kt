@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -15,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,15 +31,76 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bloom.R
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.UserPreference
 import com.example.bloom.model.Connections
+import com.example.bloom.model.User_photo
+import com.example.bloom.model.User_prompt
+import com.example.bloom.model.insertinfo
+import com.example.bloom.model.insertinformation
+import com.example.bloom.model.responsePhoto
+import com.example.bloom.model.responsePrompt
+import com.example.bloom.screens.basic_information.BasicInformationViewModel
 import com.example.bloom.ui.theme.BloomTheme
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import okhttp3.Request
+import java.io.IOException
 
 @Composable
 fun MainScreen() {
 
+    var users by remember { mutableStateOf<List<insertinfo>?>(emptyList()) }
+    var user_basic_info by remember { mutableStateOf<insertinfo?>(null) }
+    var user_advance_info by remember { mutableStateOf<insertinformation?>(null) }
+    var user_prompt by remember { mutableStateOf<List<responsePrompt?>>(emptyList()) }
+    var user_url by remember { mutableStateOf<List<responsePhoto?>>(emptyList()) }
+    val userlist = mutableListOf<Pair<Pair<insertinfo?, insertinformation?>,Pair<List<responsePrompt?>,List<responsePhoto?>>>>()
+    val userPreference=UserPreference(LocalContext.current)
+    LaunchedEffect(Unit) {
+        fetchUsersByAge(userPreference.age.value.toString()) { result ->
+            users = result
+            Log.d("list",users.toString())
+            if (users != null) {
+                for (user in users) {
+                    // Fetch additional data for each user by userID
+                    if(user.userID!=userPreference.user.value){
+                        Log.d("UserID",user.userID)
+                        user_basic_info=user
+                        fetchUsers_info (user.userID){ result->
+                            if(result!=null){
+                                user_advance_info=result
+                                fetch_prompt(user.userID){result->
+                                    if(result!=null){
+                                        user_prompt=result
+                                        fetch_url(user.userID){result->
+                                            if(result!=null){
+                                                user_url=result
+                                                if(user_basic_info!=null && user_advance_info!=null && user_prompt.isNotEmpty() && user_url.isNotEmpty()){
+                                                    userlist.add(Pair(Pair(user_basic_info,user_advance_info),Pair(user_prompt,user_url)))
+
+                                                }
+                                                else{
+                                                    Log.d("user_info","null")
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     val showMatchScreen = remember { mutableStateOf(false) }
     val userProfiles = remember {
         mutableStateListOf( UserProfile(
@@ -128,8 +192,13 @@ fun MainScreen() {
         )
     }
     val currentIndex = remember { mutableStateOf(0) }
+
+
+
     Scaffold(
+
         floatingActionButton = {
+
             ActionButtons(
                 onNext = {
                     currentIndex.value = (currentIndex.value + 1) % userProfiles.size
@@ -138,6 +207,7 @@ fun MainScreen() {
                     if (userProfiles.isNotEmpty()) {
                         userProfiles.removeAt(currentIndex.value)
                         showMatchScreen.value = true
+                        Log.d("final information",userlist.toString())
                     }
                 },
                 showMatchScreen.value
@@ -146,6 +216,40 @@ fun MainScreen() {
     ){
         paddingValues ->
         val profile = userProfiles[currentIndex.value]
+//        val user = userlist[currentIndex.value]
+//
+//// Access the inner Pair for user information
+//        val userInfo = user.first // This is the first Pair containing insertinfo and insertinformation
+//        val insertInfo = userInfo.first // This is the insertinfo object
+//        val insertInformation = userInfo.second // This is the insertinformation object
+//
+//// Access the Pair of lists for prompts and photos
+//        val responses = user.second // This is the second Pair containing lists of responsePrompt and responsePhoto
+//        val responsePrompts = responses.first // List of responsePrompt
+//        val responsePhotos = responses.second // List of responsePhoto
+//
+//// Now you can access specific values within each object, for example:
+//
+//// Accessing a value from insertinfo (assuming insertinfo is a data class with a field like 'name')
+//        val insertInfoID = insertInfo?.userID
+//        val insertinfofirstnm=insertInfo?.firstname
+//        val insertinfolastname=insertInfo?.lastname
+//        val insertinfoage=insertInfo?.age// replace 'name' with the actual field name in insertinfo
+//
+//// Accessing a value from insertinformation (assuming insertinformation is a data class with a field like 'datePreference')
+//        val insertInformationDate = insertInformation?.datePrefrence
+//        val insertinformationgender=insertInformation?.gender
+//        val insertinformationsex=insertInformation?.sexuality
+//        val insertinformationpronous=insertInformation?.pronouns
+//        // replace 'datePrefrence' with the actual field name in insertinformation
+//
+//// Accessing values from responsePrompt
+//        val firstPrompt = responsePrompts?.get(0) // Access the first responsePrompt object if the list is not null
+//        val firstPromptAnswer = firstPrompt?.answer // Replace 'answer' with the actual field name in responsePrompt
+//
+//// Accessing values from responsePhoto
+//        val firstPhoto = responsePhotos?.get(0) // Access the first responsePhoto object if the list is not null
+//        val firstPhotoUrl = firstPhoto?.url
         if (showMatchScreen.value) {
             MatchScreen(onDismiss = { showMatchScreen.value = false }, userID = profile.userID)
         }else if (userProfiles.isNotEmpty()) {
@@ -219,6 +323,136 @@ fun MainScreen() {
             EmptyStateScreen()
         }
     }
+}
+
+fun fetchUsersByAge(age: String, callback: (List<insertinfo>?) -> Unit) {
+    val client = OkHttpClient()
+    val url = "http://192.168.0.131:8080/getinfo/$age"
+
+    val request = Request.Builder()
+        .url(url)
+        .get()
+        .build()
+
+    Thread {
+        try {
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                Log.e("API_ERROR", "Response Code: ${response.code}")
+                callback(null)
+                return@Thread
+            }
+
+            val responseBody = response.body?.string()
+            Log.d("API_RESPONSE", responseBody ?: "No response body")
+
+            responseBody?.let {
+                val result = Json.decodeFromString<List<insertinfo>>(it)
+                callback(result)
+            } ?: callback(null)
+        } catch (e: IOException) {
+            Log.e("API_ERROR", "Exception: ${e.message}")
+            callback(null)
+        }
+    }.start()
+}
+
+fun fetch_prompt(userID:String, callback: (List<responsePrompt>?) -> Unit) {
+    val client = OkHttpClient()
+    val url = "http://192.168.0.131:8100/getinfo/$userID"
+
+    val request = Request.Builder()
+        .url(url)
+        .get()
+        .build()
+
+    Thread {
+        try {
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                Log.e("API_ERROR_prompt", "Response Code: ${response.code}")
+                callback(null)
+                return@Thread
+            }
+
+            val responseBody = response.body?.string()
+            Log.d("API_RESPONSE", responseBody ?: "No response body")
+
+            responseBody?.let {
+                val result = Json.decodeFromString<List<responsePrompt>>(it)
+                callback(result)
+            } ?: callback(null)
+        } catch (e: IOException) {
+            Log.e("API_ERROR", "Exception: ${e.message}")
+            callback(null)
+        }
+    }.start()
+}
+
+
+fun fetch_url(userID: String, callback: (List<responsePhoto>?) -> Unit) {
+    val client = OkHttpClient()
+    val url = "http://192.168.0.131:8200/getinfo/$userID"
+
+    val request = Request.Builder()
+        .url(url)
+        .get()
+        .build()
+
+    Thread {
+        try {
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                Log.e("API_ERROR_url", "Response Code: ${response.code}")
+                callback(null)
+                return@Thread
+            }
+
+            val responseBody = response.body?.string()
+            Log.d("API_RESPONSE", responseBody ?: "No response body")
+
+            responseBody?.let {
+                val result = Json.decodeFromString<List<responsePhoto>>(it)
+                callback(result)
+            } ?: callback(null)
+        } catch (e: IOException) {
+            Log.e("API_ERROR", "Exception: ${e.message}")
+            callback(null)
+        }
+    }.start()
+}
+
+
+fun fetchUsers_info(userID: String, callback: (insertinformation?) -> Unit) {
+    val client = OkHttpClient()
+    val url = "http://192.168.0.131:8000/getinfo/$userID"
+
+    val request = Request.Builder()
+        .url(url)
+        .get()
+        .build()
+
+    Thread {
+        try {
+            val response = client.newCall(request).execute()
+            if (!response.isSuccessful) {
+                Log.e("API_ERROR_info", "Response Code: ${response.code}")
+                callback(null)
+                return@Thread
+            }
+
+            val responseBody = response.body?.string()
+            Log.d("API_RESPONSE", responseBody ?: "No response body")
+
+            responseBody?.let {
+                val result = Json.decodeFromString<insertinformation>(it)
+                callback(result)
+            } ?: callback(null)
+        } catch (e: IOException) {
+            Log.e("API_ERROR", "Exception: ${e.message}")
+            callback(null)
+        }
+    }.start()
 }
 
 
@@ -480,13 +714,16 @@ fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit,showMatchScreen: Boolea
                 )
             }
             Spacer(modifier = Modifier.width(25.dp))
+            val userPreference=UserPreference(LocalContext.current)
             Button(
                 modifier = Modifier.size(70.dp).clip(CircleShape),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground
                 ),
-                onClick = onLike
+                onClick ={
+                        onLike()
+                }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.heart),
