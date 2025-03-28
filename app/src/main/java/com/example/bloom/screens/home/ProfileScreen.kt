@@ -126,6 +126,13 @@ fun ProfileScreen(
                         onDatingIntentionsClick = { viewModel.toggleSelectedDatingIntention() },
                         onRelationshipTypeClick = { viewModel.toggleSelectedRelationshipType() }
                     )
+                    MyVicesSection(
+                        uiState = uiState.informationUiState,
+                        onDrinkingClick = { viewModel.toggleSelectedDrinkOption() },
+                        onTobaccoClick = { viewModel.toggleSelectedTobaccoOption() },
+                        onDrugClick = { viewModel.toggleSelectedDrugOption() },
+                        onWeedClick = { viewModel.toggleSelectedWeedOption() },
+                    )
                 }
             }
         }
@@ -166,14 +173,8 @@ fun ImageSelection(
                         contentAlignment = Alignment.Center
                     ) {
                         if (images[index].isEmpty()) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = "Add Image",
-                                tint = MaterialTheme.colorScheme.outline
-                            )
-                        } else {
                             AsyncImage(
-                                model = images[index].toUri(),
+                                model = images[index],
                                 contentDescription = "Selected Image",
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
@@ -209,13 +210,7 @@ fun TextPrompts(
                 )
                 .padding(8.dp)
         ) {
-            if (selectedPrompt == null) {
-                Text(
-                    text = "Select a Prompt and Write your own answer",
-                    color = MaterialTheme.colorScheme.outline,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            } else {
+            if (selectedPrompt != null) {
                 Column(Modifier.fillMaxWidth()) {
                     Text(
                         text = selectedPrompt.first,
@@ -323,6 +318,25 @@ fun MyVirtuesSection(
     }
 }
 
+@Composable
+fun MyVicesSection(
+    uiState: InformationUiState,
+    onDrinkingClick: () -> Unit,
+    onTobaccoClick: () -> Unit,
+    onDrugClick: () -> Unit,
+    onWeedClick: () -> Unit
+) {
+    HeadingText("My Vices")
+    val aboutDetails = listOf(
+        UserDetails("Drinking", uiState.selectedDrinkOption, onDrinkingClick),
+        UserDetails("Tobacco", uiState.selectedTobaccoOption, onTobaccoClick),
+        UserDetails("Drug", uiState.selectedDrugOption, onDrugClick),
+        UserDetails("Weed", uiState.selectedWeedOption, onWeedClick),
+    )
+    aboutDetails.forEach { detail ->
+        RowInterface(detail.title, detail.value, detail.onClick)
+    }
+}
 
 @Composable
 fun RowInterface(title: String, value: String, onClick: () -> Unit) {
