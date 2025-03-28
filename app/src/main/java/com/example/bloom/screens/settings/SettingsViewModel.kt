@@ -36,6 +36,7 @@ class SettingsViewModel : ViewModel() {
             themePreference.setTheme(theme)
         }
     }
+
 }
 
 data class SettingsUiState(

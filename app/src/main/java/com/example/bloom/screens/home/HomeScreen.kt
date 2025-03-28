@@ -31,7 +31,7 @@ fun HomeScreen(
 ) {
     val topLevelRoutes = listOf(
         NavBar("Explore", Explore, Icons.Default.Home),
-        NavBar("Liked You", LikedYou, Icons.Default.Favorite),
+//        NavBar("Liked You", LikedYou, Icons.Default.Favorite),
         NavBar("Connections", Connection, Icons.Default.ChatBubble),
         NavBar("Profile", Profile, Icons.Default.Person2)
     )
@@ -80,9 +80,9 @@ fun HomeScreen(
             composable<Explore> {
                 MainScreen()
             }
-            composable<LikedYou> {
-                LikedYouScreen()
-            }
+//            composable<LikedYou> {
+//                LikedYouScreen()
+//            }
             composable<Connection> {
                 ConnectionsScreen(
                     onConnectionClick = { id, name ->

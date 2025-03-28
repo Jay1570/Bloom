@@ -34,11 +34,11 @@ fun ConnectionsScreen(
             TopBar(
                 title = "MESSAGES",
                 canNavigateBack = false,
-                actions = {
-                    Icon(Icons.Default.FilterAlt, contentDescription = "Filter")
-                    Spacer(Modifier.padding(4.dp))
-                    Icon(Icons.Default.MoreVert, contentDescription = "More")
-                }
+//                actions = {
+//                    Icon(Icons.Default.FilterAlt, contentDescription = "Filter")
+//                    Spacer(Modifier.padding(4.dp))
+//                    Icon(Icons.Default.MoreVert, contentDescription = "More")
+//                }
             )
         },
         modifier = Modifier.fillMaxSize(),

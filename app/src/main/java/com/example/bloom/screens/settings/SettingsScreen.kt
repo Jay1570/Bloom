@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,12 +24,16 @@ import com.example.bloom.R
 import com.example.bloom.Theme
 import com.example.bloom.screens.TopBar
 import com.example.bloom.ui.theme.BloomTheme
+import androidx.compose.ui.platform.LocalContext
+import android.net.Uri
+import android.widget.Toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     navigateToIntro: () -> Unit,
     navigateBack: () -> Unit,
+    onDeleteAccountClick: () -> Unit,
     viewModel: SettingsViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -45,7 +50,8 @@ fun SettingsScreen(
             "Theme",
             "Change Theme",
             onClick = viewModel::onThemeClick
-        )
+        ),
+
     )
     Scaffold(
         topBar = {
@@ -62,6 +68,7 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             itemsList = items,
+            onDeleteAccountClick = navigateToIntro,
             onSignOutClick = navigateToIntro,
         )
         if (uiState.isThemeDialogVisible) {
@@ -78,6 +85,7 @@ fun SettingsScreen(
 fun SettingsScreenContent(
     modifier: Modifier = Modifier,
     itemsList: List<SettingsItem>,
+    onDeleteAccountClick : () -> Unit,
     onSignOutClick: () -> Unit,
 ) {
     Column(modifier = modifier) {
@@ -88,6 +96,40 @@ fun SettingsScreenContent(
                 subTitle = item.subTitle,
                 onClick = item.onClick
             )
+        }
+
+        Button(
+            onClick = onDeleteAccountClick,
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 8.dp)
+                .height(50.dp)
+        ) {
+            Text(text = "Delete Account",color = Color.Red)
+        }
+        val context = LocalContext.current
+        val url = "https://bloom-customersupport.netlify.app/"
+        Button(
+            onClick = {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)  // Important for some devices
+                    }
+
+                    context.startActivity(intent)  // Directly start activity
+
+                } catch (e: Exception) {
+                    Toast.makeText(context, "No browser found", Toast.LENGTH_SHORT).show()
+                }
+            },
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 8.dp)
+                .height(50.dp)
+        ) {
+            Text(text = "Community Support")
         }
         Button(
             onClick = onSignOutClick,
@@ -100,6 +142,7 @@ fun SettingsScreenContent(
         }
     }
 }
+
 
 @Composable
 fun SettingsItemCard(
@@ -199,7 +242,28 @@ fun ThemeSelectionDialog(
         }
     )
 }
-
+//@Composable
+//fun OpenHtmlPageButton() {
+//    val context = LocalContext.current
+//    val url = "https://bloom-customersupport.netlify.app/"
+//
+//    Button(
+//        onClick = {
+//            try {
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+//                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)  // Important for some devices
+//                }
+//
+//                context.startActivity(intent)  // Directly start activity
+//
+//            } catch (e: Exception) {
+//                Toast.makeText(context, "No browser found", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    ) {
+//        Text("Open Support Page")
+//        }
+//}
 @Immutable
 data class SettingsItem(
     val icon: ImageVector,
@@ -213,6 +277,7 @@ data class SettingsItem(
 fun SettingsPreview() {
     BloomTheme {
         SettingsScreenContent(
+            onDeleteAccountClick = {},
             onSignOutClick = {},
             itemsList = listOf(
                 SettingsItem(

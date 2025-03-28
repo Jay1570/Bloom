@@ -542,7 +542,7 @@ fun MatchScreen(onDismiss: () -> Unit,userID: String) {
     ) {
         val userPreference=UserPreference(LocalContext.current)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("It's a Match!", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Text("It's a Match!", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick= {
                 val firestore = FirebaseFirestore.getInstance()

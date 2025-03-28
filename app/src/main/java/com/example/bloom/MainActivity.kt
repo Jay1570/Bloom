@@ -216,6 +216,12 @@ class MainActivity : ComponentActivity() {
                                         popUpTo(0) { inclusive = true }
                                     }
                                 },
+                                onDeleteAccountClick = {
+                                    navController.navigate(Intro) {
+                                        launchSingleTop = true
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                },
                                 navigateBack = {
                                     navController.popBackStack()
                                 }

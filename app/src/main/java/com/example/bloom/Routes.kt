@@ -62,8 +62,8 @@ data class ChatScreen(
     val receiverId: String
 ) : Routes
 
-@Serializable
-data object LikedYou : Routes
+//@Serializable
+//data object LikedYou : Routes
 
 @Serializable
 data object Settings : Routes
