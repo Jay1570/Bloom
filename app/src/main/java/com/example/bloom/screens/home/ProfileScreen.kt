@@ -1,50 +1,38 @@
 package com.example.bloom.screens.home
 
-import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import com.example.bloom.R
 import com.example.bloom.screens.TopBar
-import com.example.bloom.screens.advanced_info.TextPromptScreen
-import com.example.bloom.screens.advanced_info.deleteFile
+import com.example.bloom.screens.information.InformationUiState
 import com.example.bloom.screens.information.PronounsSelectionScreen
 import com.example.bloom.screens.information.WorkplaceSelectionScreen
 import com.example.bloom.ui.theme.BloomTheme
-import com.example.bloom.ui.theme.orange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,9 +69,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
-                .nestedScroll(rememberNestedScrollInteropConnection()),
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.Start
         ) {
             if (visibilityState.selectedPronouns) {
@@ -91,25 +77,59 @@ fun ProfileScreen(
                     uiState = uiState.informationUiState,
                     addOrRemovePronoun = { viewModel.addOrRemovePronoun(it) }
                 )
-            } else if(visibilityState.workPlace) {
+                BackHandler {
+                    viewModel.toggleSelectedPronouns()
+                }
+            } else if (visibilityState.workPlace) {
                 WorkplaceSelectionScreen(
                     uiState = uiState.informationUiState,
                     onWorkPlaceChange = { viewModel.onWorkPlaceChange(it) }
                 )
+                BackHandler {
+                    viewModel.toggleWorkPlace()
+                }
             } else {
-                HeadingText("Images")
+                Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
 
-                HeadingText("Written Prompts")
-                TextPrompts(
-                    selectedPrompts = uiState.selectedTextPrompts,
-                    isTextPromptListVisible = visibilityState.textPromptList,
-                    isTextFieldVisible = visibilityState.textPromptTextField,
-                    togglePromptList = { viewModel.toggleTextPromptList() },
-                    toggleTextField = { viewModel.toggleTextField() },
-                    removePrompt = { viewModel.removeTextPrompt(it) },
-                )
+                    ImageSelection(
+                        images = uiState.images,
+                        onRemove = {},
+                        onAdd = {}
+                    )
+                    HeadingText("Written Prompts")
+                    TextPrompts(
+                        selectedPrompts = uiState.selectedTextPrompts,
+                    )
+                    IdentitySection(
+                        uiState = uiState.informationUiState,
+                        onDatingPreferencesClick = { viewModel.toggleSelectedDatingPreferences() },
+                        onGenderClick = { viewModel.toggleSelectedGender() },
+                        onSexualityClick = { viewModel.toggleSelectedSexuality() },
+                        onPronounsClick = { viewModel.toggleSelectedPronouns() }
+                    )
+                    MyVitalsSection(
+                        name = uiState.name,
+                        age = uiState.age.toString(),
+                        uiState = uiState.informationUiState,
+                        onHeightClick = { viewModel.toggleSelectedHeightInCm() },
+                        onEthnicityClick = { viewModel.toggleSelectedEthnicity() },
+                        onChildrenClick = { viewModel.toggleDoYouHaveChildren() },
+                        onFamilyPlansClick = { viewModel.toggleSelectedFamilyPlan() },
+                        onLocationClick = { viewModel.toggleLocality() }
+                    )
+                    MyVirtuesSection(
+                        uiState = uiState.informationUiState,
+                        onWorkClick = { viewModel.toggleWorkPlace() },
+                        onSchoolOrCollegeClick = { viewModel.toggleSchoolOrCollege() },
+                        onEducationLevelClick = { viewModel.toggleSelectedEducation() },
+                        onReligiousBeliefsClick = { viewModel.toggleSelectedReligiousBelief() },
+                        onHomeTownClick = { viewModel.toggleHomeTown() },
+                        onPoliticsClick = { viewModel.toggleSelectedPoliticalBelief() },
+                        onDatingIntentionsClick = { viewModel.toggleSelectedDatingIntention() },
+                        onRelationshipTypeClick = { viewModel.toggleSelectedRelationshipType() }
+                    )
+                }
             }
-
         }
     }
 }
@@ -117,19 +137,67 @@ fun ProfileScreen(
 @Composable
 fun ImageSelection(
     images: List<String>,
-    onClick: (Int)
+    onRemove: (Int) -> Unit,
+    onAdd: (Int) -> Unit
 ) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        HeadingText("Photos and videos")
 
+        repeat(2) { rowIndex ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                repeat(3) { columnIndex ->
+                    val index = rowIndex * 3 + columnIndex
+                    Box(
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .padding(4.dp)
+                            .weight(1f)
+                            .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
+                            .clickable {
+                                if (images[index].isEmpty()) {
+                                    onRemove(index)
+                                } else {
+                                    onAdd(index)
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (images[index].isEmpty()) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = "Add Image",
+                                tint = MaterialTheme.colorScheme.outline
+                            )
+                        } else {
+                            AsyncImage(
+                                model = images[index].toUri(),
+                                contentDescription = "Selected Image",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable {
+                                        onRemove(index)
+                                    }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        SubHeadingText("Tap to edit.")
+    }
 }
 
 @Composable
 fun TextPrompts(
     selectedPrompts: List<Pair<String, String>?>,
-    isTextPromptListVisible: Boolean,
-    isTextFieldVisible: Boolean,
-    removePrompt: (Int) -> Unit,
-    togglePromptList: () -> Unit,
-    toggleTextField: () -> Unit
 ) {
     selectedPrompts.forEachIndexed { index, selectedPrompt ->
         Box(
@@ -141,13 +209,6 @@ fun TextPrompts(
                     color = MaterialTheme.colorScheme.outline,
                     shape = RoundedCornerShape(8.dp)
                 )
-                .clickable {
-                    if (selectedPrompt == null) {
-                        togglePromptList()
-                    } else {
-                        removePrompt(index)
-                    }
-                }
                 .padding(8.dp)
         ) {
             if (selectedPrompt == null) {
@@ -175,6 +236,116 @@ fun TextPrompts(
 }
 
 @Composable
+fun IdentitySection(
+    uiState: InformationUiState,
+    onPronounsClick: () -> Unit,
+    onGenderClick: () -> Unit,
+    onSexualityClick: () -> Unit,
+    onDatingPreferencesClick: () -> Unit,
+) {
+    HeadingText("Identity")
+    var selectedPronouns = ""
+    var selectedDatingPreferences = ""
+    if (uiState.selectedPronouns.isNotEmpty()) {
+        selectedPronouns = uiState.selectedPronouns.joinToString("/")
+    }
+    if (uiState.selectedDatingPreferences.isNotEmpty()) {
+        selectedDatingPreferences = uiState.selectedDatingPreferences.joinToString(", ")
+    }
+    val aboutDetails = listOf(
+        UserDetails("Pronouns", selectedPronouns, onPronounsClick),
+        UserDetails("Gender", uiState.selectedGender, onGenderClick),
+        UserDetails("Sexuality", uiState.selectedSexuality, onSexualityClick),
+        UserDetails("I'm interested in", selectedDatingPreferences, onDatingPreferencesClick)
+    )
+    aboutDetails.forEach { detail ->
+        RowInterface(detail.title, detail.value , detail.onClick)
+    }
+}
+
+@Composable
+fun MyVitalsSection(
+    name: String,
+    age: String,
+    uiState: InformationUiState,
+    onHeightClick: () -> Unit,
+    onEthnicityClick: () -> Unit,
+    onChildrenClick: () -> Unit,
+    onFamilyPlansClick: () -> Unit,
+    onLocationClick: () -> Unit
+) {
+    HeadingText("My Vitals")
+    var selectedEthnicities = ""
+    if (uiState.selectedEthnicity.isNotEmpty()) {
+        selectedEthnicities = uiState.selectedEthnicity.joinToString(", ")
+    }
+    val aboutDetails = listOf(
+        UserDetails("Name", name, {}) ,
+        UserDetails("Age", age, {}),
+        UserDetails("Height", uiState.selectedHeightInCm.toString(), onHeightClick),
+        UserDetails("Location", uiState.locality, onLocationClick),
+        UserDetails("Ethnicity", selectedEthnicities, onEthnicityClick),
+        UserDetails("Children", uiState.doYouHaveChildren, onChildrenClick),
+        UserDetails("Family Plans", uiState.selectedFamilyPlan, onFamilyPlansClick),
+    )
+    aboutDetails.forEach { detail ->
+        RowInterface(detail.title, detail.value, detail.onClick)
+    }
+}
+
+@Composable
+fun MyVirtuesSection(
+    uiState: InformationUiState,
+    onWorkClick: () -> Unit,
+    onSchoolOrCollegeClick: () -> Unit,
+    onEducationLevelClick: () -> Unit,
+    onReligiousBeliefsClick: () -> Unit,
+    onHomeTownClick: () -> Unit,
+    onPoliticsClick: () -> Unit,
+    onDatingIntentionsClick: () -> Unit,
+    onRelationshipTypeClick: () -> Unit,
+) {
+    HeadingText("My Virtues")
+    var selectedRelationShipType = ""
+    if (uiState.selectedRelationshipType.isNotEmpty()) {
+        selectedRelationShipType = uiState.selectedRelationshipType.joinToString(", ")
+    }
+    val aboutDetails = listOf(
+        UserDetails("Work", uiState.workPlace, onWorkClick),
+        UserDetails("College or University", uiState.schoolOrCollege, onSchoolOrCollegeClick),
+        UserDetails("Education level", uiState.selectedEducation, onEducationLevelClick),
+        UserDetails("Religious beliefs", uiState.selectedReligiousBelief, onReligiousBeliefsClick),
+        UserDetails("Home town", uiState.homeTown, onHomeTownClick),
+        UserDetails("Politics", uiState.selectedPoliticalBelief, onPoliticsClick),
+        UserDetails("Dating Intentions", uiState.selectedDatingIntention, onDatingIntentionsClick),
+        UserDetails("Relationship type", selectedRelationShipType, onRelationshipTypeClick),
+    )
+    aboutDetails.forEach { detail ->
+        RowInterface(detail.title, detail.value, detail.onClick)
+    }
+}
+
+
+@Composable
+fun RowInterface(title: String, value: String, onClick: () -> Unit) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(vertical = 10.dp, horizontal = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = title, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
+                Text(text = value, fontSize = 14.sp, color = MaterialTheme.colorScheme.outline)
+            }
+        }
+    }
+}
+
+
+@Composable
 fun HeadingText(text: String) {
     Text(
         text = text,
@@ -184,6 +355,21 @@ fun HeadingText(text: String) {
         modifier = Modifier.padding(top = 15.dp, bottom = 10.dp)
     )
 }
+
+@Composable
+fun SubHeadingText(text: String) {
+    Text(
+        text = text,
+        fontSize = 13.sp,
+        modifier = Modifier.padding(top = 5.dp)
+    )
+}
+
+data class UserDetails(
+    val title: String,
+    val value: String,
+    val onClick: () -> Unit
+)
 
 @Preview(showBackground = true)
 @Composable

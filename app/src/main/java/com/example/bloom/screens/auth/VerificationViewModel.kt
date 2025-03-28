@@ -57,7 +57,7 @@ class VerificationViewModel(val userPreference: UserPreference ,val savedStateHa
                     navigateTo(Home)
                 } else {
                     Log.d("User Verification", "User not found, navigating to BasicInformation")
-                    navigateTo(BasicInformation)
+                    navigateTo(Home) //TODO: Basic Information screen
                 }
 
             }

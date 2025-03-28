@@ -251,6 +251,8 @@ class ProfileViewModel : ViewModel() {
 }
 
 data class ProfileUiState(
+    val name: String = "",
+    val age: Int = 0,
     val images: List<String> = List(6) { "" },
     val selectedTextPrompts: List<Pair<String, String>?> = List(3) { null },
     val informationUiState: InformationUiState = InformationUiState(),
