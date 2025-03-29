@@ -3,6 +3,7 @@ package com.example.bloom.screens.information
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bloom.PORT_8000
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
@@ -271,7 +272,7 @@ class InformationViewModel(private val userPreference: UserPreference) : ViewMod
 
             val requestBody = jsonBody.toRequestBody(jsonMediaType)
             val request = Request.Builder()
-                .url("http://192.168.0.131:8000/insert")
+                .url("http://${PORT_8000}/insert")
                 .post(requestBody)
                 .build()
 

@@ -1,10 +1,8 @@
 package com.example.bloom.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material3.*
@@ -22,15 +20,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.bloom.*
-import com.example.bloom.model.insertinfo
 import com.example.bloom.screens.connection.ConnectionsScreen
 import com.example.bloom.ui.theme.BloomTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.IOException
 
 @Composable
 fun HomeScreen(

@@ -70,7 +70,7 @@ class VerificationViewModel(val userPreference: UserPreference ,val savedStateHa
             try {
                 val client= okhttp3.OkHttpClient()
                 val request=Request.Builder()
-                    .url("http://192.168.0.131:8080/checkuser/$userid").get()
+                    .url("http://${PORT_8080}/checkuser/$userid").get()
                     .build()
                 val response = client.newCall(request).execute()
 

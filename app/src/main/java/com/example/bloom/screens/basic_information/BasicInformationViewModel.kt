@@ -3,6 +3,7 @@ package com.example.bloom.screens.basic_information
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bloom.PORT_8080
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
@@ -14,13 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import okhttp3.Call
-import okhttp3.Callback
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import java.io.IOException
 import java.util.Calendar
 
@@ -132,7 +129,7 @@ class BasicInformationViewModel(private val userPreference: UserPreference) : Vi
 
             val requestBody = jsonBody.toRequestBody(jsonMediaType)
             val request = Request.Builder()
-                .url("http://192.168.0.131:8080/insert")
+                .url("http://${PORT_8080}/insert")
                 .post(requestBody)
                 .build()
 

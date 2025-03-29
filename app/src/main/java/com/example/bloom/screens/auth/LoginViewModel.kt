@@ -1,11 +1,8 @@
 package com.example.bloom.screens.auth
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
-import com.example.bloom.EmailVerification
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference

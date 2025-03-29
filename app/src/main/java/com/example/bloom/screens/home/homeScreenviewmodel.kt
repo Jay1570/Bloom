@@ -3,6 +3,7 @@ package com.example.bloom.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bloom.PORT_8080
 import com.example.bloom.UserPreference
 import com.example.bloom.model.insertinfo
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,7 @@ suspend fun fetchUsersByAge(age: String): List<insertinfo>? {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
 
-        val url = "http://192.168.0.131:8080/getinfo/$age" // Adjust the URL
+        val url = "http://${PORT_8080}/getinfo/$age" // Adjust the URL
         val request = Request.Builder()
             .url(url)
             .get()

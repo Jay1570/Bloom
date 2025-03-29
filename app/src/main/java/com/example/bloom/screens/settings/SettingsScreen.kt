@@ -2,6 +2,7 @@ package com.example.bloom.screens.settings
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,14 +20,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.R
 import com.example.bloom.Theme
 import com.example.bloom.screens.TopBar
 import com.example.bloom.ui.theme.BloomTheme
-import androidx.compose.ui.platform.LocalContext
-import android.net.Uri
-import android.widget.Toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,7 +112,7 @@ fun SettingsScreenContent(
         Button(
             onClick = {
                 try {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)  // Important for some devices
                     }
 

@@ -1,49 +1,37 @@
 package com.example.bloom.screens.advanced_info
 
-import android.provider.OpenableColumns
 import android.content.Context
 import android.database.Cursor
 import android.media.MediaRecorder
 import android.net.Uri
-import android.util.Base64
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bloom.PORT_8100
+import com.example.bloom.PORT_8200
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
 import com.example.bloom.model.User_photo
 import com.example.bloom.model.User_prompt
-import com.example.bloom.model.insertinfo
-import com.example.bloom.model.insertinformation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 class AdvancedInformationViewModel(val userPreference: UserPreference,val context: Context) : ViewModel() {
 
@@ -204,7 +192,7 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
 
             val requestBody = jsonBody.toRequestBody(jsonMediaType)
             val request = Request.Builder()
-                .url("http://192.168.0.131:8100/insert")
+                .url("http://${PORT_8100}/insert")
                 .post(requestBody)
                 .build()
 
@@ -296,7 +284,7 @@ class AdvancedInformationViewModel(val userPreference: UserPreference,val contex
 
             val requestBody = jsonBody.toRequestBody(jsonMediaType)
             val request = Request.Builder()
-                .url("http://192.168.0.131:8200/insert")
+                .url("http://${PORT_8200}/insert")
                 .addHeader("Content-Type", "application/json")
                 .post(requestBody)
                 .build()

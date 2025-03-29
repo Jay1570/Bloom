@@ -3,6 +3,10 @@ package com.example.bloom.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bloom.PORT_8000
+import com.example.bloom.PORT_8080
+import com.example.bloom.PORT_8100
+import com.example.bloom.PORT_8200
 import com.example.bloom.SnackbarEvent
 import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
@@ -31,147 +35,101 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
     private val _visibilityState = MutableStateFlow(VisibilityState())
     val visibilityState get() = _visibilityState.asStateFlow()
 
-    var user_baisc:insertinfo?=null
-    var info:insertinformation?=null
-    var prompt:List<responsePrompt>?=null
-    var photo:List<responsePhoto>?=null
+    var user_baisc: insertinfo? = null
+    var info: insertinformation? = null
+    var prompt: List<responsePrompt>? = null
+    var photo: List<responsePhoto>? = null
 
-//    init{
-//        fetchUsers(userPreference.user.value) { result->
-//            user_baisc=result
-//        }
-//        fetchUsers_info(userPreference.user.value) { result->
-//            info=result
-//        }
-//        fetch_prompt(userPreference.user.value) { result->
-//            prompt=result
-//        }
-//        fetch_url(userPreference.user.value) { result->
-//            photo=result
-//            Log.d("url",result.toString())
-//            if(user_baisc!=null && info!=null && prompt!=null && photo!=null){
-//                _uiState.update { it.copy(
-//                    informationUiState = InformationUiState(
-//                        locality = info!!.locality,
-//                        selectedPronouns = info!!.pronouns.map { it.toString() },
-//                        selectedGender = info!!.gender,
-//                        selectedSexuality = info!!.sexuality,
-//                        selectedDatingPreferences = info!!.datePrefrence.map { it.toString() },
-//                        selectedDatingIntention = info!!.datingintentions,
-//                        selectedRelationshipType = info!!.relationshiptype.map{it.toString()},
-//                        selectedHeightInCm = info!!.height.toInt(),
-//                        selectedEthnicity = info!!.ethnicity.map { it.toString() },
-//                        doYouHaveChildren = info!!.familyplan,
-//                        selectedFamilyPlan = info!!.haveChildren,
-//                        homeTown = info!!.hometown,
-//                        schoolOrCollege = info!!.school,
-//                        workPlace = info!!.work,
-//                        selectedEducation = info!!.educationlevel,
-//                        selectedReligiousBelief = info!!.religiousbelief,
-//                        selectedPoliticalBelief = info!!.politicalbelief,
-//                        selectedDrinkOption = info!!.drink,
-//                        selectedTobaccoOption = info!!.smoke,
-//                        selectedWeedOption = info!!.weed,
-//                        selectedDrugOption = info!!.drugs,
-//                    )
-//                    , name = user_baisc!!.firstname,
-//                    images = photo!!.map {it.url },
-//                    selectedTextPrompts = prompt!!.map { it.prompt to it.answer },
-//                    age = user_baisc!!.age.toInt()
-//
-//                ) }
-//            }
-//        }
-//
-//    }
-init {
-    viewModelScope.launch {
-        user_baisc = fetchUsers(userPreference.user.value)
-        info = fetchUsersInfo(userPreference.user.value)
-        prompt = fetchPrompt(userPreference.user.value)
-        photo = fetchUrl(userPreference.user.value)
+    init {
+        viewModelScope.launch {
+            user_baisc = fetchUsers(userPreference.user.value)
+            info = fetchUsersInfo(userPreference.user.value)
+            prompt = fetchPrompt(userPreference.user.value)
+            photo = fetchUrl(userPreference.user.value)
 
-        Log.d("url", photo.toString())
+            Log.d("url", photo.toString())
 
-        if (user_baisc != null && info != null && prompt != null && photo != null) {
-            _uiState.update {
-                it.copy(
-                    informationUiState = InformationUiState(
-                        locality = info!!.locality,
-                        selectedPronouns = info!!.pronouns.map { it.toString() },
-                        selectedGender = info!!.gender,
-                        selectedSexuality = info!!.sexuality,
-                        selectedDatingPreferences = info!!.datePrefrence.map { it.toString() },
-                        selectedDatingIntention = info!!.datingintentions,
-                        selectedRelationshipType = info!!.relationshiptype.map { it.toString() },
-                        selectedHeightInCm = info!!.height.toInt(),
-                        selectedEthnicity = info!!.ethnicity.map { it.toString() },
-                        doYouHaveChildren = info!!.familyplan,
-                        selectedFamilyPlan = info!!.haveChildren,
-                        homeTown = info!!.hometown,
-                        schoolOrCollege = info!!.school,
-                        workPlace = info!!.work,
-                        selectedEducation = info!!.educationlevel,
-                        selectedReligiousBelief = info!!.religiousbelief,
-                        selectedPoliticalBelief = info!!.politicalbelief,
-                        selectedDrinkOption = info!!.drink,
-                        selectedTobaccoOption = info!!.smoke,
-                        selectedWeedOption = info!!.weed,
-                        selectedDrugOption = info!!.drugs,
-                    ),
-                    name = user_baisc!!.firstname,
-                    images = photo!!.map { it.url },
-                    selectedTextPrompts = prompt!!.map { it.prompt to it.answer },
-                    age = user_baisc!!.age.toInt()
-                )
+            if (user_baisc != null && info != null && prompt != null && photo != null) {
+                _uiState.update {
+                    it.copy(
+                        informationUiState = InformationUiState(
+                            locality = info!!.locality,
+                            selectedPronouns = info!!.pronouns.map { it.toString() },
+                            selectedGender = info!!.gender,
+                            selectedSexuality = info!!.sexuality,
+                            selectedDatingPreferences = info!!.datePrefrence.map { it.toString() },
+                            selectedDatingIntention = info!!.datingintentions,
+                            selectedRelationshipType = info!!.relationshiptype.map { it.toString() },
+                            selectedHeightInCm = info!!.height.toInt(),
+                            selectedEthnicity = info!!.ethnicity.map { it.toString() },
+                            doYouHaveChildren = info!!.familyplan,
+                            selectedFamilyPlan = info!!.haveChildren,
+                            homeTown = info!!.hometown,
+                            schoolOrCollege = info!!.school,
+                            workPlace = info!!.work,
+                            selectedEducation = info!!.educationlevel,
+                            selectedReligiousBelief = info!!.religiousbelief,
+                            selectedPoliticalBelief = info!!.politicalbelief,
+                            selectedDrinkOption = info!!.drink,
+                            selectedTobaccoOption = info!!.smoke,
+                            selectedWeedOption = info!!.weed,
+                            selectedDrugOption = info!!.drugs,
+                        ),
+                        name = user_baisc!!.firstname,
+                        images = photo!!.map { it.url },
+                        selectedTextPrompts = prompt!!.map { it.prompt to it.answer },
+                        age = user_baisc!!.age.toInt()
+                    )
+                }
             }
         }
     }
-}
 
-    private suspend fun fetchPrompt(userID: String): List<responsePrompt>? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient()
-        val url = "http://192.168.0.131:8100/getinfo/$userID"
-        val request = Request.Builder().url(url).get().build()
+    private suspend fun fetchPrompt(userID: String): List<responsePrompt>? =
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val url = "http://${PORT_8100}/getinfo/$userID"
+            val request = Request.Builder().url(url).get().build()
 
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR_prompt", "Response Code: ${response.code}")
-                return@withContext null
+            try {
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    Log.e("API_ERROR_prompt", "Response Code: ${response.code}")
+                    return@withContext null
+                }
+                response.body?.string()?.let {
+                    Json.decodeFromString<List<responsePrompt>>(it)
+                }
+            } catch (e: IOException) {
+                Log.e("API_ERROR", "Exception: ${e.message}")
+                null
             }
-            response.body?.string()?.let {
-                Json.decodeFromString<List<responsePrompt>>(it)
-            }
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            null
         }
-    }
 
-    private suspend fun fetchUrl(userID: String): List<responsePhoto>? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient()
-        val url = "http://192.168.0.131:8200/getinfo/$userID"
-        val request = Request.Builder().url(url).get().build()
+    private suspend fun fetchUrl(userID: String): List<responsePhoto>? =
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val url = "http://${PORT_8200}/getinfo/$userID"
+            val request = Request.Builder().url(url).get().build()
 
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR_url", "Response Code: ${response.code}")
-                return@withContext null
+            try {
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    Log.e("API_ERROR_url", "Response Code: ${response.code}")
+                    return@withContext null
+                }
+                response.body?.string()?.let {
+                    Json.decodeFromString<List<responsePhoto>>(it)
+                }
+            } catch (e: IOException) {
+                Log.e("API_ERROR", "Exception: ${e.message}")
+                null
             }
-            response.body?.string()?.let {
-                Json.decodeFromString<List<responsePhoto>>(it)
-            }
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            null
         }
-    }
 
     private suspend fun fetchUsers(userID: String): insertinfo? = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
-        val url = "http://192.168.0.131:8080/getuser/$userID"
+        val url = "http://${PORT_8080}/getuser/$userID"
         val request = Request.Builder().url(url).get().build()
 
         try {
@@ -189,253 +147,84 @@ init {
         }
     }
 
-    private suspend fun fetchUsersInfo(userID: String): insertinformation? = withContext(Dispatchers.IO) {
-        val client = OkHttpClient()
-        val url = "http://192.168.0.131:8000/getinfo/$userID"
-        val request = Request.Builder().url(url).get().build()
+    private suspend fun fetchUsersInfo(userID: String): insertinformation? =
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val url = "http://${PORT_8000}/getinfo/$userID"
+            val request = Request.Builder().url(url).get().build()
 
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR_info", "Response Code: ${response.code}")
-                return@withContext null
+            try {
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    Log.e("API_ERROR_info", "Response Code: ${response.code}")
+                    return@withContext null
+                }
+                response.body?.string()?.let {
+                    Json.decodeFromString<insertinformation>(it)
+                }
+            } catch (e: IOException) {
+                Log.e("API_ERROR", "Exception: ${e.message}")
+                null
             }
-            response.body?.string()?.let {
-                Json.decodeFromString<insertinformation>(it)
-            }
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            null
         }
-    }
 
     fun onEditClick() {
         viewModelScope.launch {
             val userData = insertinformation(
                 userID = userPreference.user.value,
                 locality = _uiState.value.informationUiState.locality ?: info!!.locality,
-                pronouns = _uiState.value.informationUiState.selectedPronouns.firstOrNull() ?: info!!.pronouns.toString(),
+                pronouns = _uiState.value.informationUiState.selectedPronouns.firstOrNull()
+                    ?: info!!.pronouns.toString(),
                 gender = _uiState.value.informationUiState.selectedGender ?: info!!.gender,
                 sexuality = _uiState.value.informationUiState.selectedSexuality ?: info!!.sexuality,
-                datePrefrence = _uiState.value.informationUiState.selectedDatingPreferences.firstOrNull() ?: info!!.datePrefrence.toString(),
-                datingintentions = _uiState.value.informationUiState.selectedDatingIntention ?: info!!.datingintentions,
-                relationshiptype = _uiState.value.informationUiState.selectedRelationshipType.firstOrNull() ?: info!!.relationshiptype.toString(),
+                datePrefrence = _uiState.value.informationUiState.selectedDatingPreferences.firstOrNull()
+                    ?: info!!.datePrefrence.toString(),
+                datingintentions = _uiState.value.informationUiState.selectedDatingIntention
+                    ?: info!!.datingintentions,
+                relationshiptype = _uiState.value.informationUiState.selectedRelationshipType.firstOrNull()
+                    ?: info!!.relationshiptype.toString(),
                 height = _uiState.value.informationUiState.selectedHeightInCm.toString(),
-                ethnicity = _uiState.value.informationUiState.selectedEthnicity.firstOrNull() ?: info!!.ethnicity.toString(),
-                haveChildren = _uiState.value.informationUiState.doYouHaveChildren ?: info!!.haveChildren,
-                familyplan = _uiState.value.informationUiState.selectedFamilyPlan ?: info!!.familyplan,
+                ethnicity = _uiState.value.informationUiState.selectedEthnicity.firstOrNull()
+                    ?: info!!.ethnicity.toString(),
+                haveChildren = _uiState.value.informationUiState.doYouHaveChildren
+                    ?: info!!.haveChildren,
+                familyplan = _uiState.value.informationUiState.selectedFamilyPlan
+                    ?: info!!.familyplan,
                 hometown = _uiState.value.informationUiState.homeTown ?: info!!.hometown,
                 school = _uiState.value.informationUiState.schoolOrCollege ?: info!!.school,
                 work = _uiState.value.informationUiState.workPlace ?: info!!.work,
-                educationlevel = _uiState.value.informationUiState.selectedEducation ?: info!!.educationlevel,
-                religiousbelief = _uiState.value.informationUiState.selectedReligiousBelief ?: info!!.religiousbelief,
-                politicalbelief = _uiState.value.informationUiState.selectedPoliticalBelief ?: info!!.politicalbelief,
+                educationlevel = _uiState.value.informationUiState.selectedEducation
+                    ?: info!!.educationlevel,
+                religiousbelief = _uiState.value.informationUiState.selectedReligiousBelief
+                    ?: info!!.religiousbelief,
+                politicalbelief = _uiState.value.informationUiState.selectedPoliticalBelief
+                    ?: info!!.politicalbelief,
                 drink = _uiState.value.informationUiState.selectedDrinkOption ?: info!!.drink,
                 smoke = _uiState.value.informationUiState.selectedTobaccoOption ?: info!!.smoke,
                 weed = _uiState.value.informationUiState.selectedWeedOption ?: info!!.weed,
                 drugs = _uiState.value.informationUiState.selectedDrugOption ?: info!!.drugs
             )
-                    val client = OkHttpClient()
-        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
-        val jsonBody = Json.encodeToString(userData)
-        val userid=userPreference.user.value
-        val requestBody = jsonBody.toRequestBody(jsonMediaType)
-        val request = Request.Builder()
-            .url("http://192.168.0.131:8000/updateinfo/$userid")
-            .put(requestBody)
-            .build()
+            val client = OkHttpClient()
+            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+            val jsonBody = Json.encodeToString(userData)
+            val userid = userPreference.user.value
+            val requestBody = jsonBody.toRequestBody(jsonMediaType)
+            val request = Request.Builder()
+                .url("http://${PORT_8000}/updateinfo/$userid")
+                .put(requestBody)
+                .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("failure","Error: ${e.message}")
-            }
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.d("failure", "Error: ${e.message}")
+                }
 
-            override fun onResponse(call: Call, response: Response) {
-                Log.d("success",response.body?.string() ?: "No response")
-            }
-        })
-
-            // API call for updating information
+                override fun onResponse(call: Call, response: Response) {
+                    Log.d("success", response.body?.string() ?: "No response")
+                }
+            })
         }
     }
-
-
-//    fun fetch_prompt(userID:String, callback: (List<responsePrompt>?) -> Unit) {
-//        val client = OkHttpClient()
-//        val url = "http://192.168.0.131:8100/getinfo/$userID"
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .get()
-//            .build()
-//
-//        Thread {
-//            try {
-//                val response = client.newCall(request).execute()
-//                if (!response.isSuccessful) {
-//                    Log.e("API_ERROR_prompt", "Response Code: ${response.code}")
-//                    callback(null)
-//                    return@Thread
-//                }
-//
-//                val responseBody = response.body?.string()
-//                Log.d("API_RESPONSE", responseBody ?: "No response body")
-//
-//                responseBody?.let {
-//                    val result = Json.decodeFromString<List<responsePrompt>>(it)
-//                    callback(result)
-//                } ?: callback(null)
-//            } catch (e: IOException) {
-//                Log.e("API_ERROR", "Exception: ${e.message}")
-//                callback(null)
-//            }
-//        }.start()
-//    }
-//
-//
-//    fun fetch_url(userID: String, callback: (List<responsePhoto>?) -> Unit) {
-//        val client = OkHttpClient()
-//        val url = "http://192.168.0.131:8200/getinfo/$userID"
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .get()
-//            .build()
-//
-//        Thread {
-//            try {
-//                val response = client.newCall(request).execute()
-//                if (!response.isSuccessful) {
-//                    Log.e("API_ERROR_url", "Response Code: ${response.code}")
-//                    callback(null)
-//                    return@Thread
-//                }
-//
-//                val responseBody = response.body?.string()
-//                Log.d("API_RESPONSE", responseBody ?: "No response body")
-//
-//                responseBody?.let {
-//                    val result = Json.decodeFromString<List<responsePhoto>>(it)
-//                    callback(result)
-//                } ?: callback(null)
-//            } catch (e: IOException) {
-//                Log.e("API_ERROR", "Exception: ${e.message}")
-//                callback(null)
-//            }
-//        }.start()
-//    }
-//
-//    fun fetchUsers(userID: String, callback: (insertinfo?) -> Unit) {
-//        val client = OkHttpClient()
-//        val url = "http://192.168.0.131:8080/getuser/$userID"
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .get()
-//            .build()
-//
-//        Thread {
-//            try {
-//                val response = client.newCall(request).execute()
-//                Log.d("response_info",response.toString())
-//                if (!response.isSuccessful) {
-//                    Log.e("API_ERROR_info", "Response Code: ${response.code}")
-//                    callback(null)
-//                    return@Thread
-//                }
-//
-//                val responseBody = response.body?.string()
-//                Log.d("API_RESPONSE", responseBody ?: "No response body")
-//
-//                responseBody?.let {
-//                    val result = Json.decodeFromString<insertinfo>(it)
-//                    callback(result)
-//                } ?: callback(null)
-//            } catch (e: IOException) {
-//                Log.e("API_ERROR", "Exception: ${e.message}")
-//                callback(null)
-//            }
-//        }.start()
-//    }
-//
-//    fun fetchUsers_info(userID: String, callback: (insertinformation?) -> Unit) {
-//        val client = OkHttpClient()
-//        val url = "http://192.168.0.131:8000/getinfo/$userID"
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .get()
-//            .build()
-//
-//        Thread {
-//            try {
-//                val response = client.newCall(request).execute()
-//                Log.d("response_info",response.toString())
-//                if (!response.isSuccessful) {
-//                    Log.e("API_ERROR_info", "Response Code: ${response.code}")
-//                    callback(null)
-//                    return@Thread
-//                }
-//
-//                val responseBody = response.body?.string()
-//                Log.d("API_RESPONSE", responseBody ?: "No response body")
-//
-//                responseBody?.let {
-//                    val result = Json.decodeFromString<insertinformation>(it)
-//                    callback(result)
-//                } ?: callback(null)
-//            } catch (e: IOException) {
-//                Log.e("API_ERROR", "Exception: ${e.message}")
-//                callback(null)
-//            }
-//        }.start()
-//    }
-//
-//    fun onEditClick() {
-//
-//        val userData= insertinformation(userID = userPreference.user.value,
-//            locality = (_uiState.value.informationUiState.locality?: info!!.locality),
-//            pronouns = (_uiState.value.informationUiState.selectedPronouns.get(0)?: info!!.pronouns.toString()),
-//            gender = (_uiState.value.informationUiState.selectedGender ?: info!!.gender),
-//            sexuality = (_uiState.value.informationUiState.selectedSexuality ?: info!!.sexuality),
-//            datePrefrence = (_uiState.value.informationUiState.selectedDatingPreferences.get(0)?: info!!.datePrefrence.toString()),
-//            datingintentions = (_uiState.value.informationUiState.selectedDatingIntention?: info!!.datingintentions),
-//            relationshiptype = (_uiState.value.informationUiState.selectedRelationshipType.get(0)?: info!!.relationshiptype.toString()),
-//            height = (_uiState.value.informationUiState.selectedHeightInCm.toString()?: info!!.height.toString()),
-//            ethnicity = (_uiState.value.informationUiState.selectedEthnicity.get(0)?: info!!.ethnicity.toString()),
-//            haveChildren = (_uiState.value.informationUiState.doYouHaveChildren?: info!!.haveChildren),
-//            familyplan = (_uiState.value.informationUiState.selectedFamilyPlan?: info!!.familyplan),
-//            hometown = (_uiState.value.informationUiState.homeTown?: info!!.hometown),
-//            school = (_uiState.value.informationUiState.schoolOrCollege?: info!!.school),
-//            work = (_uiState.value.informationUiState.workPlace?: info!!.work),
-//            educationlevel = (_uiState.value.informationUiState.selectedEducation?: info!!.educationlevel),
-//            religiousbelief = (_uiState.value.informationUiState.selectedReligiousBelief?: info!!.religiousbelief),
-//            politicalbelief = (_uiState.value.informationUiState.selectedPoliticalBelief?: info!!.politicalbelief),
-//            drink = (_uiState.value.informationUiState.selectedDrinkOption?: info!!.drink),
-//            smoke = (_uiState.value.informationUiState.selectedTobaccoOption?: info!!.smoke),
-//            weed = (_uiState.value.informationUiState.selectedWeedOption?: info!!.weed),
-//            drugs = (_uiState.value.informationUiState.selectedDrugOption?: info!!.drugs))
-//        val client = OkHttpClient()
-//        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
-//        val jsonBody = Json.encodeToString(userData)
-//        val userid=userPreference.user.value
-//        val requestBody = jsonBody.toRequestBody(jsonMediaType)
-//        val request = Request.Builder()
-//            .url("http://192.168.0.131:8000/updateinfo/$userid")
-//            .put(requestBody)
-//            .build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                Log.d("failure","Error: ${e.message}")
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                Log.d("success",response.body?.string() ?: "No response")
-//            }
-//        })
-//        //call api
-//    }
 
     fun addOrRemovePronoun(pronoun: String) {
         _uiState.update {
@@ -459,7 +248,8 @@ init {
 
     fun addOrRemoveDatingPreference(preference: String) {
         _uiState.update {
-            val selectedDatingPreferences = it.informationUiState.selectedDatingPreferences.toMutableList()
+            val selectedDatingPreferences =
+                it.informationUiState.selectedDatingPreferences.toMutableList()
             if (selectedDatingPreferences.contains(preference)) {
                 selectedDatingPreferences.remove(preference)
             } else {
@@ -470,12 +260,19 @@ init {
     }
 
     fun changeDatingIntention(intention: String) {
-        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(selectedDatingIntention = intention)) }
+        _uiState.update {
+            it.copy(
+                informationUiState = it.informationUiState.copy(
+                    selectedDatingIntention = intention
+                )
+            )
+        }
     }
 
     fun addOrRemoveRelationshipType(type: String) {
         _uiState.update {
-            val selectedRelationshipType = it.informationUiState.selectedRelationshipType.toMutableList()
+            val selectedRelationshipType =
+                it.informationUiState.selectedRelationshipType.toMutableList()
             if (selectedRelationshipType.contains(type)) {
                 selectedRelationshipType.remove(type)
             } else {
@@ -526,19 +323,43 @@ init {
     }
 
     fun changeSelectedReligiousBelief(religiousBelief: String) {
-        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(selectedReligiousBelief = religiousBelief)) }
+        _uiState.update {
+            it.copy(
+                informationUiState = it.informationUiState.copy(
+                    selectedReligiousBelief = religiousBelief
+                )
+            )
+        }
     }
 
     fun changeSelectedPoliticalBelief(politicalBelief: String) {
-        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(selectedPoliticalBelief = politicalBelief)) }
+        _uiState.update {
+            it.copy(
+                informationUiState = it.informationUiState.copy(
+                    selectedPoliticalBelief = politicalBelief
+                )
+            )
+        }
     }
 
     fun changeSelectedDrinkOption(drinkOption: String) {
-        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(selectedDrinkOption = drinkOption)) }
+        _uiState.update {
+            it.copy(
+                informationUiState = it.informationUiState.copy(
+                    selectedDrinkOption = drinkOption
+                )
+            )
+        }
     }
 
     fun changeSelectedTobaccoOption(tobaccoOption: String) {
-        _uiState.update { it.copy(informationUiState = it.informationUiState.copy(selectedTobaccoOption = tobaccoOption)) }
+        _uiState.update {
+            it.copy(
+                informationUiState = it.informationUiState.copy(
+                    selectedTobaccoOption = tobaccoOption
+                )
+            )
+        }
     }
 
     fun changeSelectedWeedOption(weedOption: String) {
@@ -549,14 +370,14 @@ init {
         _uiState.update { it.copy(informationUiState = it.informationUiState.copy(selectedDrugOption = drugOption)) }
     }
 
-    fun onLocationChnage(newValue: String){
+    fun onLocationChnage(newValue: String) {
         _uiState.update { it.copy(informationUiState = it.informationUiState.copy(locality = newValue)) }
     }
 
     fun addTextPrompt(index: Int, prompt: String, answer: String) {
         val newList = _uiState.value.selectedTextPrompts.toMutableList().apply {
             this[index] = Pair(prompt, answer)
-            Log.d("prompts","$prompt | $answer")
+            Log.d("prompts", "$prompt | $answer")
         }
         _uiState.update { it.copy(selectedTextPrompts = newList) }
     }

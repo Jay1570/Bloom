@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,28 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.bloom.AppViewModelProvider
 import com.example.bloom.screens.TopBar
-import com.example.bloom.screens.information.ChildrenScreen
-import com.example.bloom.screens.information.CurrentLocationScreen
-import com.example.bloom.screens.information.DatingIntentionScreen
-import com.example.bloom.screens.information.DatingPreferenceScreen
-import com.example.bloom.screens.information.DrinkSelectionScreen
-import com.example.bloom.screens.information.DrugsSelectionScreen
-import com.example.bloom.screens.information.EthnicitySelectionScreen
-import com.example.bloom.screens.information.FamilyPlanScreen
-import com.example.bloom.screens.information.GenderSelectionScreen
-import com.example.bloom.screens.information.HeightSelectionScreen
-import com.example.bloom.screens.information.HomeTownScreen
-import com.example.bloom.screens.information.InformationUiState
-import com.example.bloom.screens.information.PoliticalBeliefsScreen
-import com.example.bloom.screens.information.PronounsSelectionScreen
-import com.example.bloom.screens.information.RelationshipTypeScreen
-import com.example.bloom.screens.information.ReligiousBeliefsScreen
-import com.example.bloom.screens.information.SchoolCollegeSelectionScreen
-import com.example.bloom.screens.information.SexualitySelectionScreen
-import com.example.bloom.screens.information.StudySelectionScreen
-import com.example.bloom.screens.information.TobaccoSelectionScreen
-import com.example.bloom.screens.information.WeedSelectionScreen
-import com.example.bloom.screens.information.WorkplaceSelectionScreen
+import com.example.bloom.screens.information.*
 import com.example.bloom.ui.theme.BloomTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -472,8 +450,8 @@ fun MyVitalsSection(
         selectedEthnicities = uiState.selectedEthnicity.joinToString(", ")
     }
     val aboutDetails = listOf(
-        UserDetails("Name", name, {}) ,
-        UserDetails("Age", age, {}),
+        UserDetails("Name", name, onClick = {}) ,
+        UserDetails("Age", age, onClick = {}),
         UserDetails("Height", uiState.selectedHeightInCm.toString(), onHeightClick),
         UserDetails("Location", uiState.locality, onLocationClick),
         UserDetails("Ethnicity", selectedEthnicities, onEthnicityClick),
