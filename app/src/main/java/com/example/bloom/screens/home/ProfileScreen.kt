@@ -60,21 +60,21 @@ fun ProfileScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val visibilityState by viewModel.visibilityState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        // This will only trigger once when the screen is first composed
-        viewModel.fetchUsers(viewModel.userPreference.user.value) { result ->
-            viewModel.user_baisc = result
-        }
-        viewModel.fetchUsers_info(viewModel.userPreference.user.value) { result ->
-            viewModel.info = result
-        }
-        viewModel.fetch_prompt(viewModel.userPreference.user.value) { result ->
-            viewModel.prompt = result
-        }
-        viewModel.fetch_url(viewModel.userPreference.user.value) { result ->
-            viewModel.photo = result
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        // This will only trigger once when the screen is first composed
+//        viewModel.fetchUsers(viewModel.userPreference.user.value) { result ->
+//            viewModel.user_baisc = result
+//        }
+//        viewModel.fetchUsers_info(viewModel.userPreference.user.value) { result ->
+//            viewModel.info = result
+//        }
+//        viewModel.fetch_prompt(viewModel.userPreference.user.value) { result ->
+//            viewModel.prompt = result
+//        }
+//        viewModel.fetch_url(viewModel.userPreference.user.value) { result ->
+//            viewModel.photo = result
+//        }
+//    }
 
     Scaffold(
         topBar = {
