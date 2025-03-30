@@ -90,13 +90,14 @@ fun MainScreen(
                         attributes = profile.details,
                         description = profile.aboutMe
                     )
-
-                    UserCardView(
-                        userName = "",
-                        imageResId = profile.imageResId[1],
-                        activeStatus = "",
-                        location = ""
-                    )
+                    if (profile.imageResId.size > 1) {
+                        UserCardView(
+                            userName = "",
+                            imageResId = profile.imageResId[1],
+                            activeStatus = "",
+                            location = ""
+                        )
+                    }
 
                     CompatibilityCard()
 
@@ -130,13 +131,14 @@ fun MainScreen(
                         ),
                         description = ""
                     )
-
-                    UserCardView(
-                        userName = "",
-                        imageResId = profile.imageResId[2],
-                        activeStatus = "",
-                        location = ""
-                    )
+                    if(profile.imageResId.size > 2) {
+                        UserCardView(
+                            userName = "",
+                            imageResId = profile.imageResId[2],
+                            activeStatus = "",
+                            location = ""
+                        )
+                    }
                 }
             }
 
@@ -181,11 +183,10 @@ private fun UserCardView(
                         .padding(5.dp)
                 ) {
                     if (!userName.isNullOrEmpty()) {
-                        Text(
+                        InfoCard(
                             text = userName,
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.background,
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp).wrapContentSize()
                         )
                     }
 
@@ -204,16 +205,16 @@ private fun UserCardView(
 
 
 @Composable
-private fun InfoCard(text: String) {
+private fun InfoCard(
+    text: String,
+    style: TextStyle = MaterialTheme.typography.bodySmall,
+    modifier: Modifier = Modifier.padding(start = 16.dp, top = 5.dp).wrapContentSize()
+) {
     Card(
-        modifier = Modifier
-            .padding(start = 16.dp, top = 5.dp)
-            .wrapContentSize(),
+        modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(
-                alpha = 0.3f
-            )
+            containerColor = MaterialTheme.colorScheme.background
         )
     ) {
         Box(
@@ -222,7 +223,7 @@ private fun InfoCard(text: String) {
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.background)
+                style = style.copy(color = MaterialTheme.colorScheme.onBackground)
             )
         }
     }
