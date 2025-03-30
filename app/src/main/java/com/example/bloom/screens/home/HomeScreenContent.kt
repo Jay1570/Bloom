@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
 import com.example.bloom.ui.theme.BloomTheme
@@ -145,6 +147,7 @@ fun MainScreen(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun UserCardView(
     userName: String?,
@@ -166,7 +169,7 @@ private fun UserCardView(
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 GlideImage(
-                    painter = painterResource(id = imageResId),
+                    model = imageResId,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop

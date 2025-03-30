@@ -36,7 +36,7 @@ object AppViewModelProvider {
             InformationViewModel(myApp().userPreference)
         }
         initializer {
-            HomeScreenViewModel(myApp().userPreference)
+            HomeScreenViewModel(myApp().userPreference, myApp().applicationContext)
         }
         initializer {
             ProfileViewModel(myApp().userPreference)

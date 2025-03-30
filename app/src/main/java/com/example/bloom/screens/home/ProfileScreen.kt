@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImage
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.bloom.AppViewModelProvider
 import com.example.bloom.screens.TopBar
 import com.example.bloom.screens.information.*
@@ -300,6 +301,7 @@ fun ProfileScreen(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageSelection(
     images: List<String>,
@@ -334,7 +336,7 @@ fun ImageSelection(
                                 },
                             contentAlignment = Alignment.Center
                         ) {
-                            AsyncImage(
+                            GlideImage(
                                 model = images[index],
                                 contentDescription = "Selected Image",
                                 contentScale = ContentScale.Fit,

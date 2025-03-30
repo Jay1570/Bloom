@@ -3,13 +3,7 @@ package com.example.bloom.screens.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bloom.PORT_8000
-import com.example.bloom.PORT_8080
-import com.example.bloom.PORT_8100
-import com.example.bloom.PORT_8200
-import com.example.bloom.SnackbarEvent
-import com.example.bloom.SnackbarManager
-import com.example.bloom.UserPreference
+import com.example.bloom.*
 import com.example.bloom.model.insertinfo
 import com.example.bloom.model.insertinformation
 import com.example.bloom.model.responsePhoto
@@ -160,7 +154,7 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
                     return@withContext null
                 }
                 response.body?.string()?.let {
-                    Json.decodeFromString<insertinformation>(it)
+                    return@withContext Json.decodeFromString<insertinformation>(it)
                 }
             } catch (e: IOException) {
                 Log.e("API_ERROR", "Exception: ${e.message}")
