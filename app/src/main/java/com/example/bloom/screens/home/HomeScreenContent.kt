@@ -1,6 +1,5 @@
 package com.example.bloom.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -20,427 +18,137 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.bloom.PORT_8000
-import com.example.bloom.PORT_8080
-import com.example.bloom.PORT_8100
-import com.example.bloom.PORT_8200
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
-import com.example.bloom.UserPreference
-import com.example.bloom.model.*
 import com.example.bloom.ui.theme.BloomTheme
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.IOException
 
 @Composable
-fun MainScreen() {
-
-    var users by remember { mutableStateOf<List<insertinfo>?>(emptyList()) }
-    var user_basic_info by remember { mutableStateOf<insertinfo?>(null) }
-    var user_advance_info by remember { mutableStateOf<insertinformation?>(null) }
-    var user_prompt by remember { mutableStateOf<List<responsePrompt?>>(emptyList()) }
-    var user_url by remember { mutableStateOf<List<responsePhoto?>>(emptyList()) }
-    val userlist = mutableListOf<Pair<Pair<insertinfo?, insertinformation?>,Pair<List<responsePrompt?>,List<responsePhoto?>>>>()
-    val userPreference=UserPreference(LocalContext.current)
-    LaunchedEffect(Unit) {
-        fetchUsersByAge(userPreference.age.value.toString()) { result ->
-            users = result
-            Log.d("list",users.toString())
-            if (users != null) {
-                for (user in users) {
-                    // Fetch additional data for each user by userID
-                    if(user.userID!=userPreference.user.value){
-                        Log.d("UserID",user.userID)
-                        user_basic_info=user
-                        fetchUsers_info (user.userID){ result->
-                            if(result!=null){
-                                user_advance_info=result
-                                fetch_prompt(user.userID){result->
-                                    if(result!=null){
-                                        user_prompt=result
-                                        fetch_url(user.userID){result->
-                                            if(result!=null){
-                                                user_url=result
-                                                if(user_basic_info!=null && user_advance_info!=null && user_prompt.isNotEmpty() && user_url.isNotEmpty()){
-                                                    userlist.add(Pair(Pair(user_basic_info,user_advance_info),Pair(user_prompt,user_url)))
-
-                                                }
-                                                else{
-                                                    Log.d("user_info","null")
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+fun MainScreen(
+    viewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.factory)
+) {
+    val uiState by viewModel.uiState.collectAsState()
     val showMatchScreen = remember { mutableStateOf(false) }
-    val userProfiles = remember {
-        mutableStateListOf( UserProfile(
-            userID = "1234567890",
-            name = "Charlie, 29",
-            imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
-            activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
-            location = "SURAT, INDIA",
-            details = listOf(
-                R.drawable.ac_1_date to "22",
-                R.drawable.ac_2_heightscale to "6'2 ft",
-                R.drawable.ac_2_sexuality to "Straight",
-                R.drawable.ac_2_pronoun_person to "Male",
-                R.drawable.ac_2_location to "Surat, India",
-                R.drawable.ac_2_work to "Android Developer",
-                R.drawable.ac_2_studylevel to "BCA"
-            ),
-            aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
-        ),
-            UserProfile(
-                userID = "9408335005",
-                name = "Ethan, 25",
-                imageResId = listOf(R.drawable.man,R.drawable.horse_rider2,R.drawable.horse_rider3),
-                activeStatus = "ACTIVE FROM 3PM TO 10PM IST",
-                location = "MUMBAI, INDIA",
-                details = listOf(
-                    R.drawable.ac_1_date to "25",
-                    R.drawable.ac_2_heightscale to "5'11 ft",
-                    R.drawable.ac_2_sexuality to "Straight",
-                    R.drawable.ac_2_pronoun_person to "Male",
-                    R.drawable.ac_2_location to "Mumbai, India",
-                    R.drawable.ac_2_work to "Software Engineer",
-                    R.drawable.ac_2_studylevel to "MCA"
-                ),
-                aboutMe = "Tech enthusiast who loves coding, traveling, and gaming."
-            ),
-
-            UserProfile(
-                userID = "9876543210",
-                name = "Charlie, 29",
-                imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
-                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
-                location = "SURAT, INDIA",
-                details = listOf(
-                    R.drawable.ac_1_date to "22",
-                    R.drawable.ac_2_heightscale to "6'2 ft",
-                    R.drawable.ac_2_sexuality to "Straight",
-                    R.drawable.ac_2_pronoun_person to "Male",
-                    R.drawable.ac_2_location to "Surat, India",
-                    R.drawable.ac_2_work to "Android Developer",
-                    R.drawable.ac_2_studylevel to "BCA"
-                ),
-                aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
-            ),
-            UserProfile(
-                userID = "9537920140",
-                name = "Doe, 29",
-                imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
-                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
-                location = "PUNE, INDIA",
-                details = listOf(
-                    R.drawable.ac_1_date to "22",
-                    R.drawable.ac_2_heightscale to "4'11 ft",
-                    R.drawable.ac_2_sexuality to "Straight",
-                    R.drawable.ac_2_pronoun_person to "Male",
-                    R.drawable.ac_2_location to "Surat, India",
-                    R.drawable.ac_2_work to "Android Developer",
-                    R.drawable.ac_2_studylevel to "BCA"
-                ),
-                aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
-            ),
-            UserProfile(
-                userID = "9824384947",
-                name = "John, 22",
-                imageResId = listOf(R.drawable.horse_rider,R.drawable.horse_rider2,R.drawable.horse_rider3),
-                activeStatus = "ACTIVE FROM 5PM TO 11PM EST",
-                location = "NAVSARI, INDIA",
-                details = listOf(
-                    R.drawable.ac_1_date to "02",
-                    R.drawable.ac_2_heightscale to "6'0 ft",
-                    R.drawable.ac_2_sexuality to "Straight",
-                    R.drawable.ac_2_pronoun_person to "Male",
-                    R.drawable.ac_2_location to "Surat, India",
-                    R.drawable.ac_2_work to "Android Developer",
-                    R.drawable.ac_2_studylevel to "BCA"
-                ),
-                aboutMe = "I love exploring new places, trying out different cuisines, and spending time with animals."
-            )
-        )
-    }
-    val currentIndex = remember { mutableStateOf(0) }
-
-
 
     Scaffold(
-
         floatingActionButton = {
-
             ActionButtons(
-                onNext = {
-                    currentIndex.value = (currentIndex.value + 1) % userProfiles.size
-                },
+                onNext = { viewModel.onNextClicked() },
                 onLike = {
-                    if (userProfiles.isNotEmpty()) {
-                        userProfiles.removeAt(currentIndex.value)
+                    uiState.currentUserProfile?.let {
                         showMatchScreen.value = true
-                        Log.d("final information",userlist.toString())
                     }
                 },
                 showMatchScreen.value
             )
         }
-    ){
-        paddingValues ->
-        val profile = userProfiles[currentIndex.value]
-//        val user = userlist[currentIndex.value]
-//
-//// Access the inner Pair for user information
-//        val userInfo = user.first // This is the first Pair containing insertinfo and insertinformation
-//        val insertInfo = userInfo.first // This is the insertinfo object
-//        val insertInformation = userInfo.second // This is the insertinformation object
-//
-//// Access the Pair of lists for prompts and photos
-//        val responses = user.second // This is the second Pair containing lists of responsePrompt and responsePhoto
-//        val responsePrompts = responses.first // List of responsePrompt
-//        val responsePhotos = responses.second // List of responsePhoto
-//
-//// Now you can access specific values within each object, for example:
-//
-//// Accessing a value from insertinfo (assuming insertinfo is a data class with a field like 'name')
-//        val insertInfoID = insertInfo?.userID
-//        val insertinfofirstnm=insertInfo?.firstname
-//        val insertinfolastname=insertInfo?.lastname
-//        val insertinfoage=insertInfo?.age// replace 'name' with the actual field name in insertinfo
-//
-//// Accessing a value from insertinformation (assuming insertinformation is a data class with a field like 'datePreference')
-//        val insertInformationDate = insertInformation?.datePrefrence
-//        val insertinformationgender=insertInformation?.gender
-//        val insertinformationsex=insertInformation?.sexuality
-//        val insertinformationpronous=insertInformation?.pronouns
-//        // replace 'datePrefrence' with the actual field name in insertinformation
-//
-//// Accessing values from responsePrompt
-//        val firstPrompt = responsePrompts?.get(0) // Access the first responsePrompt object if the list is not null
-//        val firstPromptAnswer = firstPrompt?.answer // Replace 'answer' with the actual field name in responsePrompt
-//
-//// Accessing values from responsePhoto
-//        val firstPhoto = responsePhotos?.get(0) // Access the first responsePhoto object if the list is not null
-//        val firstPhotoUrl = firstPhoto?.url
-        if (showMatchScreen.value) {
-            MatchScreen(onDismiss = { showMatchScreen.value = false }, userID = profile.userID)
-        }else if (userProfiles.isNotEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                UserCardView(
-                    userName = profile.name,
-                    imageResId = profile.imageResId.get(0),
-                    activeStatus = profile.activeStatus,
-                    location = profile.location
-                )
+    ) { paddingValues ->
+        when {
+            uiState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
 
-                UserInformationCard(
-                    title = "WHO AM I?",
-                    attributes = profile.details,
-                    description = profile.aboutMe
-                )
-                UserCardView(
-                    userName = "",
-                    imageResId = profile.imageResId.get(1),
-                    activeStatus = "",
-                    location = ""
-                )
-
-                CompatibilityCard()
-
-                UserInformationCard(
-                    title = "WHAT I WANT?",
-                    attributes = listOf(),
-                    description = "❤ Long Time Relationship"
-                )
-
-                UserInformationCard(
-                    title = "LIFESTYLE",
-                    attributes = listOf(
-                        R.drawable.ac_2_drink to "Sometimes",
-                        R.drawable.ac_2_weed to "Nope",
-                        R.drawable.ac_2_somoke to "Sometimes",
-                        R.drawable.gym_svgrepo_com to "Exercise",
-                        R.drawable.language_svgrepo_com to "English, Hindi, Gujarati",
-                    ),
-                    description = ""
-                )
-
-                UserInformationCard(
-                    title = "MY INTEREST",
-                    attributes = listOf(
-                        R.drawable.hiking_svgrepo_com to "Hiking",
-                        R.drawable.travel_svgrepo_com to "Travelling",
-                        R.drawable.swimming_svgrepo_com to "Swimming",
-                        R.drawable.design_education_painting_svgrepo_com to "Fine Art",
-                        R.drawable.stand_up_horse_with_jockey_svgrepo_com to "Horse Riding",
-                        R.drawable.gamepad_svgrepo_com to "Gamer",
-                    ),
-                    description = ""
-                )
-
-                UserCardView(
-                    userName = "",
-                    imageResId = profile.imageResId.get(2),
-                    activeStatus = "",
-                    location = ""
+            showMatchScreen.value && uiState.currentUserProfile != null -> {
+                MatchScreen(
+                    onDismiss = {
+                        showMatchScreen.value = false
+                        viewModel.selectRandomUser()
+                    },
+                    userID = uiState.currentUserProfile!!.userID,
+                    onMatchConfirmed = {
+                        viewModel.onMatchConfirmed(it)
+                    }
                 )
             }
-        }else {
-            EmptyStateScreen()
+
+            uiState.currentUserProfile != null -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val profile = uiState.currentUserProfile
+
+                    UserCardView(
+                        userName = profile?.name,
+                        imageResId = profile!!.imageResId[0],
+                        activeStatus = profile.activeStatus,
+                        location = profile.location
+                    )
+
+                    UserInformationCard(
+                        title = "WHO AM I?",
+                        attributes = profile.details,
+                        description = profile.aboutMe
+                    )
+
+                    UserCardView(
+                        userName = "",
+                        imageResId = profile.imageResId[1],
+                        activeStatus = "",
+                        location = ""
+                    )
+
+                    CompatibilityCard()
+
+                    UserInformationCard(
+                        title = "WHAT I WANT?",
+                        attributes = listOf(),
+                        description = "❤ Long Time Relationship"
+                    )
+
+                    UserInformationCard(
+                        title = "LIFESTYLE",
+                        attributes = listOf(
+                            R.drawable.ac_2_drink to "Sometimes",
+                            R.drawable.ac_2_weed to "Nope",
+                            R.drawable.ac_2_somoke to "Sometimes",
+                            R.drawable.gym_svgrepo_com to "Exercise",
+                            R.drawable.language_svgrepo_com to "English, Hindi, Gujarati",
+                        ),
+                        description = ""
+                    )
+
+                    UserInformationCard(
+                        title = "MY INTEREST",
+                        attributes = listOf(
+                            R.drawable.hiking_svgrepo_com to "Hiking",
+                            R.drawable.travel_svgrepo_com to "Travelling",
+                            R.drawable.swimming_svgrepo_com to "Swimming",
+                            R.drawable.design_education_painting_svgrepo_com to "Fine Art",
+                            R.drawable.stand_up_horse_with_jockey_svgrepo_com to "Horse Riding",
+                            R.drawable.gamepad_svgrepo_com to "Gamer",
+                        ),
+                        description = ""
+                    )
+
+                    UserCardView(
+                        userName = "",
+                        imageResId = profile.imageResId[2],
+                        activeStatus = "",
+                        location = ""
+                    )
+                }
+            }
+
+            uiState.noMoreProfiles -> {
+                EmptyStateScreen()
+            }
         }
     }
 }
 
-fun fetchUsersByAge(age: String, callback: (List<insertinfo>?) -> Unit) {
-    val client = OkHttpClient()
-    val url = "http://${PORT_8080}/getinfo/$age"
-
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
-
-    Thread {
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR", "Response Code: ${response.code}")
-                callback(null)
-                return@Thread
-            }
-
-            val responseBody = response.body?.string()
-            Log.d("API_RESPONSE", responseBody ?: "No response body")
-
-            responseBody?.let {
-                val result = Json.decodeFromString<List<insertinfo>>(it)
-                callback(result)
-            } ?: callback(null)
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            callback(null)
-        }
-    }.start()
-}
-
-fun fetch_prompt(userID:String, callback: (List<responsePrompt>?) -> Unit) {
-    val client = OkHttpClient()
-    val url = "http://${PORT_8100}/getinfo/$userID"
-
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
-
-    Thread {
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR_prompt", "Response Code: ${response.code}")
-                callback(null)
-                return@Thread
-            }
-
-            val responseBody = response.body?.string()
-            Log.d("API_RESPONSE", responseBody ?: "No response body")
-
-            responseBody?.let {
-                val result = Json.decodeFromString<List<responsePrompt>>(it)
-                callback(result)
-            } ?: callback(null)
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            callback(null)
-        }
-    }.start()
-}
-
-
-fun fetch_url(userID: String, callback: (List<responsePhoto>?) -> Unit) {
-    val client = OkHttpClient()
-    val url = "http://${PORT_8200}/getinfo/$userID"
-
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
-
-    Thread {
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR_url", "Response Code: ${response.code}")
-                callback(null)
-                return@Thread
-            }
-
-            val responseBody = response.body?.string()
-            Log.d("API_RESPONSE", responseBody ?: "No response body")
-
-            responseBody?.let {
-                val result = Json.decodeFromString<List<responsePhoto>>(it)
-                callback(result)
-            } ?: callback(null)
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            callback(null)
-        }
-    }.start()
-}
-
-
-fun fetchUsers_info(userID: String, callback: (insertinformation?) -> Unit) {
-    val client = OkHttpClient()
-    val url = "http://${PORT_8000}/getinfo/$userID"
-
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
-
-    Thread {
-        try {
-            val response = client.newCall(request).execute()
-            if (!response.isSuccessful) {
-                Log.e("API_ERROR_info", "Response Code: ${response.code}")
-                callback(null)
-                return@Thread
-            }
-
-            val responseBody = response.body?.string()
-            Log.d("API_RESPONSE", responseBody ?: "No response body")
-
-            responseBody?.let {
-                val result = Json.decodeFromString<insertinformation>(it)
-                callback(result)
-            } ?: callback(null)
-        } catch (e: IOException) {
-            Log.e("API_ERROR", "Exception: ${e.message}")
-            callback(null)
-        }
-    }.start()
-}
-
-
 @Composable
 private fun UserCardView(
     userName: String?,
-    imageResId: Int,
+    imageResId: String,
     activeStatus: String?,
     location: String?
 ) {
@@ -457,7 +165,7 @@ private fun UserCardView(
             shape = RoundedCornerShape(20.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                Image(
+                GlideImage(
                     painter = painterResource(id = imageResId),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
@@ -669,7 +377,7 @@ private fun CompatibilityCard() {
 }
 
 @Composable
-fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit,showMatchScreen: Boolean) {
+fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit, showMatchScreen: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -677,10 +385,12 @@ fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit,showMatchScreen: Boolea
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if(showMatchScreen == false){
+        if (showMatchScreen == false) {
             Spacer(modifier = Modifier.width(20.dp))
             Button(
-                modifier = Modifier.size(70.dp).clip(CircleShape),
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(CircleShape),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground
@@ -695,15 +405,16 @@ fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit,showMatchScreen: Boolea
                 )
             }
             Spacer(modifier = Modifier.width(25.dp))
-            val userPreference=UserPreference(LocalContext.current)
             Button(
-                modifier = Modifier.size(70.dp).clip(CircleShape),
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(CircleShape),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground
                 ),
-                onClick ={
-                        onLike()
+                onClick = {
+                    onLike()
                 }
             ) {
                 Icon(
@@ -720,10 +431,10 @@ fun ActionButtons(onNext: () -> Unit, onLike: () -> Unit,showMatchScreen: Boolea
 data class UserProfile(
     val userID: String,
     val name: String,
-    val imageResId: List<Int>,
+    val imageResId: List<String>,
     val activeStatus: String,
     val location: String,
-    val details: List<Pair<Int, String>>, // List of icons and corresponding text
+    val details: List<Pair<Int, String>>,
     val aboutMe: String
 )
 
@@ -751,27 +462,24 @@ fun EmptyStateScreen() {
 
 
 @Composable
-fun MatchScreen(onDismiss: () -> Unit,userID: String) {
+fun MatchScreen(onDismiss: () -> Unit, userID: String, onMatchConfirmed: (String) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        val userPreference=UserPreference(LocalContext.current)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("It's a Match!", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+            Text(
+                "It's a Match!",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick= {
-                val firestore = FirebaseFirestore.getInstance()
-                firestore.collection("connections").add(
-                    Connections(
-                user1Id = userPreference.user.value,//current userid
-                user2Id = userID//userid of connection
-                )
-                ).addOnSuccessListener {onDismiss()} //else use this two functions
-                    .addOnFailureListener{e ->
-                    Log.d("firebase_error",e.message.toString())}
+            Button(onClick = {
+                onMatchConfirmed(userID)
+                onDismiss()
             }) {
                 Text("Continue")
             }

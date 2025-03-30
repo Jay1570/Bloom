@@ -12,7 +12,7 @@ import com.example.bloom.screens.basic_information.BasicInformationViewModel
 import com.example.bloom.screens.connection.ChatViewModel
 import com.example.bloom.screens.connection.ConnectionListViewModel
 import com.example.bloom.screens.home.ProfileViewModel
-import com.example.bloom.screens.home.homeScreenviewmodel
+import com.example.bloom.screens.home.HomeScreenViewModel
 import com.example.bloom.screens.information.InformationViewModel
 
 object AppViewModelProvider {
@@ -36,7 +36,7 @@ object AppViewModelProvider {
             InformationViewModel(myApp().userPreference)
         }
         initializer {
-            homeScreenviewmodel(myApp().userPreference)
+            HomeScreenViewModel(myApp().userPreference)
         }
         initializer {
             ProfileViewModel(myApp().userPreference)

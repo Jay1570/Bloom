@@ -1,6 +1,5 @@
 package com.example.bloom.screens.home
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +8,6 @@ import com.example.bloom.PORT_8080
 import com.example.bloom.PORT_8100
 import com.example.bloom.PORT_8200
 import com.example.bloom.R
-import com.example.bloom.SnackbarEvent
-import com.example.bloom.SnackbarManager
 import com.example.bloom.UserPreference
 import com.example.bloom.model.Connections
 import com.example.bloom.model.insertinfo
@@ -32,22 +29,25 @@ import java.io.IOException
 import kotlin.collections.firstOrNull
 import kotlin.collections.isNotEmpty
 
-class HomeScreenViewModel(private val userPreference: UserPreference, private val context: Context) : ViewModel() {
+class HomeScreenViewModel(private val userPreference: UserPreference) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeScreenState())
     val uiState = _uiState.asStateFlow()
 
+    // Keep track of users we've already shown to avoid repetition
     private val shownUserIds = mutableSetOf<String>()
 
     init {
         fetchUsersByAge()
     }
 
+    // Step 1: Fetch users with similar age
     fun fetchUsersByAge() {
         viewModelScope.launch {
             try {
                 val age = userPreference.age.value.toString()
                 val users = fetchUsersList(age)
 
+                // Filter out current user
                 val filteredUsers = users.filter { it.userID != userPreference.user.value }
 
                 _uiState.update { it.copy(
@@ -55,25 +55,29 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
                     isLoading = false
                 )}
 
+                // Select initial user
                 selectRandomUser()
             } catch (e: Exception) {
-                showSnackbar("Failed to load users: ${e.message}")
                 _uiState.update { it.copy(
+                    error = "Failed to load users: ${e.message}",
                     isLoading = false
                 )}
             }
         }
     }
 
+    // Step 2: Select a random user and fetch their complete profile
     fun selectRandomUser() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             val availableUsers = _uiState.value.availableUsers
 
+            // Filter out users we've already shown
             val unshownUsers = availableUsers.filter { it.userID !in shownUserIds }
 
             if (unshownUsers.isEmpty()) {
+                // If we've shown all users, reset and start over
                 shownUserIds.clear()
                 _uiState.update { it.copy(
                     currentUserProfile = null,
@@ -83,9 +87,11 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
                 return@launch
             }
 
+            // Select a random user we haven't shown yet
             val randomUser = unshownUsers.random()
             shownUserIds.add(randomUser.userID)
 
+            // Fetch complete profile for the selected user
             try {
                 val userProfile = fetchCompleteUserProfile(randomUser)
                 _uiState.update { it.copy(
@@ -94,30 +100,38 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
                     noMoreProfiles = false
                 )}
             } catch (e: Exception) {
-                showSnackbar("Failed to load user profile: ${e.message}")
                 _uiState.update { it.copy(
+                    error = "Failed to load user profile: ${e.message}",
                     isLoading = false
                 )}
+                // Try another user if this one fails
                 selectRandomUser()
             }
         }
     }
 
+    // Handle "Next" button click
     fun onNextClicked() {
         selectRandomUser()
     }
 
+    // Handle after match screen is shown
     fun onMatchConfirmed(matchedUserId: String) {
         viewModelScope.launch {
             try {
+                // Create connection in Firestore
                 createFirestoreConnection(userPreference.user.value, matchedUserId)
+                // Select next user
                 selectRandomUser()
             } catch (e: Exception) {
-                showSnackbar("Failed to create connection: ${e.message}")
+                _uiState.update { it.copy(
+                    error = "Failed to create match: ${e.message}"
+                )}
             }
         }
     }
 
+    // Network functions
     private suspend fun fetchUsersList(age: String): List<insertinfo> = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val url = "http://${PORT_8080}/getinfo/$age"
@@ -146,10 +160,12 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
     }
 
     private suspend fun fetchCompleteUserProfile(basicInfo: insertinfo): UserProfile = withContext(Dispatchers.IO) {
+        // Get detailed user information
         val advancedInfo = fetchUserInfo(basicInfo.userID)
         val userPrompts = fetchUserPrompts(basicInfo.userID)
         val userPhotos = fetchUserPhotos(basicInfo.userID)
 
+        // Map these to a UserProfile object
         return@withContext createUserProfile(basicInfo, advancedInfo, userPrompts, userPhotos)
     }
 
@@ -244,95 +260,94 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
         }
     }
 
+    // Helper function to create a UserProfile from API responses
     private fun createUserProfile(
         basicInfo: insertinfo,
         advancedInfo: insertinformation?,
         prompts: List<responsePrompt>,
         photos: List<responsePhoto>
     ): UserProfile {
-        val photoUrls = if (photos.isNotEmpty()) {
-            photos.take(3).map { it.url }
+        // Convert photo URLs to resource IDs (in a real app, you'd load these via Coil/Glide)
+        // For now, we'll use placeholder images
+        val imageResIds = if (photos.isNotEmpty()) {
+            List(3) { R.drawable.horse_rider } // Placeholders - replace with actual image loading
         } else {
-            emptyList()
+            listOf(R.drawable.horse_rider, R.drawable.horse_rider2, R.drawable.horse_rider3)
         }
 
-        val imageResources = if (photoUrls.isNotEmpty()) {
-            photoUrls
-        } else {
-            listOf(
-                R.drawable.horse_rider,
-                R.drawable.horse_rider2,
-                R.drawable.horse_rider3
-            ).map { resId ->
-                "android.resource://${context.packageName}/$resId"
-            }
-        }
-
+        // Create a name string
         val name = "${basicInfo.firstname ?: "User"}, ${basicInfo.age}"
 
+        // Create appropriate details from the advanced info
         val details = mutableListOf<Pair<Int, String>>()
 
+        // Add age
         details.add(R.drawable.ac_1_date to basicInfo.age.toString())
 
+        // Add additional details if advanced info is available
         advancedInfo?.let { info ->
+            // Height
             info.height?.let { height ->
                 details.add(R.drawable.ac_2_heightscale to "$height")
             }
 
+            // Sexuality
             info.sexuality?.let { sexuality ->
                 details.add(R.drawable.ac_2_sexuality to sexuality)
             }
 
+            // Gender/Pronouns
             info.pronouns?.let { pronouns ->
                 details.add(R.drawable.ac_2_pronoun_person to pronouns)
             }
 
+            // Location
             info.locality?.let { location ->
                 details.add(R.drawable.ac_2_location to location)
             }
 
+            // Work
             info.work?.let { work ->
                 details.add(R.drawable.ac_2_work to work)
             }
 
+            // Education
             info.educationlevel?.let { education ->
+
                 details.add(R.drawable.ac_2_studylevel to education)
             }
-
-
         }
 
+        // Create about me text from prompts
         val aboutMe = if (prompts.isNotEmpty()) {
             prompts.firstOrNull()?.answer ?: "I love exploring new places and meeting new people."
         } else {
             "I love exploring new places and meeting new people."
         }
 
+        // Active status format
         val activeStatus = "ACTIVE FROM 5PM TO 11PM EST"
 
+        // Location
         val location = advancedInfo?.locality?.uppercase() ?: "UNKNOWN LOCATION"
 
         return UserProfile(
             userID = basicInfo.userID,
             name = name,
-            imageResId = imageResources,
+            imageResId = imageResIds,
             activeStatus = activeStatus,
             location = location,
             details = details,
             aboutMe = aboutMe
         )
     }
-
-    private fun showSnackbar(message: String) {
-        viewModelScope.launch {
-            SnackbarManager.sendEvent(SnackbarEvent(message))
-        }
-    }
 }
 
+// State class to hold all UI state
 data class HomeScreenState(
     val availableUsers: List<insertinfo> = emptyList(),
     val currentUserProfile: UserProfile? = null,
     val isLoading: Boolean = true,
+    val error: String? = null,
     val noMoreProfiles: Boolean = false
 )
