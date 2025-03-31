@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bloom.AppViewModelProvider
 import com.example.bloom.R
 import com.example.bloom.Theme
 import com.example.bloom.screens.TopBar
@@ -33,7 +34,7 @@ fun SettingsScreen(
     navigateToIntro: () -> Unit,
     navigateBack: () -> Unit,
     onDeleteAccountClick: () -> Unit,
-    viewModel: SettingsViewModel = viewModel()
+    viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider .factory)
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState
@@ -67,7 +68,11 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             itemsList = items,
-            onDeleteAccountClick = navigateToIntro,
+            onDeleteAccountClick = {navigateToIntro()
+
+                viewModel.onDeleteClick()
+
+                                   },
             onSignOutClick = navigateToIntro,
         )
         if (uiState.isThemeDialogVisible) {
@@ -98,7 +103,7 @@ fun SettingsScreenContent(
         }
 
         Button(
-            onClick = onDeleteAccountClick,
+            onClick = {onDeleteAccountClick()},
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()

@@ -14,6 +14,7 @@ import com.example.bloom.screens.connection.ConnectionListViewModel
 import com.example.bloom.screens.home.ProfileViewModel
 import com.example.bloom.screens.home.HomeScreenViewModel
 import com.example.bloom.screens.information.InformationViewModel
+import com.example.bloom.screens.settings.SettingsViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
@@ -40,6 +41,9 @@ object AppViewModelProvider {
         }
         initializer {
             ProfileViewModel(myApp().userPreference)
+        }
+        initializer {
+            SettingsViewModel(myApp().userPreference)
         }
         initializer {
             VerificationViewModel(myApp().userPreference,this.createSavedStateHandle())
