@@ -72,14 +72,14 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
             val availableUsers = _uiState.value.availableUsers
 
             val unshownUsers = availableUsers.filter { it.userID !in shownUserIds }
-
+            Log.d("unshownuser",unshownUsers.toString())
             if (unshownUsers.isEmpty()) {
                 shownUserIds.clear()
                 _uiState.update { it.copy(
+                    noMoreProfiles = true,
                     currentUserProfile = null,
                     isLoading = false,
-                    noMoreProfiles = true
-                )}
+                    )}
                 return@launch
             }
 
@@ -107,10 +107,15 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
         selectRandomUser()
     }
 
+    fun onlikeClicked(){
+        _uiState.update { it.copy(availableUsers = _uiState.value.availableUsers.filter { it.userID !in shownUserIds }) }
+    }
+
     fun onMatchConfirmed(matchedUserId: String) {
         viewModelScope.launch {
             try {
                 createFirestoreConnection(userPreference.user.value, matchedUserId)
+
                 selectRandomUser()
             } catch (e: Exception) {
                 showSnackbar("Failed to create connection: ${e.message}")
@@ -120,7 +125,7 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
 
     private suspend fun fetchUsersList(age: String): List<insertinfo> = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
-        val url = "http://${PORT_8080}/getinfo/$age"
+        val url = "http://${PORT_8080}/getinfo"
         val request = Request.Builder()
             .url(url)
             .get()
@@ -128,6 +133,7 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
 
         try {
             val response = client.newCall(request).execute()
+            Log.d("response",response.toString())
             if (!response.isSuccessful) {
                 Log.e("API_ERROR", "Response Code: ${response.code}")
                 return@withContext emptyList()

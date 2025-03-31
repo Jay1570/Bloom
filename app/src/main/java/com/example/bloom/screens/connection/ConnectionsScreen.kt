@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,7 +55,7 @@ fun ConnectionsScreen(
                 divider = {},
                 containerColor = Color.Transparent,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
                     .wrapContentSize()
             ) {
                 tabTitles.forEachIndexed { index, title ->
@@ -62,7 +63,6 @@ fun ConnectionsScreen(
                         modifier = Modifier
                             .padding(end = 8.dp)
                             .wrapContentSize()
-                            .clip(CircleShape)
                             .clickable(onClick = {
                                 selectedTab = index
                             }),
@@ -70,14 +70,15 @@ fun ConnectionsScreen(
                             containerColor = if (selectedTab == index) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.surfaceContainer,
                             contentColor = if (selectedTab == index) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurface
                         ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        shape = RoundedCornerShape(10.dp)
                     ) {
                         Text(
                             text = title,
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
                             ),
-                            modifier = Modifier.padding(8.dp)
+                            modifier = Modifier.padding(10.dp)
                         )
                     }
                 }

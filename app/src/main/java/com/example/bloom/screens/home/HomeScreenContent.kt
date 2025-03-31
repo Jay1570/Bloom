@@ -37,6 +37,7 @@ fun MainScreen(
             ActionButtons(
                 onNext = { viewModel.onNextClicked() },
                 onLike = {
+                    viewModel.onlikeClicked()
                     uiState.currentUserProfile?.let {
                         showMatchScreen.value = true
                     }
@@ -186,7 +187,7 @@ private fun UserCardView(
                         InfoCard(
                             text = userName,
                             style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp).wrapContentSize()
+                            modifier = Modifier.padding(start = 15.dp, top = 15.dp).wrapContentSize()
                         )
                     }
 
@@ -218,7 +219,7 @@ private fun InfoCard(
         )
     ) {
         Box(
-            modifier = Modifier.padding(vertical = 5.dp, horizontal = 8.dp),
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
