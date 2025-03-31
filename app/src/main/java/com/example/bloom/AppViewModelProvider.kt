@@ -18,7 +18,9 @@ import com.example.bloom.screens.settings.SettingsViewModel
 
 object AppViewModelProvider {
     val factory = viewModelFactory {
-
+        initializer {
+            NavigationViewModel(myApp().userPreference)
+        }
 
         initializer {
             ConnectionListViewModel(myApp().userPreference)

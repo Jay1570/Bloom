@@ -13,11 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.bloom.screens.advanced_info.AdvancedInformationScreen
 import com.example.bloom.screens.advanced_info.IntermediateScreen2
 import com.example.bloom.screens.auth.EmailVerificationScreen
@@ -68,9 +68,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) { _ ->
                     val navController = rememberNavController()
+                    val viewModel: NavigationViewModel = viewModel(factory = AppViewModelProvider.factory)
                     NavHost(
                         navController = navController,
-                        startDestination = Auth,
+                        startDestination = viewModel.startDestination(),
                     ) {
                         navigation<Auth>(startDestination = Intro) {
                             composable<Intro> {
@@ -201,9 +202,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable<ChatScreen> {
-                            val args = it.toRoute<ChatScreen>()
                             ChatScreen(
-
                                 navigateBack = { navController.popBackStack() }
                             )
                         }
