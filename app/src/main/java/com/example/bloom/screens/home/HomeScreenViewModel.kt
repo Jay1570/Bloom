@@ -72,14 +72,13 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
             val availableUsers = _uiState.value.availableUsers
 
             val unshownUsers = availableUsers.filter { it.userID !in shownUserIds }
-
             if (unshownUsers.isEmpty()) {
                 shownUserIds.clear()
                 _uiState.update { it.copy(
+                    noMoreProfiles = true,
                     currentUserProfile = null,
                     isLoading = false,
-                    noMoreProfiles = true
-                )}
+                    )}
                 return@launch
             }
 
@@ -107,6 +106,10 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
         selectRandomUser()
     }
 
+    fun onlikeClicked(){
+        _uiState.update { it.copy(availableUsers = _uiState.value.availableUsers.filter { it.userID !in shownUserIds }) }
+    }
+
     fun onMatchConfirmed(matchedUserId: String) {
         viewModelScope.launch {
             try {
@@ -120,7 +123,7 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
 
     private suspend fun fetchUsersList(age: String): List<insertinfo> = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
-        val url = "http://${PORT_8080}/getinfo/$age"
+        val url = "http://${PORT_8080}/getinfo"
         val request = Request.Builder()
             .url(url)
             .get()
