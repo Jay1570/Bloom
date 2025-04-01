@@ -80,7 +80,7 @@ class ConnectionListViewModel(private val userPreference: UserPreference) : View
 
             val responseBody = response.body?.string()
             responseBody?.let {
-                return@withContext Json.decodeFromString<insertinfo>(it)
+                return@withContext Json.decodeFromString<insertinfo>(it, )
             }
         } catch (e: IOException) {
             Log.e("API_ERROR", "Exception: ${e.message}")
