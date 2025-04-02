@@ -1,5 +1,6 @@
 package com.example.bloom.screens.home
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -243,7 +244,9 @@ fun ProfileScreen(
 
                     ImageSelection(
                         images = uiState.images,
-                        onRemove = {},
+                        onRemove = {
+                            Log.d("image clicked",uiState.images.indexOf(uiState.images[it]).toString())
+                        },
                         onAdd = {}
                     )
                     HeadingText("Written Prompts")
@@ -327,13 +330,15 @@ fun ImageSelection(
                                 .padding(4.dp)
                                 .weight(1f)
                                 .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-                                .clickable {
-                                    if (images[index].isEmpty()) {
-                                        onRemove(index)
-                                    } else {
-                                        onAdd(index)
-                                    }
-                                },
+//                                .clickable {
+//                                    if (images[index].isEmpty()) {
+//
+//                                        onRemove(index)
+//                                    } else {
+//                                        onAdd(index)
+//                                    }
+//                                }
+                                ,
                             contentAlignment = Alignment.Center
                         ) {
                             GlideImage(

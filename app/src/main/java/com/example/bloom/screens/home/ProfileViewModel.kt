@@ -41,7 +41,7 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
             prompt = fetchPrompt(userPreference.user.value)
             photo = fetchUrl(userPreference.user.value)
 
-            Log.d("url", photo.toString())
+            Log.d("url", userPreference.user.value)
 
             if (user_baisc != null && info != null && prompt != null && photo != null) {
                 _uiState.update {
@@ -75,6 +75,7 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
                         age = user_baisc!!.age.toInt()
                     )
                 }
+                Log.d("images List ", _uiState.value.images.indices.toString())
             }
         }
     }

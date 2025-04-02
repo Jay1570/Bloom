@@ -73,7 +73,10 @@ fun SettingsScreen(
                 viewModel.onDeleteClick()
 
                                    },
-            onSignOutClick = navigateToIntro,
+            onSignOutClick = {navigateToIntro()
+                viewModel.onSignoutClick()
+
+                             },
         )
         if (uiState.isThemeDialogVisible) {
             ThemeSelectionDialog(

@@ -120,6 +120,13 @@ fun ImageSelectionScreen(
         }
 
         Text(
+            text = "Once you proceed with the selected image amd prompts they cannot be changed",
+            fontSize = 10.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Text(
             text = "Click on the Image to Remove it\n1 required compulsory",
             fontSize = 14.sp,
             color = Color.Gray,

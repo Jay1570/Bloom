@@ -1,5 +1,6 @@
 package com.example.bloom.screens.connection
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,9 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.bloom.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bloom.AppViewModelProvider
@@ -50,7 +53,7 @@ fun ChatScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    AppBar(onNavigateBack = navigateBack, name = uiState.receiverId)
+                    AppBar(onNavigateBack = navigateBack, name = uiState.name)
                 }
             )
         },
@@ -168,10 +171,11 @@ fun AppBar(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = name,
-                    modifier = Modifier.padding(),
+                    fontSize = 22.sp,
+                    modifier = Modifier.wrapContentWidth(),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -189,18 +193,6 @@ fun AppBar(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "",
                 )
-            }
-        },
-        actions = {
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(
-                onClick = {},
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
-            ) {
-                Icon(Icons.Default.MoreVert, contentDescription = "More")
             }
         }
     )

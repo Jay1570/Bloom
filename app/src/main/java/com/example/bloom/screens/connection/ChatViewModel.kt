@@ -6,18 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.bloom.ChatScreen
+import com.example.bloom.PORT_8080
 import com.example.bloom.UserPreference
 import com.example.bloom.model.Chat
 import com.example.bloom.model.Connections
+import com.example.bloom.model.insertinfo
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -34,6 +42,7 @@ class ChatViewModel(
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState get() = _uiState.asStateFlow()
+    var user2:insertinfo?=null
 
     init {
         getChats()
@@ -43,6 +52,7 @@ class ChatViewModel(
                 receiverId = receiverId
             )
         }
+        Log.d("recieverID", _uiState.value.receiverId)
     }
 
     fun onMessageChange(message: String) {
@@ -111,6 +121,10 @@ class ChatViewModel(
     }
 
     private fun getChats() {
+        viewModelScope.launch {
+            user2=fetchUsers(receiverId)
+            _uiState.update { it.copy(name = user2!!.firstname) }
+        }
         listenerRegistration?.remove()
         listenerRegistration =
             firestore.collection("chats").document(connectionId).collection("chats")
@@ -133,10 +147,31 @@ class ChatViewModel(
     }
 }
 
+private suspend fun fetchUsers(userID: String): insertinfo? = withContext(Dispatchers.IO) {
+    val client = OkHttpClient()
+    val url = "http://${PORT_8080}/getuser/$userID"
+    val request = Request.Builder().url(url).get().build()
+
+    try {
+        val response = client.newCall(request).execute()
+        if (!response.isSuccessful) {
+            Log.e("API_ERROR_info", "Response Code: ${response.code}")
+            return@withContext null
+        }
+        response.body?.string()?.let {
+            Json.decodeFromString<insertinfo>(it)
+        }
+    } catch (e: IOException) {
+        Log.e("API_ERROR", "Exception: ${e.message}")
+        null
+    }
+}
+
 data class ChatUiState(
     val chats: List<Chat> = emptyList(),
     val currentUser: String = "",
     val receiverId: String = "",
+    val name:String = "",
     val message: String = ""
 ) {
     fun groupedChats(): Map<String, List<Chat>> {

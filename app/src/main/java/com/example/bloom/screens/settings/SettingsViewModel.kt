@@ -62,6 +62,10 @@ class SettingsViewModel(val userPreference: UserPreference) : ViewModel() {
         deleteConnections(userID)
     }
 
+    fun onSignoutClick(){
+        userPreference.setUserId("")
+    }
+
 }
 
 fun deleteConnections(currentUserId: String) {
