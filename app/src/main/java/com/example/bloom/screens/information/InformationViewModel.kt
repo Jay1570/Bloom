@@ -46,7 +46,9 @@ class InformationViewModel(private val userPreference: UserPreference) : ViewMod
                 "Please select a sexuality"
             )
 
-            4 -> if (_uiState.value.selectedDatingPreferences.isNotEmpty()) incrementTab() else showSnackbar(
+            4 -> if (_uiState.value.selectedDatingPreferences.isNotEmpty()){ incrementTab()
+                userPreference.setUserGen(_uiState.value.selectedDatingPreferences.get(0))
+            }else showSnackbar(
                 "Please select at least one dating preference"
             )
 

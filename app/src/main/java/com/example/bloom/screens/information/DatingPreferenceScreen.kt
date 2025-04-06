@@ -24,9 +24,7 @@ fun DatingPreferenceScreen(
     
     val preferences = listOf(
         "Man",
-        "Woman",
-        "Non-binary people",
-        "Everyone"
+        "Woman"
     )
 
     Column(

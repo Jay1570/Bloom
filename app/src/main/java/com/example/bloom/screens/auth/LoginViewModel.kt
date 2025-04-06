@@ -34,7 +34,7 @@ class LoginViewModel(val userPreference: UserPreference) : ViewModel() {
 //            sendRequest(
 //                onSuccess = { verificationId ->
 //
-////                    _uiState.update { it.copy(verificationID = verificationId) }
+//                    _uiState.update { it.copy(verificationID = verificationId) }
 //                    viewModelScope.launch(Dispatchers.Main) {
 //                        navigateTo(verificationId)
 //                        _uiState.update { it.copy(inProcess = false) }
@@ -61,7 +61,7 @@ class LoginViewModel(val userPreference: UserPreference) : ViewModel() {
                 val mediaType = "text/plain".toMediaType()
                 val body = RequestBody.create(mediaType, "")
                 val request = Request.Builder()
-                    .url("https://cpaas.messagecentral.com/verification/v3/send?countryCode=91&customerId=C-794CDDF8402641E&flowType=SMS&mobileNumber=7201011509")
+                    .url("https://cpaas.messagecentral.com/verification/v3/send?countryCode=91&customerId=C-794CDDF8402641E&flowType=SMS&mobileNumber=${uiState.value.username}")
                     .post(body)
                     .addHeader("authToken", "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJDLTc5NENEREY4NDAyNjQxRSIsImlhdCI6MTc0MjkwMzEyMSwiZXhwIjoxOTAwNTgzMTIxfQ.brTUkUcAbqPqJ9v51rFoDMeOG3F9be-MxK8mvJX4jpOCJ5IBBzfqClMVrrH4OwsYr37Mgx9VwlXXXhef4OBJ5g")
                     .build()

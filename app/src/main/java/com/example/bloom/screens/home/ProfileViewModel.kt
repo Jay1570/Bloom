@@ -172,7 +172,7 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
                     ?: info!!.pronouns.toString(),
                 gender = _uiState.value.informationUiState.selectedGender ?: info!!.gender,
                 sexuality = _uiState.value.informationUiState.selectedSexuality ?: info!!.sexuality,
-                datePrefrence = _uiState.value.informationUiState.selectedDatingPreferences.firstOrNull()
+                datePrefrence = userPreference.gender.value
                     ?: info!!.datePrefrence.toString(),
                 datingintentions = _uiState.value.informationUiState.selectedDatingIntention
                     ?: info!!.datingintentions,
@@ -216,6 +216,7 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
 
                 override fun onResponse(call: Call, response: Response) {
                     Log.d("success", response.body?.string() ?: "No response")
+                    showSnackbar("User updated successfully...!")
                 }
             })
         }
@@ -245,10 +246,13 @@ class ProfileViewModel(val userPreference: UserPreference) : ViewModel() {
         _uiState.update {
             val selectedDatingPreferences =
                 it.informationUiState.selectedDatingPreferences.toMutableList()
+
             if (selectedDatingPreferences.contains(preference)) {
                 selectedDatingPreferences.remove(preference)
             } else {
                 selectedDatingPreferences.add(preference)
+                userPreference.setUserGen(selectedDatingPreferences.last())
+                Log.d("Prefrences",selectedDatingPreferences.toString())
             }
             it.copy(informationUiState = it.informationUiState.copy(selectedDatingPreferences = selectedDatingPreferences))
         }

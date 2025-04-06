@@ -39,28 +39,56 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
     private val shownUserIds = mutableSetOf<String>()
 
     init {
+        Log.d("userID",userPreference.user.value)
         fetchUsersByAge()
+        Log.d("Date Prefrence",userPreference.gender.value)
     }
 
     fun fetchUsersByAge() {
         viewModelScope.launch {
             try {
-                val age = userPreference.age.value.toString()
-                val users = fetchUsersList(age)
+                val users = fetchUsersList()
+                val preferredGender = userPreference.gender.value
+                val currentUserId = userPreference.user.value
+                Log.d("gender",preferredGender)
 
-                val filteredUsers = users.filter { it.userID != userPreference.user.value }
+                // Use a mutable list so we can add matching users
+                val filteredUsers = mutableListOf<insertinfo>()
 
-                _uiState.update { it.copy(
-                    availableUsers = filteredUsers,
-                    isLoading = false
-                )}
+                    for (user in users) {
+                        if (user.userID == currentUserId){
+                            val userinfo = fetchUserInfo(user.userID)
+                            if(userPreference.gender.value.isEmpty()){
+                                userPreference.setUserGen(userinfo!!.datePrefrence)
+                            }
+                            continue}
 
-                selectRandomUser()
+                        val userinfo = fetchUserInfo(user.userID)
+                        if(preferredGender!="Everyone"){
+                            if (userinfo?.gender == preferredGender) {
+                                filteredUsers.add(user)
+                                Log.d("filteredUsers",user.toString())
+                            }
+                        }
+                    }
+
+                _uiState.update {
+                    it.copy(
+                        availableUsers = filteredUsers,
+                        isLoading = false,
+                        noMoreProfiles = filteredUsers.isEmpty()
+                    )
+                }
+
+                if (filteredUsers.isNotEmpty()) {
+                    selectRandomUser()
+                }
+
             } catch (e: Exception) {
                 showSnackbar("Failed to load users: ${e.message}")
-                _uiState.update { it.copy(
-                    isLoading = false
-                )}
+                _uiState.update {
+                    it.copy(isLoading = false)
+                }
             }
         }
     }
@@ -78,7 +106,7 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
                     noMoreProfiles = true,
                     currentUserProfile = null,
                     isLoading = false,
-                    )}
+                )}
                 return@launch
             }
 
@@ -102,6 +130,7 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
         }
     }
 
+
     fun onNextClicked() {
         selectRandomUser()
     }
@@ -121,7 +150,7 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
         }
     }
 
-    private suspend fun fetchUsersList(age: String): List<insertinfo> = withContext(Dispatchers.IO) {
+    private suspend fun fetchUsersList(): List<insertinfo> = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val url = "http://${PORT_8080}/getinfo"
         val request = Request.Builder()
@@ -148,13 +177,21 @@ class HomeScreenViewModel(private val userPreference: UserPreference, private va
         }
     }
 
-    private suspend fun fetchCompleteUserProfile(basicInfo: insertinfo): UserProfile = withContext(Dispatchers.IO) {
+    private suspend fun fetchCompleteUserProfile(basicInfo: insertinfo): UserProfile? = withContext(Dispatchers.IO) {
         val advancedInfo = fetchUserInfo(basicInfo.userID)
+
+        // Filter by preferred gender
+        val preferredGender = userPreference.gender.value
+        if (advancedInfo?.gender != preferredGender) {
+            return@withContext null
+        }
+
         val userPrompts = fetchUserPrompts(basicInfo.userID)
         val userPhotos = fetchUserPhotos(basicInfo.userID)
 
         return@withContext createUserProfile(basicInfo, advancedInfo, userPrompts, userPhotos)
     }
+
 
     private suspend fun fetchUserInfo(userId: String): insertinformation? = withContext(Dispatchers.IO) {
         val client = OkHttpClient()

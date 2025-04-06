@@ -140,6 +140,8 @@ fun MainScreen(
                             location = ""
                         )
                     }
+                    Spacer(modifier = Modifier.height(120.dp))
+
                 }
             }
 
